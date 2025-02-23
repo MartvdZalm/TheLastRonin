@@ -1,0 +1,4 @@
+# Character
+x = 0.0f;
+y = 10.0f;
+z = 0.0f;
