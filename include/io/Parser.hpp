@@ -1,6 +1,4 @@
-#pragma once
-
-#include <ifstream>
+#include <fstream>
 
 namespace Parser
 {
