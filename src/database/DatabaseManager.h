@@ -5,11 +5,13 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVector>
-#include "../dialog/Album.h"
+#include "../album/Album.h"
 
 class DatabaseManager
 {
 public:
+    DatabaseManager();
+
     static DatabaseManager& instance();
 
     bool openDatabase();
@@ -18,9 +20,9 @@ public:
     int insertAlbum(const QString& title, const QString& artist, const QString& coverPath, const QString& releaseDate);
 
     QVector<Album> getAllAlbums();
+    QVector<Album> getAlbumsByGenre(const QString& genre);
 
 private:
-    DatabaseManager();
     QSqlDatabase db;
 };
 

@@ -70,7 +70,7 @@ int DatabaseManager::insertAlbum(
 QVector<Album> DatabaseManager::getAllAlbums()
 {
     QVector<Album> albums;
-    QSqlQuery query("SELECT id, title, artist, releaseDate coverPath FROM albums");
+    QSqlQuery query("SELECT id, title, artist, coverPath, releaseDate FROM albums");
 
     while (query.next()) {
         Album album;
@@ -84,3 +84,23 @@ QVector<Album> DatabaseManager::getAllAlbums()
 
     return albums;
 }
+
+// QVector<Album> DatabaseManager::getAlbumsByGenre(const QString& genre)
+// {
+//     QVector<Album> albums;
+
+//     QSqlQuery query;
+//     query.prepare("SELECT id, title, artist, coverPath, releaseDate FROM albums WHERE genre = ?");
+//     query.addBindValue(genre);
+
+//     if (query.exec()) {
+//         while (query.next()) {
+//             Album album {
+//                 .id = query.value(0).toInt(),
+//                 .title = query.value(1).toString(),
+//                 .artist = query.value(2)
+//             };
+//         }
+//     }
+// }
+

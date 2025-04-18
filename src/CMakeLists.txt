@@ -12,11 +12,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         dialog/AddAlbumDialog.h
         dialog/AddAlbumDialog.cpp
-        dialog/Album.h
-        dialog/AlbumCard.h
-        dialog/AlbumCard.cpp
         database/DatabaseManager.h
         database/DatabaseManager.cpp
+        album/AlbumManager.h
+        album/AlbumManager.cpp
+        album/Album.h
+        album/AlbumCard.h
+        album/AlbumCard.cpp
     )
 else()
     add_executable(TheLastRonin

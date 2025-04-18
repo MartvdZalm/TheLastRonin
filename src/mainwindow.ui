@@ -65,7 +65,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="albumFilterBox">
          <item>
           <property name="text">
            <string>Genre</string>

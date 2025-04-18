@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "album/AlbumManager.h"
 #include "database/DatabaseManager.h"
-#include "dialog/Album.h"
 #include <QMainWindow>
 #include <QGridLayout>
 
@@ -22,16 +22,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void openAddAlbumDialog();
-    void addAlbumToGrid(const Album& album);
-
 private:
     Ui::MainWindow *ui;
-    QGridLayout* albumGrid;
     DatabaseManager* db;
-
-    int currentRow = 0;
-    int currentCol = 0;
-    int maxCols = 4;
+    AlbumManager* albumManager;
 };
 #endif // MAINWINDOW_H
