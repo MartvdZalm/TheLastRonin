@@ -6,6 +6,8 @@
 #include <QSqlQuery>
 #include <QVector>
 #include "../album/Album.h"
+#include "../playlist/Playlist.h"
+#include "../playlist/Track.h"
 
 class DatabaseManager
 {
@@ -18,9 +20,12 @@ public:
     bool initSchema();
 
     int insertAlbum(const QString& title, const QString& artist, const QString& coverPath, const QString& releaseDate);
-
     QVector<Album> getAllAlbums();
-    QVector<Album> getAlbumsByGenre(const QString& genre);
+
+    int insertPlaylist(const QString& name, const QString& description = "", const QString& coverImagePath = "");
+    bool addTrackToPlaylist(int playlistId, const Track& track);
+    QVector<Playlist> getAllPlaylists();
+    QVector<Track> getTracksForPlaylist(int playlistId);
 
 private:
     QSqlDatabase db;
