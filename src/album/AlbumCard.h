@@ -10,7 +10,7 @@ class AlbumCard : public QWidget
     Q_OBJECT
 
 public:
-    AlbumCard(const Album& album, QWidget* parent = nullptr);
+    explicit AlbumCard(const Album& album, QWidget* parent = nullptr);
 
 signals:
     void albumClicked(Album album);

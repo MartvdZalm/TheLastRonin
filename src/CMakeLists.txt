@@ -24,6 +24,14 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         page/AlbumPage.cpp
         playlist/Playlist.h
         playlist/Track.h
+        playlist/PlaylistManager.h
+        playlist/PlaylistManager.cpp
+        dialog/AddPlaylistDialog.h
+        dialog/AddPlaylistDialog.cpp
+        playlist/PlaylistCard.h
+        playlist/PlaylistCard.cpp
+        page/PlaylistPage.h
+        page/PlaylistPage.cpp
     )
 else()
     add_executable(TheLastRonin

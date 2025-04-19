@@ -9,18 +9,19 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , db(&DatabaseManager::instance())
     , albumManager(&AlbumManager::instance())
+    , playlistManager(&PlaylistManager::instance())
 {
     ui->setupUi(this);
 
-    albumManager->setAlbumGrid(ui->albumGridLayout);
+    playlistManager->setPlaylistGrid(ui->playlistGridLayout);
 
-    QVector<Album> albums = db->getAllAlbums();
-    for (const Album& album : albums) {
-        albumManager->addAlbumToGrid(album);
+    QVector<Playlist> playlis = db->getAllPlaylists();
+    for (const Playlist& playlist : playlis) {
+        playlistManager->addPlaylistToGrid(playlist);
     }
 
-    connect(ui->addAlbumBtn, &QPushButton::clicked, this, [this]() {
-        albumManager->openAddAlbumDialog(this);
+    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, [this]() {
+        playlistManager->openAddPlaylistDialog(this);
     });
 
     // connect(ui->albumFilterBox, &QComboBox::currentTextChanged, this, [this]() {

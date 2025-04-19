@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "album/AlbumManager.h"
+#include "playlist/PlaylistManager.h"
 #include "database/DatabaseManager.h"
 #include <QMainWindow>
 #include <QGridLayout>
@@ -26,5 +27,6 @@ private:
     Ui::MainWindow *ui;
     DatabaseManager* db;
     AlbumManager* albumManager;
+    PlaylistManager* playlistManager;
 };
 #endif // MAINWINDOW_H

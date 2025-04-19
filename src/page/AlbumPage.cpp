@@ -1,4 +1,5 @@
 #include "AlbumPage.h"
+
 #include <QBoxLayout>
 #include <QLabel>
 
