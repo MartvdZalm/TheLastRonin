@@ -26,10 +26,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->searchBtn, &QPushButton::clicked, this, &MainWindow::search);
     connect(ui->searchInput, &QLineEdit::textChanged, this, &MainWindow::search);
-
-    // connect(ui->albumFilterBox, &QComboBox::currentTextChanged, this, [this]() {
-    //     albumManager->applyFilterToGrid()
-    // });
 }
 
 MainWindow::~MainWindow()

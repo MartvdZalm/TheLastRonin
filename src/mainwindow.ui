@@ -58,25 +58,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="playlistFilterBox">
-         <item>
-          <property name="text">
-           <string>Genre</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Artist</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Year</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
           <enum>Qt::Orientation::Horizontal</enum>

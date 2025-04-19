@@ -62,16 +62,7 @@ void PlaylistManager::addPlaylistToGrid(const Playlist& playlist)
 
 void PlaylistManager::applyFilterToGrid(const QString& selectedFilter)
 {
-    QVector<Playlist> filteredPlaylists;
 
-    if (selectedFilter == "all") {
-        filteredPlaylists = db->getAllPlaylists();
-    }
-
-    clearPlaylistGrid();
-    for (const Playlist& playlist : filteredPlaylists) {
-        addPlaylistToGrid(playlist);
-    }
 }
 
 void PlaylistManager::clearPlaylistGrid()
