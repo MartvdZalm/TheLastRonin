@@ -57,7 +57,7 @@ AlbumCard::AlbumCard(const Album& album, QWidget* parent)
 void AlbumCard::mousePressEvent(QMouseEvent* event)
 {
     Q_UNUSED(event);
-    emit clicked();
+    emit albumClicked(albumData);
 }
 
 bool AlbumCard::eventFilter(QObject* watched, QEvent* event)

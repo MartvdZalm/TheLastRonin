@@ -4,10 +4,12 @@
 #include "../database/DatabaseManager.h"
 #include <QGridLayout>
 
-class AlbumManager
+class AlbumManager : public QObject
 {
+    Q_OBJECT
+
 public:
-    AlbumManager();
+    explicit AlbumManager(QObject* parent = nullptr);
 
     static AlbumManager& instance();
 
@@ -16,6 +18,9 @@ public:
     void addAlbumToGrid(const Album& album);
     void applyFilterToGrid(const QString& selectedFilter);
     void clearAlbumGrid();
+
+private slots:
+    void openAlbumPage(const Album& album);
 
 private:
     DatabaseManager* db;

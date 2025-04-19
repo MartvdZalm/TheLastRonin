@@ -19,6 +19,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         album/Album.h
         album/AlbumCard.h
         album/AlbumCard.cpp
+        page/AlbumPage.h
+
+        page/AlbumPage.cpp
     )
 else()
     add_executable(TheLastRonin

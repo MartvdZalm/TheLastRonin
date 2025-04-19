@@ -13,7 +13,7 @@ public:
     AlbumCard(const Album& album, QWidget* parent = nullptr);
 
 signals:
-    void clicked();
+    void albumClicked(Album album);
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;

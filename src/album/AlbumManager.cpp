@@ -2,10 +2,12 @@
 
 #include "../dialog/AddAlbumDialog.h"
 #include "../database/DatabaseManager.h"
+#include "../page/AlbumPage.h"
 #include "AlbumCard.h"
 
-AlbumManager::AlbumManager()
-    : db(&DatabaseManager::instance())
+AlbumManager::AlbumManager(QObject* parent)
+    : QObject(parent)
+    , db(&DatabaseManager::instance())
 {
     if (db->openDatabase()) {
         db->initSchema();
@@ -47,6 +49,7 @@ void AlbumManager::addAlbumToGrid(const Album& album)
     if (!albumGrid) return;
 
     AlbumCard* card = new AlbumCard(album);
+    connect(card, &AlbumCard::albumClicked, this, &AlbumManager::openAlbumPage);
     albumGrid->addWidget(card, currentRow, currentCol);
 
     currentCol++;
@@ -82,4 +85,11 @@ void AlbumManager::clearAlbumGrid()
 
     currentRow = 0;
     currentCol = 0;
+}
+
+void AlbumManager::openAlbumPage(const Album& album)
+{
+    AlbumPage* page = new AlbumPage(album);
+    page->setAttribute(Qt::WA_DeleteOnClose);
+    page->show();
 }
