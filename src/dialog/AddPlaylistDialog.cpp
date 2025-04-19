@@ -11,9 +11,16 @@ AddPlaylistDialog::AddPlaylistDialog(QWidget* parent)
 {
     setWindowTitle("Add Playlist");
 
+    this->setFixedWidth(350);
+
     nameEdit = new QLineEdit;
     descriptionEdit = new QLineEdit;
+
     QPushButton* chooseImageBtn = new QPushButton("Choose Cover Image");
+    QHBoxLayout* imageRow = new QHBoxLayout;
+    imageRow->addWidget(chooseImageBtn);
+    imageRow->addStretch();
+
     imagePreview = new QLabel("No image selected");
     imagePreview->setFixedSize(250, 120);
     imagePreview->setStyleSheet("border: 1px solid gray;");
@@ -30,7 +37,7 @@ AddPlaylistDialog::AddPlaylistDialog(QWidget* parent)
     layout->addWidget(nameEdit);
     layout->addWidget(new QLabel("Description:"));
     layout->addWidget(descriptionEdit);
-    layout->addWidget(chooseImageBtn);
+    layout->addLayout(imageRow);
     layout->addWidget(imagePreview);
     layout->addWidget(buttons);
     setLayout(layout);

@@ -205,3 +205,25 @@ QVector<Track> DatabaseManager::getTracksForPlaylist(int playlistId)
 
     return tracks;
 }
+
+QVector<Playlist> DatabaseManager::searchPlaylists(const QString& query)
+{
+    QVector<Playlist> result;
+    QSqlQuery q;
+    q.prepare("SELECT id, name, description, coverImagePath FROM playlists WHERE name LIKE :query");
+    q.bindValue(":query", "%" + query + "%");
+
+    if (q.exec()) {
+        while (q.next()) {
+            Playlist p;
+            p.id = q.value(0).toInt();
+            p.name = q.value(1).toString();
+            p.description = q.value(2).toString();
+            p.coverImagePath = q.value(3).toString();
+            result.append(p);
+        }
+    }
+
+    return result;
+}
+

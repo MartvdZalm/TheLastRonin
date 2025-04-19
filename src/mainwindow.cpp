@@ -15,14 +15,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     playlistManager->setPlaylistGrid(ui->playlistGridLayout);
 
-    QVector<Playlist> playlis = db->getAllPlaylists();
-    for (const Playlist& playlist : playlis) {
+    QVector<Playlist> playlists = db->getAllPlaylists();
+    for (const Playlist& playlist : playlists) {
         playlistManager->addPlaylistToGrid(playlist);
     }
 
     connect(ui->addPlaylistBtn, &QPushButton::clicked, this, [this]() {
         playlistManager->openAddPlaylistDialog(this);
     });
+
+    connect(ui->searchBtn, &QPushButton::clicked, this, &MainWindow::search);
+    connect(ui->searchInput, &QLineEdit::textChanged, this, &MainWindow::search);
 
     // connect(ui->albumFilterBox, &QComboBox::currentTextChanged, this, [this]() {
     //     albumManager->applyFilterToGrid()
@@ -32,4 +35,17 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::search()
+{
+    QString query = ui->searchInput->text().trimmed();
+
+    playlistManager->clearPlaylistGrid();
+
+    QVector<Playlist> results = db->searchPlaylists(query);
+
+    for (const Playlist& playlist : results) {
+        playlistManager->addPlaylistToGrid(playlist);
+    }
 }

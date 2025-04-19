@@ -32,6 +32,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         playlist/PlaylistCard.cpp
         page/PlaylistPage.h
         page/PlaylistPage.cpp
+        styles/ButtonStyle.h
+        styles/ButtonStyle.cpp
+        styles/InputStyle.h
+        styles/InputStyle.cpp
     )
 else()
     add_executable(TheLastRonin

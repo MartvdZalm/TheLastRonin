@@ -26,6 +26,7 @@ public:
     bool addTrackToPlaylist(int playlistId, const Track& track);
     QVector<Playlist> getAllPlaylists();
     QVector<Track> getTracksForPlaylist(int playlistId);
+    QVector<Playlist> searchPlaylists(const QString& query);
 
 private:
     QSqlDatabase db;

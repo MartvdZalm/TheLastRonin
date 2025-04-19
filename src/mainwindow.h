@@ -23,6 +23,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void search();
+
 private:
     Ui::MainWindow *ui;
     DatabaseManager* db;

@@ -35,7 +35,7 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent)
     )");
     titleLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    previewLabel = new QLabel("Description: " + playlist.description, this);
+    previewLabel = new QLabel("Tracks: " + QString::number(playlist.tracks.size()), this);
     previewLabel->setAlignment(Qt::AlignCenter);
     previewLabel->setStyleSheet("background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px;");
     previewLabel->setVisible(false);
@@ -49,7 +49,7 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent)
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
-    cover->installEventFilter(this);
+    this->installEventFilter(this);
 
     this->setCursor(Qt::PointingHandCursor);
 }
@@ -62,7 +62,7 @@ void PlaylistCard::mousePressEvent(QMouseEvent* event)
 
 bool PlaylistCard::eventFilter(QObject* watched, QEvent* event)
 {
-    if (watched->inherits("QLabel")) {
+    if (watched == this) {
         QLabel* cover = qobject_cast<QLabel*>(watched);
 
         if (event->type() == QEvent::Enter) {
