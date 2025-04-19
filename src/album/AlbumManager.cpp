@@ -9,9 +9,7 @@ AlbumManager::AlbumManager(QObject* parent)
     : QObject(parent)
     , db(&DatabaseManager::instance())
 {
-    if (db->openDatabase()) {
-        db->initSchema();
-    }
+
 }
 
 AlbumManager& AlbumManager::instance()

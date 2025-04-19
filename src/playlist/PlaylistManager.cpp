@@ -1,17 +1,11 @@
 #include "PlaylistManager.h"
 
 #include "../dialog/AddPlaylistDialog.h"
-#include "../database/DatabaseManager.h"
 #include "../page/PlaylistPage.h"
-#include "PlaylistCard.h"
 
-PlaylistManager::PlaylistManager(QObject* parent)
-    : QObject(parent)
-    , db(&DatabaseManager::instance())
+PlaylistManager::PlaylistManager()
 {
-    if (db->openDatabase()) {
-        db->initSchema();
-    }
+    playlistRepository = new PlaylistRepository(DatabaseManager::instance());
 }
 
 PlaylistManager& PlaylistManager::instance()
@@ -20,70 +14,60 @@ PlaylistManager& PlaylistManager::instance()
     return instance;
 }
 
-void PlaylistManager::setPlaylistGrid(QGridLayout* playlistGrid)
+void PlaylistManager::setPlaylistGrid(QGridLayout* layout, QWidget* parentForDialogs)
 {
-    this->playlistGrid = playlistGrid;
-    playlistGrid->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    gridController = new PlaylistGridController(layout);
+    dialogParent = parentForDialogs;
+    gridController->setLayout(layout);
 }
 
-void PlaylistManager::openAddPlaylistDialog(QWidget* parent)
+void PlaylistManager::refreshGrid()
 {
-    AddPlaylistDialog dialog(parent);
+    gridController->clearGrid();
+
+    QVector<Playlist> playlists = playlistRepository->getAll();
+    for (const Playlist& playlist : playlists) {
+        gridController->addPlaylist(playlist);
+    }
+}
+
+void PlaylistManager::search(const QString& query)
+{
+    QList<Playlist> results = playlistRepository->search(query);
+    gridController->clearGrid();
+
+    for (const Playlist& playlist : results) {
+        gridController->addPlaylist(playlist);
+    }
+}
+
+void PlaylistManager::openAddPlaylistDialog()
+{
+    AddPlaylistDialog dialog(dialogParent);
     if (dialog.exec() == QDialog::Accepted) {
-        Playlist newPlaylist {
+        Playlist playlist {
             .name = dialog.getName(),
             .description = dialog.getDescription(),
             .coverImagePath = dialog.getCoverImagePath(),
         };
 
-        int id = db->insertPlaylist(newPlaylist.name, newPlaylist.description, newPlaylist.coverImagePath);
-        newPlaylist.id = id;
-
-        addPlaylistToGrid(newPlaylist);
-    }
-}
-
-void PlaylistManager::addPlaylistToGrid(const Playlist& playlist)
-{
-    if (!playlistGrid) {
-        return;
-    }
-
-    PlaylistCard* card = new PlaylistCard(playlist);
-    connect(card, &PlaylistCard::playlistClicked, this, &PlaylistManager::openPlaylistPage);
-    playlistGrid->addWidget(card, currentRow, currentCol);
-
-    currentCol++;
-    if (currentRow >= maxCols) {
-        currentCol = 0;
-        currentRow++;
+        playlist.id = playlistRepository->insert(playlist);
+        gridController->addPlaylist(playlist);
     }
 }
 
 void PlaylistManager::applyFilterToGrid(const QString& selectedFilter)
 {
-
+    // Optional if needed later
 }
 
-void PlaylistManager::clearPlaylistGrid()
+void PlaylistManager::addTrackToPlaylist(int playlistId, const Track& track)
 {
-    if (!playlistGrid) {
-        return;
-    }
-
-    QLayoutItem* item;
-    while ((item = playlistGrid->takeAt(0)) != nullptr) {
-        delete item->widget();
-        delete item;
-    }
-
-    currentRow = 0;
-    currentCol = 0;
+    playlistRepository->addTrackToPlaylist(playlistId, track);
 }
 
-void PlaylistManager::openPlaylistPage(const Playlist& playlist)
+QVector<Track> PlaylistManager::getTracksForPlaylist(int playlistId)
 {
-    PlaylistPage* page = new PlaylistPage(playlist);
-    page->setAttribute(Qt::WA_DeleteOnClose);
-    page->show();
+    return playlistRepository->getTracksForPlaylist(playlistId);
 }
+

@@ -1,33 +1,29 @@
 #ifndef PLAYLISTMANAGER_H
 #define PLAYLISTMANAGER_H
 
-#include "../database/DatabaseManager.h"
+#include "../repository/PlaylistRepository.h"
+#include "PlaylistGridController.h"
 #include <QGridLayout>
 
-class PlaylistManager : public QObject
+class PlaylistManager
 {
-    Q_OBJECT
 public:
-    explicit PlaylistManager(QObject* parent = nullptr);
+    PlaylistManager();
 
     static PlaylistManager& instance();
 
-    void setPlaylistGrid(QGridLayout* playlistGrid);
-    void openAddPlaylistDialog(QWidget* parent);
-    void addPlaylistToGrid(const Playlist& playlist);
+    void setPlaylistGrid(QGridLayout* layout, QWidget* parentForDialogs);
+    void openAddPlaylistDialog();
     void applyFilterToGrid(const QString& selectedFilter);
-    void clearPlaylistGrid();
-
-private slots:
-    void openPlaylistPage(const Playlist& playlist);
+    void refreshGrid();
+    void search(const QString& query);
+    void addTrackToPlaylist(int playlistId, const Track& track);
+    QVector<Track> getTracksForPlaylist(int playlistId);
 
 private:
-    DatabaseManager* db;
-    QGridLayout* playlistGrid;
-
-    int currentRow = 0;
-    int currentCol = 0;
-    int maxCols = 4;
+    PlaylistRepository* playlistRepository;
+    PlaylistGridController* gridController = nullptr;
+    QWidget* dialogParent = nullptr;
 };
 
 #endif // PLAYLISTMANAGER_H

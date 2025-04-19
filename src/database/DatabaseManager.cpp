@@ -61,7 +61,6 @@ bool DatabaseManager::initSchema()
         return false;
     }
 
-    // Create tracks table
     if (!query.exec(R"(
         CREATE TABLE IF NOT EXISTS tracks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -122,13 +121,13 @@ QVector<Album> DatabaseManager::getAllAlbums()
     return albums;
 }
 
-int DatabaseManager::insertPlaylist(const QString& name, const QString& description, const QString& coverImagePath)
+int DatabaseManager::insertPlaylist(const Playlist& playlist)
 {
     QSqlQuery query;
     query.prepare("INSERT INTO playlists (name, description, coverImagePath) VALUES (:name, :description, :coverImagePath)");
-    query.bindValue(":name", name);
-    query.bindValue(":description", description);
-    query.bindValue(":coverImagePath", coverImagePath);
+    query.bindValue(":name", playlist.name);
+    query.bindValue(":description", playlist.description);
+    query.bindValue(":coverImagePath", playlist.coverImagePath);
 
     if (query.exec()) {
         return query.lastInsertId().toInt();
@@ -152,6 +151,13 @@ bool DatabaseManager::addTrackToPlaylist(int playlistId, const Track& track)
     query.bindValue(":playlistId", playlistId);
 
     if (query.exec()) {
+        qDebug() << "Query:" << query.lastQuery();
+        qDebug() << "Bound values:"
+                 << query.boundValue(":title") << query.boundValue(":filePath")
+                 << query.boundValue(":artist") << query.boundValue(":album")
+                 << query.boundValue(":duration") << query.boundValue(":trackNumber")
+                 << query.boundValue(":playlistId");
+
         return true;
     } else {
         qDebug() << "Failed to add track to playlist:" << query.lastError();

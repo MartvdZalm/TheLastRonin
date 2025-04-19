@@ -45,6 +45,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dialog/AddTrackDialog.h
         dialog/AddTrackDialog.cpp
         resources.qrc
+        repository/AlbumRepository.h
+        repository/AlbumRepository.cpp
+        repository/PlaylistRepository.h
+        repository/PlaylistRepository.cpp
+        playlist/PlaylistGridController.h
+        playlist/PlaylistGridController.cpp
+
 
     )
 else()

@@ -22,7 +22,7 @@ public:
     int insertAlbum(const QString& title, const QString& artist, const QString& coverPath, const QString& releaseDate);
     QVector<Album> getAllAlbums();
 
-    int insertPlaylist(const QString& name, const QString& description = "", const QString& coverImagePath = "");
+    int insertPlaylist(const Playlist& playlist);
     bool addTrackToPlaylist(int playlistId, const Track& track);
     QVector<Playlist> getAllPlaylists();
     QVector<Track> getTracksForPlaylist(int playlistId);

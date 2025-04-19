@@ -1,9 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "album/AlbumManager.h"
 #include "playlist/PlaylistManager.h"
-#include "database/DatabaseManager.h"
 #include <QMainWindow>
 #include <QGridLayout>
 
@@ -23,12 +21,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void search();
-
 private:
     Ui::MainWindow *ui;
-    DatabaseManager* db;
-    AlbumManager* albumManager;
-    PlaylistManager* playlistManager;
+    PlaylistManager playlistManager;
 };
 #endif // MAINWINDOW_H

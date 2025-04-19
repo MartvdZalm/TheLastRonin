@@ -7,6 +7,7 @@
 #include "../playlist/PlaylistDetailsWidget.h"
 #include "../playlist/TrackListWidget.h"
 #include "../dialog/AddTrackDialog.h"
+#include "../playlist/PlaylistManager.h"
 
 PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     : QWidget(parent), playlistData(playlist)
@@ -24,12 +25,16 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     addTrackRow->addWidget(addTrackBtn);
     addTrackRow->addStretch();
 
-    TrackListWidget* trackListWidget = new TrackListWidget(playlist.tracks, this);
+    playlistData.tracks = PlaylistManager::instance().getTracksForPlaylist(playlist.id);
+
+    TrackListWidget* trackListWidget = new TrackListWidget(playlistData.tracks, this);
 
     connect(addTrackBtn, &QPushButton::clicked, this, [=]() mutable {
         AddTrackDialog dialog(this);
         if (dialog.exec() == QDialog::Accepted) {
             Track newTrack = dialog.getTrack();
+
+            PlaylistManager::instance().addTrackToPlaylist(playlistData.id, newTrack);
 
             trackListWidget->addTrack(newTrack);
             playlistData.tracks.append(newTrack);
@@ -41,7 +46,7 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
         const Track& track = playlistData.tracks[index];
 
         player->setSource(QUrl::fromLocalFile(track.filePath));
-        audioOutput->setVolume(50); // Optional
+        audioOutput->setVolume(50);
         player->play();
     });
 
