@@ -11,8 +11,9 @@ int main(int argc, char *argv[])
     QString globalStyle = InputStyle::styleSheet() + ButtonStyle::styleSheet();
     app.setStyleSheet(globalStyle);
 
-    MainWindow w;
-    w.showMaximized();
+    MainWindow window;
+    window.setWindowIcon(QIcon(":/TheLastRonin/TheLastRoninIcon"));
+    window.showMaximized();
 
     return app.exec();
 }

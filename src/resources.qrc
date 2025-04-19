@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/TheLastRonin">
+        <file alias="TheLastRoninIcon">assets/images/TheLastRonin.png</file>
+    </qresource>
+</RCC>

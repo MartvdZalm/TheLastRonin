@@ -2,36 +2,53 @@
 
 #include <QPixmap>
 #include <QListWidgetItem>
+#include <QPushButton>
+#include "../components/CoverImageWidget.h"
+#include "../playlist/PlaylistDetailsWidget.h"
+#include "../playlist/TrackListWidget.h"
+#include "../dialog/AddTrackDialog.h"
 
 PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     : QWidget(parent), playlistData(playlist)
 {
-    setWindowTitle(playlist.name);
+    this->setWindowTitle(playlist.name);
+    this->setFixedSize(600, 500);
+
+    player = new QMediaPlayer(this);
+    audioOutput = new QAudioOutput(this);
+    player->setAudioOutput(audioOutput);
+
+
+    QPushButton* addTrackBtn = new QPushButton("Add Track");
+    QHBoxLayout* addTrackRow = new QHBoxLayout;
+    addTrackRow->addWidget(addTrackBtn);
+    addTrackRow->addStretch();
+
+    TrackListWidget* trackListWidget = new TrackListWidget(playlist.tracks, this);
+
+    connect(addTrackBtn, &QPushButton::clicked, this, [=]() mutable {
+        AddTrackDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted) {
+            Track newTrack = dialog.getTrack();
+
+            trackListWidget->addTrack(newTrack);
+            playlistData.tracks.append(newTrack);
+        }
+    });
+
+    connect(trackListWidget, &QListWidget::itemClicked, this, [=](QListWidgetItem* item) {
+        int index = trackListWidget->row(item);
+        const Track& track = playlistData.tracks[index];
+
+        player->setSource(QUrl::fromLocalFile(track.filePath));
+        audioOutput->setVolume(50); // Optional
+        player->play();
+    });
+
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-
-    // Cover image
-    coverImageLabel = new QLabel(this);
-    QPixmap pixmap(playlist.coverImagePath);
-    coverImageLabel->setPixmap(pixmap.scaled(300, 300, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
-    coverImageLabel->setAlignment(Qt::AlignCenter);
-
-    // Playlist details
-    nameLabel = new QLabel("Name: " + playlist.name, this);
-    descriptionLabel = new QLabel("Description: " + playlist.description, this);
-
-    // Track list
-    tracksListWidget = new QListWidget(this);
-    for (const Track& track : playlist.tracks) {
-        QListWidgetItem* item = new QListWidgetItem(track.title + " - " + track.artist);
-        tracksListWidget->addItem(item);
-    }
-
-    // Add widgets to layout
-    layout->addWidget(coverImageLabel);
-    layout->addWidget(nameLabel);
-    layout->addWidget(descriptionLabel);
-    layout->addWidget(tracksListWidget);
-
-    setLayout(layout);
+    layout->addWidget(new CoverImageWidget(playlist.coverImagePath, this));
+    layout->addWidget(new PlaylistDetailsWidget(playlist, this));
+    layout->addLayout(addTrackRow);
+    layout->addWidget(trackListWidget);
 }

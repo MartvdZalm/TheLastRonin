@@ -36,6 +36,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         styles/ButtonStyle.cpp
         styles/InputStyle.h
         styles/InputStyle.cpp
+        components/CoverImageWidget.h
+        components/CoverImageWidget.cpp
+        playlist/PlaylistDetailsWidget.h
+        playlist/PlaylistDetailsWidget.cpp
+        playlist/TrackListWidget.h
+        playlist/TrackListWidget.cpp
+        dialog/AddTrackDialog.h
+        dialog/AddTrackDialog.cpp
+        resources.qrc
+
     )
 else()
     add_executable(TheLastRonin
@@ -43,11 +53,12 @@ else()
     )
 endif()
 
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql Multimedia)
 
 target_link_libraries(TheLastRonin PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Sql
+    Qt${QT_VERSION_MAJOR}::Multimedia
 )
 
 set_target_properties(TheLastRonin PROPERTIES

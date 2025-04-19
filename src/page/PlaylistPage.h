@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QListWidget>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 class PlaylistPage : public QWidget
 {
@@ -20,6 +22,8 @@ private:
     QLabel* nameLabel;
     QLabel* descriptionLabel;
     QListWidget* tracksListWidget;
+    QMediaPlayer* player;
+    QAudioOutput* audioOutput;
 };
 
 #endif // PLAYLISTPAGE_H
