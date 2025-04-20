@@ -1,5 +1,9 @@
 <RCC>
-    <qresource prefix="/TheLastRonin">
+    <qresource prefix="/Images">
         <file alias="TheLastRoninIcon">assets/images/TheLastRonin.png</file>
+        <file alias="Next">assets/images/next.png</file>
+        <file alias="Pause">assets/images/pause.png</file>
+        <file alias="Play">assets/images/play.png</file>
+        <file alias="Prev">assets/images/prev.png</file>
     </qresource>
 </RCC>

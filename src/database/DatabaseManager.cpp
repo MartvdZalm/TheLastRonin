@@ -178,6 +178,7 @@ QVector<Playlist> DatabaseManager::getAllPlaylists()
         playlist.coverImagePath = query.value(3).toString();
         playlist.createdAt = query.value(4).toDateTime();
         playlist.updatedAt = query.value(5).toDateTime();
+        playlist.tracks = getTracksForPlaylist(playlist.id);
 
         playlists.append(playlist);
     }

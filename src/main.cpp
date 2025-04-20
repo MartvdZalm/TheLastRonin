@@ -20,7 +20,8 @@ int main(int argc, char *argv[])
     app.setStyleSheet(globalStyle);
 
     MainWindow window;
-    window.setWindowIcon(QIcon(":/TheLastRonin/TheLastRoninIcon"));
+    window.setWindowTitle("TheLastRonin");
+    window.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
     window.showMaximized();
 
     return app.exec();

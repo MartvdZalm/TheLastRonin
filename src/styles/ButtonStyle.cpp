@@ -4,7 +4,7 @@ QString ButtonStyle::styleSheet()
 {
     return R"(
         QPushButton {
-            background-color: #0078d4;  /* Nice blue color */
+            background-color: #4a90e2;
             color: white;
             border: none;
             border-radius: 8px;
@@ -14,11 +14,11 @@ QString ButtonStyle::styleSheet()
         }
 
         QPushButton:hover {
-            background-color: #005a8e;  /* Darker blue when hovered */
+            background-color: #005a8e;
         }
 
         QPushButton:pressed {
-            background-color: #003f69;  /* Even darker blue when pressed */
+            background-color: #003f69;
         }
     )";
 }
