@@ -9,7 +9,7 @@ struct Track {
     QString filePath;
     QString artist;
     QString album;
-    QString duration;
+    qint64 duration = 0;
     int trackNumber;
 };
 

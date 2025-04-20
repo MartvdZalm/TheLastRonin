@@ -12,7 +12,6 @@ struct Playlist {
     QVector<Track> tracks;
     QDateTime createdAt;
     QDateTime updatedAt;
-    bool isFavorite = false;
 };
 
 #endif // PLAYLIST_H

@@ -2,6 +2,7 @@
 #define PLAYLISTPAGE_H
 
 #include "../playlist/Playlist.h"
+#include "../playlist/TrackListWidget.h"
 #include <QWidget>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -15,15 +16,22 @@ class PlaylistPage : public QWidget
 
 public:
     explicit PlaylistPage(const Playlist& playlist, QWidget* parent = nullptr);
+    void updateTimeLabel(qint64 position, qint64 duration, QLabel* label);
+
+private slots:
+    void playNextTrack();
+    void playTrackAtIndex(int index);
 
 private:
+    void setStyle();
+
     Playlist playlistData;
-    QLabel* coverImageLabel;
-    QLabel* nameLabel;
-    QLabel* descriptionLabel;
-    QListWidget* tracksListWidget;
     QMediaPlayer* player;
     QAudioOutput* audioOutput;
+    TrackListWidget* trackListWidget;
+    QLabel* songLabel;
+
+    int currentTrackIndex = -1;
 };
 
 #endif // PLAYLISTPAGE_H

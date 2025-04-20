@@ -14,6 +14,7 @@ public:
 private:
     QLabel* nameLabel;
     QLabel* descriptionLabel;
+    QLabel* tracksLabel;
 };
 
 

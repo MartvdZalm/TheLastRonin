@@ -23,7 +23,7 @@ void AddTrackDialog::setupUI()
     artistInput = new QLineEdit(this);
     filePathInput = new QLineEdit(this);
     filePathInput->setReadOnly(true);
-    chooseFileButton = new QPushButton("Choose MP3...", this);
+    chooseFileButton = new QPushButton("Choose Audio File...", this);
 
     QPushButton* addButton = new QPushButton("Add", this);
     QPushButton* cancelButton = new QPushButton("Cancel", this);
@@ -46,7 +46,13 @@ void AddTrackDialog::setupUI()
     layout->addLayout(buttonRow);
 
     connect(chooseFileButton, &QPushButton::clicked, this, [=]() {
-        QString filePath = QFileDialog::getOpenFileName(this, "Choose MP3", "", "MP3 Files (*.mp3)");
+        QString filePath = QFileDialog::getOpenFileName(
+            this,
+            "Choose Audio File",
+            "",
+            "Audio Files (*.mp3 *.wav);;MP3 Files (*.mp3);;WAV Files (*.wav);;All Files (*)"
+            );
+
         if (!filePath.isEmpty()) {
             filePathInput->setText(filePath);
             selectedFilePath = filePath;
