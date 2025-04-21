@@ -22,11 +22,6 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     player->setAudioOutput(audioOutput);
     audioOutput->setVolume(50);
 
-    QPushButton* backButton = new QPushButton("← Back to Playlists", this);
-    QHBoxLayout* navigationBar = new QHBoxLayout;
-    navigationBar->addWidget(backButton);
-    navigationBar->addStretch();
-
     QPushButton* addTrackBtn = new QPushButton("Add Track");
     QHBoxLayout* addTrackRow = new QHBoxLayout;
     addTrackRow->addWidget(addTrackBtn);
@@ -128,7 +123,6 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
 
     PlaylistDetailsWidget* detailsWidget = new PlaylistDetailsWidget(playlist, this);
 
-    layout->addLayout(navigationBar);
     layout->addWidget(coverImage);
     layout->addWidget(detailsWidget);
     layout->addLayout(addTrackRow);

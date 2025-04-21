@@ -1,8 +1,7 @@
 #include "mainwindow.h"
 
 #include <QApplication>
-#include "styles/ButtonStyle.h"
-#include "styles/InputStyle.h"
+#include "styles/AppStyle.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,12 +15,11 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    QString globalStyle = InputStyle::styleSheet() + ButtonStyle::styleSheet();
-    app.setStyleSheet(globalStyle);
+    app.setStyleSheet(AppStyle::styleSheet());
+    app.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
 
     MainWindow window;
     window.setWindowTitle("TheLastRonin");
-    window.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
     window.showMaximized();
 
     return app.exec();

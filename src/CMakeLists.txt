@@ -51,6 +51,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         repository/PlaylistRepository.cpp
         playlist/PlaylistGridController.h
         playlist/PlaylistGridController.cpp
+        styles/AppStyle.h
+        styles/AppStyle.cpp
 
 
     )
