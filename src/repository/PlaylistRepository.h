@@ -15,6 +15,7 @@ public:
     QVector<Track> getTracksForPlaylist(int playlistId);
     int insert(const Playlist& playlist);
     bool update(const Playlist& playlist);
+    bool remove(int playlistId);
     bool addTrackToPlaylist(int playlistId, const Track& track);
 
 private:

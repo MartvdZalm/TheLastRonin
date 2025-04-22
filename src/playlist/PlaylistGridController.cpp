@@ -1,7 +1,7 @@
 #include "PlaylistGridController.h"
 #include "PlaylistCard.h"
 
-#include "../page/PlaylistPage.h"
+#include "../window/PlaylistPage.h"
 
 PlaylistGridController::PlaylistGridController(QGridLayout* layout, QObject* parent)
     : QObject(parent), layout(layout)

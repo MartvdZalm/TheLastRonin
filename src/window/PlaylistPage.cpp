@@ -28,10 +28,17 @@ void PlaylistPage::setupUI()
 
     QPushButton* addTrackBtn = new QPushButton("Add Track");
     QPushButton* editPlaylistBtn = new QPushButton("Edit Playlist");
-    QHBoxLayout* addTrackRow = new QHBoxLayout;
-    addTrackRow->addWidget(addTrackBtn);
-    addTrackRow->addWidget(editPlaylistBtn);
-    addTrackRow->addStretch();
+    QPushButton* removePlaylistBtn = new QPushButton("Delete Playlist");
+    removePlaylistBtn->setStyleSheet(R"(
+        QPushButton {
+            background-color: red;
+        }
+    )");
+    QHBoxLayout* optionsRow = new QHBoxLayout;
+    optionsRow->addWidget(addTrackBtn);
+    optionsRow->addWidget(editPlaylistBtn);
+    optionsRow->addWidget(removePlaylistBtn);
+    optionsRow->addStretch();
 
     playlistData.tracks = PlaylistManager::instance().getTracksForPlaylist(playlistData.id);
     trackListWidget = new TrackListWidget(playlistData.tracks, this);
@@ -52,6 +59,11 @@ void PlaylistPage::setupUI()
         if (result.has_value()) {
             loadPlaylist(result.value());
         }
+    });
+
+    connect(removePlaylistBtn, &QPushButton::clicked, this, [=]() {
+        PlaylistManager::instance().removePlaylist(playlistData.id);
+        close();
     });
 
     songLabel = new QLabel("No song playing", this);
@@ -139,7 +151,7 @@ void PlaylistPage::setupUI()
 
     layout->addWidget(coverImage);
     layout->addWidget(detailsWidget);
-    layout->addLayout(addTrackRow);
+    layout->addLayout(optionsRow);
     layout->addWidget(trackListWidget, 1);
     layout->addWidget(playerBar);
 

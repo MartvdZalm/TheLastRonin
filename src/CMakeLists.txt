@@ -10,18 +10,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(TheLastRonin
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        dialog/AddAlbumDialog.h
-        dialog/AddAlbumDialog.cpp
         database/DatabaseManager.h
         database/DatabaseManager.cpp
-        album/AlbumManager.h
-        album/AlbumManager.cpp
-        album/Album.h
-        album/AlbumCard.h
-        album/AlbumCard.cpp
-        page/AlbumPage.h
-
-        page/AlbumPage.cpp
         playlist/Playlist.h
         playlist/Track.h
         playlist/PlaylistManager.h
@@ -30,8 +20,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dialog/PlaylistDialog.cpp
         playlist/PlaylistCard.h
         playlist/PlaylistCard.cpp
-        page/PlaylistPage.h
-        page/PlaylistPage.cpp
+        window/PlaylistPage.h
+        window/PlaylistPage.cpp
         styles/ButtonStyle.h
         styles/ButtonStyle.cpp
         styles/InputStyle.h
@@ -45,8 +35,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dialog/AddTrackDialog.h
         dialog/AddTrackDialog.cpp
         resources.qrc
-        repository/AlbumRepository.h
-        repository/AlbumRepository.cpp
         repository/PlaylistRepository.h
         repository/PlaylistRepository.cpp
         playlist/PlaylistGridController.h

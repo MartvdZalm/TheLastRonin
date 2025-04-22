@@ -72,6 +72,11 @@ std::optional<Playlist> PlaylistManager::openEditPlaylistDialog(const Playlist& 
     return std::nullopt;
 }
 
+void PlaylistManager::removePlaylist(int playlistId)
+{
+    playlistRepository->remove(playlistId);
+}
+
 void PlaylistManager::applyFilterToGrid(const QString& selectedFilter)
 {
     // Optional if needed later

@@ -35,19 +35,6 @@ bool DatabaseManager::initSchema()
     QSqlQuery query;
 
     if (!query.exec(R"(
-        CREATE TABLE IF NOT EXISTS albums (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            artist TEXT,
-            coverPath TEXT NOT NULL,
-            releaseDate DATE NOT NULL
-        )
-    )")) {
-        qDebug() << "Failed to create albums table:" << query.lastError();
-        return false;
-    }
-
-    if (!query.exec(R"(
         CREATE TABLE IF NOT EXISTS playlists (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -79,46 +66,6 @@ bool DatabaseManager::initSchema()
     }
 
    return true;
-}
-
-int DatabaseManager::insertAlbum(
-    const QString& title,
-    const QString& artist,
-    const QString& coverPath,
-    const QString& releaseDate
-)
-{
-    QSqlQuery query;
-    query.prepare("INSERT INTO albums (title, artist, coverPath, releaseDate) VALUES (:title, :artist, :coverPath, :releaseDate)");
-    query.bindValue(":title", title);
-    query.bindValue(":artist", artist);
-    query.bindValue(":coverPath", coverPath);
-    query.bindValue(":releaseDate", releaseDate);
-
-    if (query.exec()) {
-        return query.lastInsertId().toInt();
-    } else {
-        qDebug() << "Insert failed:" << query.lastError();
-        return -1;
-    }
-}
-
-QVector<Album> DatabaseManager::getAllAlbums()
-{
-    QVector<Album> albums;
-    QSqlQuery query("SELECT id, title, artist, coverPath, releaseDate FROM albums");
-
-    while (query.next()) {
-        Album album;
-        album.id = query.value(0).toInt();
-        album.title = query.value(1).toString();
-        album.artist = query.value(2).toString();
-        album.coverPath = query.value(3).toString();
-        album.releaseDate = query.value(4).toString();
-        albums.append(album);
-    }
-
-    return albums;
 }
 
 int DatabaseManager::insertPlaylist(const Playlist& playlist)
@@ -155,6 +102,23 @@ bool DatabaseManager::updatePlaylist(const Playlist& playlist)
 
     if (!query.exec()) {
         qDebug() << "Failed to update playlist:" << query.lastError();
+        return false;
+    }
+
+    return true;
+}
+
+bool DatabaseManager::deletePlaylist(int playlistId)
+{
+    QSqlQuery query;
+    query.prepare(R"(
+        DELETE FROM playlists
+        WHERE id = :id
+    )");
+    query.bindValue(":id", playlistId);
+
+    if (!query.exec()) {
+        qDebug() << "Failed to delete playlist: " << query.lastError();
         return false;
     }
 

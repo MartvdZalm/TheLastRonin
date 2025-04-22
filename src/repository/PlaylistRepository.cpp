@@ -25,6 +25,11 @@ bool PlaylistRepository::update(const Playlist& playlist)
     return db.updatePlaylist(playlist);
 }
 
+bool PlaylistRepository::remove(int playlistId)
+{
+    return db.deletePlaylist(playlistId);
+}
+
 bool PlaylistRepository::addTrackToPlaylist(int playlistId, const Track& track)
 {
     return db.addTrackToPlaylist(playlistId, track);

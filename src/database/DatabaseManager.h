@@ -5,7 +5,6 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVector>
-#include "../album/Album.h"
 #include "../playlist/Playlist.h"
 #include "../playlist/Track.h"
 
@@ -19,11 +18,9 @@ public:
     bool openDatabase();
     bool initSchema();
 
-    int insertAlbum(const QString& title, const QString& artist, const QString& coverPath, const QString& releaseDate);
-    QVector<Album> getAllAlbums();
-
     int insertPlaylist(const Playlist& playlist);
     bool updatePlaylist(const Playlist& playlist);
+    bool deletePlaylist(int playlistId);
     bool addTrackToPlaylist(int playlistId, const Track& track);
     QVector<Playlist> getAllPlaylists();
     QVector<Track> getTracksForPlaylist(int playlistId);
