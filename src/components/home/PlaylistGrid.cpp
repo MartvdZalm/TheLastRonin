@@ -1,24 +1,23 @@
-#include "PlaylistGridController.h"
+#include "PlaylistGrid.h"
 #include "PlaylistCard.h"
+#include "../../window/PlaylistWindow.h"
 
-#include "../window/PlaylistWindow.h"
-
-PlaylistGridController::PlaylistGridController(QGridLayout* layout, QObject* parent)
+PlaylistGrid::PlaylistGrid(QGridLayout* layout, QObject* parent)
     : QObject(parent), layout(layout)
 {
     layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 }
 
-void PlaylistGridController::setLayout(QGridLayout* newLayout)
+void PlaylistGrid::setLayout(QGridLayout* newLayout)
 {
     layout = newLayout;
     layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 }
 
-void PlaylistGridController::addPlaylist(const Playlist& playlist)
+void PlaylistGrid::addPlaylist(const Playlist& playlist)
 {
     PlaylistCard* card = new PlaylistCard(playlist);
-    connect(card, &PlaylistCard::playlistClicked, this, &PlaylistGridController::openPlaylistPage);
+    connect(card, &PlaylistCard::playlistClicked, this, &PlaylistGrid::openPlaylistPage);
     layout->addWidget(card, currentRow, currentCol);
 
     currentCol++;
@@ -28,7 +27,7 @@ void PlaylistGridController::addPlaylist(const Playlist& playlist)
     }
 }
 
-void PlaylistGridController::clearGrid()
+void PlaylistGrid::clearGrid()
 {
     if (!layout) {
         return;
@@ -44,7 +43,7 @@ void PlaylistGridController::clearGrid()
     currentCol = 0;
 }
 
-void PlaylistGridController::openPlaylistPage(const Playlist& playlist)
+void PlaylistGrid::openPlaylistPage(const Playlist& playlist)
 {
     PlaylistWindow* page = new PlaylistWindow(playlist);
     page->setAttribute(Qt::WA_DeleteOnClose);

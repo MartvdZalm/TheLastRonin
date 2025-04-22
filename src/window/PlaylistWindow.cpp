@@ -1,12 +1,11 @@
 #include "PlaylistWindow.h"
-
 #include <QPixmap>
 #include <QListWidgetItem>
 #include <QTimer>
-#include "../components/CoverImageWidget.h"
-#include "../playlist/PlaylistDetailsWidget.h"
-#include "../dialog/AddTrackDialog.h"
-#include "../playlist/PlaylistManager.h"
+#include "../components/shared/CoverImageWidget.h"
+#include "../components/playlist/PlaylistDetails.h"
+#include "../components/dialog/AddTrackDialog.h"
+#include "../components/dialog/PlaylistDialog.h"
 
 PlaylistWindow::PlaylistWindow(const Playlist& playlist, QWidget* parent)
     : BaseWindow(parent), playlistData(playlist)
@@ -36,11 +35,11 @@ void PlaylistWindow::setupUI()
     optionsRow->addWidget(removePlaylistBtn);
     optionsRow->addStretch();
 
-    playlistData.tracks = PlaylistManager::instance().getTracksForPlaylist(playlistData.id);
-    trackListWidget = new TrackListWidget(playlistData.tracks, this);
+    playlistData.tracks = trackDAO.getTracksForPlaylist(playlistData.id);
+    trackList = new TrackList(playlistData.tracks, this);
 
     CoverImageWidget* coverImage = new CoverImageWidget(playlistData.coverImagePath, this);
-    PlaylistDetailsWidget* detailsWidget = new PlaylistDetailsWidget(playlistData, this);
+    PlaylistDetails* detailsWidget = new PlaylistDetails(playlistData, this);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(20, 20, 20, 20);
@@ -49,7 +48,7 @@ void PlaylistWindow::setupUI()
     layout->addWidget(coverImage);
     layout->addWidget(detailsWidget);
     layout->addLayout(optionsRow);
-    layout->addWidget(trackListWidget, 1);
+    layout->addWidget(trackList, 1);
     layout->addWidget(createPlayerBar());
 }
 
@@ -59,26 +58,28 @@ void PlaylistWindow::setupConnections()
         AddTrackDialog dialog(this);
         if (dialog.exec() == QDialog::Accepted) {
             Track newTrack = dialog.getTrack();
-            PlaylistManager::instance().addTrackToPlaylist(playlistData.id, newTrack);
-            trackListWidget->addTrack(newTrack);
+
+            trackDAO.insertTrack(playlistData.id, newTrack);
+
+            trackList->addTrack(newTrack);
             playlistData.tracks.append(newTrack);
         }
     });
 
     connect(editPlaylistBtn, &QPushButton::clicked, this, [=]() {
-        auto result = PlaylistManager::instance().openEditPlaylistDialog(playlistData);
+        auto result = this->showEditPlaylistDialog();
         if (result.has_value()) {
             loadPlaylist(result.value());
         }
     });
 
     connect(removePlaylistBtn, &QPushButton::clicked, this, [=]() {
-        PlaylistManager::instance().removePlaylist(playlistData.id);
-        close();
+        playlistDAO.deletePlaylist(playlistData.id);
+        this->close();
     });
 
-    connect(trackListWidget, &QListWidget::itemClicked, this, [=](QListWidgetItem* item) {
-        int index = trackListWidget->row(item);
+    connect(trackList, &QListWidget::itemClicked, this, [=](QListWidgetItem* item) {
+        int index = trackList->row(item);
         playTrackAtIndex(index);
     });
 
@@ -198,6 +199,24 @@ void PlaylistWindow::setStyle()
     )");
 }
 
+std::optional<Playlist> PlaylistWindow::showEditPlaylistDialog()
+{
+    PlaylistDialog dialog(playlistData, this);
+    if (dialog.exec() == QDialog::Accepted) {
+        Playlist playlist {
+            .id = playlistData.id,
+            .name = dialog.getName(),
+            .description = dialog.getDescription(),
+            .coverImagePath = dialog.getCoverImagePath(),
+        };
+
+        playlistDAO.updatePlaylist(playlist);
+        return playlist;
+    }
+
+    return std::nullopt;
+}
+
 void PlaylistWindow::updateTimeLabel(qint64 position, qint64 duration, QLabel* label)
 {
     int seconds = position / 1000;
@@ -225,7 +244,7 @@ void PlaylistWindow::playTrackAtIndex(int index)
         player->setSource(QUrl::fromLocalFile(track.filePath));
         player->play();
 
-        trackListWidget->setCurrentRow(index);
+        trackList->setCurrentRow(index);
 
         QTimer::singleShot(100, this, [=]() {
             player->setSource(QUrl::fromLocalFile(track.filePath));

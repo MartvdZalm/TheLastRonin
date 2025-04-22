@@ -1,4 +1,5 @@
 #include "HomeWindow.h"
+#include "../components/dialog/PlaylistDialog.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -21,7 +22,6 @@ void HomeWindow::setupUI()
     mainLayout->setContentsMargins(20, 20, 20, 20);
     mainLayout->setSpacing(15);
 
-    // Top Bar (Search + Add Playlist)
     QHBoxLayout* topBar = new QHBoxLayout;
     searchInput = new QLineEdit(this);
     searchInput->setPlaceholderText("Search playlists...");
@@ -30,10 +30,8 @@ void HomeWindow::setupUI()
     addPlaylistBtn = new QPushButton("Add Playlist", this);
     topBar->addWidget(searchInput, 3);
     topBar->addWidget(addPlaylistBtn, 1);
-
     mainLayout->addLayout(topBar);
 
-    // Playlist Grid inside ScrollArea
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
 
@@ -44,25 +42,27 @@ void HomeWindow::setupUI()
 
     scrollArea->setWidget(scrollContent);
     mainLayout->addWidget(scrollArea);
+    playlistGrid = new PlaylistGrid(playlistGridLayout, this);
 
-    playlistManager.setPlaylistGrid(playlistGridLayout, this);
-    playlistManager.refreshGrid();
+    for (const Playlist& playlist : playlistDAO.getAllPlaylists()) {
+        playlistGrid->addPlaylist(playlist);
+    }
 }
 
 void HomeWindow::setupConnections()
 {
     connect(addPlaylistBtn, &QPushButton::clicked, this, [this]() {
-        playlistManager.openAddPlaylistDialog();
+        this->showPlaylistDialog();
     });
 
     connect(searchInput, &QLineEdit::textChanged, this, [this]() {
-        playlistManager.search(searchInput->text().trimmed());
+        this->searchPlaylists(searchInput->text().trimmed());
     });
 }
 
 void HomeWindow::reload()
 {
-    playlistManager.refreshGrid();
+    // playlistManager.refreshGrid();
 }
 
 void HomeWindow::setStyle()
@@ -98,3 +98,30 @@ void HomeWindow::setStyle()
         }
     )");
 }
+
+void HomeWindow::showPlaylistDialog()
+{
+    PlaylistDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        Playlist playlist {
+            .name = dialog.getName(),
+            .description = dialog.getDescription(),
+            .coverImagePath = dialog.getCoverImagePath(),
+        };
+
+        playlist.id = playlistDAO.insertPlaylist(playlist);
+        playlistGrid->addPlaylist(playlist);
+    }
+}
+
+void HomeWindow::searchPlaylists(const QString& query)
+{
+    QList<Playlist> results = playlistDAO.searchPlaylists(query);
+    playlistGrid->clearGrid();
+
+    for (const Playlist& playlist : results) {
+        playlistGrid->addPlaylist(playlist);
+    }
+}
+
+

@@ -3,28 +3,17 @@
 
 #include <QString>
 #include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QVector>
-#include "../playlist/Playlist.h"
-#include "../playlist/Track.h"
 
 class DatabaseManager
 {
 public:
     DatabaseManager();
-
     static DatabaseManager& instance();
 
     bool openDatabase();
+    void closeDatabase();
     bool initSchema();
-
-    int insertPlaylist(const Playlist& playlist);
-    bool updatePlaylist(const Playlist& playlist);
-    bool deletePlaylist(int playlistId);
-    bool addTrackToPlaylist(int playlistId, const Track& track);
-    QVector<Playlist> getAllPlaylists();
-    QVector<Track> getTracksForPlaylist(int playlistId);
-    QVector<Playlist> searchPlaylists(const QString& query);
+    bool executeQuery(const QString& query, const QMap<QString, QVariant>& bindings = {});
 
 private:
     QSqlDatabase db;

@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
-#include "Playlist.h"
+#include "../../model/Playlist.h"
 
 class PlaylistCard : public QWidget
 {

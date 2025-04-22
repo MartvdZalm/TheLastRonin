@@ -3,7 +3,8 @@
 
 #include <QString>
 
-struct Track {
+struct Track
+{
     int id;
     QString title;
     QString filePath;

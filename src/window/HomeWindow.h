@@ -2,7 +2,8 @@
 #define HOMEWINDOW_H
 
 #include "BaseWindow.h"
-#include "../playlist/PlaylistManager.h"
+#include "../components/home/PlaylistGrid.h"
+#include "../dao/PlaylistDAO.h"
 #include <QPushButton>
 #include <QLineEdit>
 #include <QGridLayout>
@@ -20,11 +21,15 @@ public:
     void setStyle() override;
 
 private:
-    PlaylistManager playlistManager;
+    void showPlaylistDialog();
+    void searchPlaylists(const QString& query);
 
+    PlaylistGrid* playlistGrid = nullptr;
     QLineEdit* searchInput = nullptr;
     QPushButton* addPlaylistBtn = nullptr;
     QGridLayout* playlistGridLayout = nullptr;
+
+    PlaylistDAO playlistDAO;
 };
 
 #endif // HOMEWINDOW_H

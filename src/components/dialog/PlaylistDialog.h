@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include "../playlist/Playlist.h"
+#include "../../model/Playlist.h"
 
 class PlaylistDialog : public QDialog
 {

@@ -1,11 +1,11 @@
-#include "TrackListWidget.h"
+#include "TrackList.h"
 
 #include <QListWidget>
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QEvent>
 
-TrackListWidget::TrackListWidget(const QVector<Track>& tracks, QWidget* parent)
+TrackList::TrackList(const QVector<Track>& tracks, QWidget* parent)
     : QListWidget(parent)
 {
     setupStyle();
@@ -21,7 +21,7 @@ TrackListWidget::TrackListWidget(const QVector<Track>& tracks, QWidget* parent)
 
 }
 
-void TrackListWidget::addTrack(const Track& track)
+void TrackList::addTrack(const Track& track)
 {
     QListWidgetItem* item = new QListWidgetItem(this);
     item->setSizeHint(QSize(0, 50));
@@ -31,7 +31,7 @@ void TrackListWidget::addTrack(const Track& track)
     setItemWidget(item, createTrackItemWidget(track, index + 1));
 }
 
-QWidget* TrackListWidget::createTrackItemWidget(const Track& track, int index)
+QWidget* TrackList::createTrackItemWidget(const Track& track, int index)
 {
     QWidget* itemWidget = new QWidget(this);
     itemWidget->setProperty("isHovered", false);
@@ -87,7 +87,7 @@ QWidget* TrackListWidget::createTrackItemWidget(const Track& track, int index)
     return itemWidget;
 }
 
-void TrackListWidget::updateItemWidgetStyle(QWidget* widget, bool hovered)
+void TrackList::updateItemWidgetStyle(QWidget* widget, bool hovered)
 {
     widget->setProperty("isHovered", hovered);
     widget->setStyleSheet(QString(R"(
@@ -100,7 +100,7 @@ void TrackListWidget::updateItemWidgetStyle(QWidget* widget, bool hovered)
     widget->style()->polish(widget);
 }
 
-bool TrackListWidget::eventFilter(QObject* obj, QEvent* event)
+bool TrackList::eventFilter(QObject* obj, QEvent* event)
 {
     if (event->type() == QEvent::Enter) {
         QWidget* widget = qobject_cast<QWidget*>(obj);
@@ -116,7 +116,7 @@ bool TrackListWidget::eventFilter(QObject* obj, QEvent* event)
     return QListWidget::eventFilter(obj, event);
 }
 
-QString TrackListWidget::formatDuration(qint64 milliseconds) const
+QString TrackList::formatDuration(qint64 milliseconds) const
 {
     if (milliseconds <= 0) return "--:--";
 
@@ -127,10 +127,10 @@ QString TrackListWidget::formatDuration(qint64 milliseconds) const
     return QString("%1:%2").arg(minutes).arg(seconds, 2, 10, QChar('0'));
 }
 
-void TrackListWidget::setupStyle()
+void TrackList::setupStyle()
 {
     setStyleSheet(R"(
-        TrackListWidget {
+        TrackList {
             background-color: #2d2d2d;
             border: 1px solid #3d3d3d;
             border-radius: 6px;
@@ -139,12 +139,12 @@ void TrackListWidget::setupStyle()
             font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
-        TrackListWidget::item {
+        TrackList::item {
             border-bottom: 1px solid #383838;
             background-color: transparent;
         }
 
-        TrackListWidget::item:selected {
+        TrackList::item:selected {
             background-color: #4a90e2;
             color: white;
             border-radius: 4px;

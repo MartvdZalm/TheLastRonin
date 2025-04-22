@@ -12,43 +12,49 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         database/DatabaseManager.h
         database/DatabaseManager.cpp
-        playlist/Playlist.h
-        playlist/Track.h
-        playlist/PlaylistManager.h
-        playlist/PlaylistManager.cpp
-        dialog/PlaylistDialog.h
-        dialog/PlaylistDialog.cpp
-        playlist/PlaylistCard.h
-        playlist/PlaylistCard.cpp
+
+
+
+
+        components/dialog/PlaylistDialog.h
+        components/dialog/PlaylistDialog.cpp
+        components/home/PlaylistCard.h
+        components/home/PlaylistCard.cpp
         window/PlaylistWindow.h
         window/PlaylistWindow.cpp
         styles/ButtonStyle.h
         styles/ButtonStyle.cpp
         styles/InputStyle.h
         styles/InputStyle.cpp
-        components/CoverImageWidget.h
-        components/CoverImageWidget.cpp
-        playlist/PlaylistDetailsWidget.h
-        playlist/PlaylistDetailsWidget.cpp
-        playlist/TrackListWidget.h
-        playlist/TrackListWidget.cpp
-        dialog/AddTrackDialog.h
-        dialog/AddTrackDialog.cpp
+        components/shared/CoverImageWidget.h
+        components/shared/CoverImageWidget.cpp
+        components/playlist/PlaylistDetails.h
+        components/playlist/PlaylistDetails.cpp
+        components/playlist/TrackList.h
+        components/playlist/TrackList.cpp
+        components/dialog/AddTrackDialog.h
+        components/dialog/AddTrackDialog.cpp
         resources.qrc
-        repository/PlaylistRepository.h
-        repository/PlaylistRepository.cpp
-        playlist/PlaylistGridController.h
-        playlist/PlaylistGridController.cpp
+
+
+        components/home/PlaylistGrid.h
+        components/home/PlaylistGrid.cpp
         styles/AppStyle.h
         styles/AppStyle.cpp
         window/BaseWindow.h
         window/BaseWindow.cpp
         window/HomeWindow.h
         window/HomeWindow.cpp
-
-
-
-
+        dao/PlaylistDAO.h
+        dao/PlaylistDAO.cpp
+        service/PlaylistService.h
+        service/PlaylistService.cpp
+        model/Playlist.h
+        model/Track.h
+        dao/TrackDAO.h
+        dao/TrackDAO.cpp
+        service/TrackService.h
+        service/TrackService.cpp
     )
 else()
     add_executable(TheLastRonin

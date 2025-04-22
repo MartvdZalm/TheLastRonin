@@ -1,16 +1,16 @@
-#ifndef PLAYLISTGRIDCONTROLLER_H
-#define PLAYLISTGRIDCONTROLLER_H
+#ifndef PLAYLISTGRID_H
+#define PLAYLISTGRID_H
 
 #include <QObject>
 #include <QGridLayout>
-#include "Playlist.h"
+#include "../../model/Playlist.h"
 
-class PlaylistGridController : public QObject
+class PlaylistGrid : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit PlaylistGridController(QGridLayout* layout, QObject* parent = nullptr);
+    explicit PlaylistGrid(QGridLayout* layout, QObject* parent = nullptr);
 
     void setLayout(QGridLayout* newLayout);
     void addPlaylist(const Playlist& playlist);
@@ -27,4 +27,4 @@ signals:
     void playlistClicked(const Playlist& playlist);
 };
 
-#endif // PLAYLISTGRIDCONTROLLER_H
+#endif // PLAYLISTGRID_H

@@ -7,17 +7,20 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    app.setStyleSheet(AppStyle::styleSheet());
+    app.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
 
     DatabaseManager& db = DatabaseManager::instance();
+
     if (db.openDatabase()) {
-        db.initSchema();
+        if (!db.initSchema()) {
+            qCritical() << "Failed to initialize database schema.";
+            return -1;
+        }
     } else {
         qCritical() << "Failed to open the database. Exiting.";
         return -1;
     }
-
-    app.setStyleSheet(AppStyle::styleSheet());
-    app.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
 
     HomeWindow window;
     window.setWindowTitle("TheLastRonin");

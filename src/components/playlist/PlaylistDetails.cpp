@@ -1,7 +1,7 @@
-#include "PlaylistDetailsWidget.h"
+#include "PlaylistDetails.h"
 #include <QVBoxLayout>
 
-PlaylistDetailsWidget::PlaylistDetailsWidget(const Playlist& playlist, QWidget* parent)
+PlaylistDetails::PlaylistDetails(const Playlist& playlist, QWidget* parent)
     : QWidget(parent)
 {
     this->setStyleSheet(R"(

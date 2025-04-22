@@ -3,7 +3,7 @@
 
 #include <QLineEdit>
 #include <QDialog>
-#include "../playlist/Track.h"
+#include "../../model/Track.h"
 
 class AddTrackDialog : public QDialog
 {

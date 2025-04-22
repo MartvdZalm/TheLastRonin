@@ -4,7 +4,8 @@
 #include "Track.h"
 #include <QDateTime>
 
-struct Playlist {
+struct Playlist
+{
     int id;
     QString name;
     QString description;

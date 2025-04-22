@@ -1,14 +1,14 @@
-#ifndef TRACKLISTWIDGET_H
-#define TRACKLISTWIDGET_H
+#ifndef TRACKLIST_H
+#define TRACKLIST_H
 
-#include "Track.h"
+#include "../../model/Track.h"
 #include <QListWidget>
 
-class TrackListWidget : public QListWidget
+class TrackList : public QListWidget
 {
     Q_OBJECT
 public:
-    explicit TrackListWidget(const QVector<Track>& tracks, QWidget* parent = nullptr);
+    explicit TrackList(const QVector<Track>& tracks, QWidget* parent = nullptr);
     void addTrack(const Track& track);
 
     void setupStyle();
@@ -23,4 +23,4 @@ private:
 
 };
 
-#endif // TRACKLISTWIDGET_H
+#endif // TRACKLIST_H

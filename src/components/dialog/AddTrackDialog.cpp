@@ -7,7 +7,7 @@
 #include <QPushButton>
 #include <QFileInfo>
 #include <QFileDialog>
-#include "../playlist/Track.h"
+#include "../../model/Track.h"
 
 AddTrackDialog::AddTrackDialog(QWidget* parent)
     : QDialog(parent)
