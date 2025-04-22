@@ -1,9 +1,9 @@
 
 set(PROJECT_SOURCES
     main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
+
+
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -20,8 +20,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dialog/PlaylistDialog.cpp
         playlist/PlaylistCard.h
         playlist/PlaylistCard.cpp
-        window/PlaylistPage.h
-        window/PlaylistPage.cpp
+        window/PlaylistWindow.h
+        window/PlaylistWindow.cpp
         styles/ButtonStyle.h
         styles/ButtonStyle.cpp
         styles/InputStyle.h
@@ -41,6 +41,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         playlist/PlaylistGridController.cpp
         styles/AppStyle.h
         styles/AppStyle.cpp
+        window/BaseWindow.h
+        window/BaseWindow.cpp
+        window/HomeWindow.h
+        window/HomeWindow.cpp
 
 
 

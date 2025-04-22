@@ -1,7 +1,8 @@
-#include "mainwindow.h"
-
 #include <QApplication>
+
 #include "styles/AppStyle.h"
+#include "window/HomeWindow.h"
+#include "database/DatabaseManager.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +19,7 @@ int main(int argc, char *argv[])
     app.setStyleSheet(AppStyle::styleSheet());
     app.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
 
-    MainWindow window;
+    HomeWindow window;
     window.setWindowTitle("TheLastRonin");
     window.showMaximized();
 

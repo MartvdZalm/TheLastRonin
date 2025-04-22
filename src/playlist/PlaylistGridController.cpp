@@ -1,7 +1,7 @@
 #include "PlaylistGridController.h"
 #include "PlaylistCard.h"
 
-#include "../window/PlaylistPage.h"
+#include "../window/PlaylistWindow.h"
 
 PlaylistGridController::PlaylistGridController(QGridLayout* layout, QObject* parent)
     : QObject(parent), layout(layout)
@@ -46,7 +46,7 @@ void PlaylistGridController::clearGrid()
 
 void PlaylistGridController::openPlaylistPage(const Playlist& playlist)
 {
-    PlaylistPage* page = new PlaylistPage(playlist);
+    PlaylistWindow* page = new PlaylistWindow(playlist);
     page->setAttribute(Qt::WA_DeleteOnClose);
     page->show();
 }
