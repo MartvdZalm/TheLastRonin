@@ -4,6 +4,7 @@
 #include "../repository/PlaylistRepository.h"
 #include "PlaylistGridController.h"
 #include <QGridLayout>
+#include <optional>
 
 class PlaylistManager
 {
@@ -14,7 +15,7 @@ public:
 
     void setPlaylistGrid(QGridLayout* layout, QWidget* parentForDialogs);
     void openAddPlaylistDialog();
-    void openEditPlaylistDialog(const Playlist& playlist);
+    std::optional<Playlist> openEditPlaylistDialog(const Playlist& playlist);
     void applyFilterToGrid(const QString& selectedFilter);
     void refreshGrid();
     void search(const QString& query);

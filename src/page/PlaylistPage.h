@@ -17,12 +17,14 @@ class PlaylistPage : public QWidget
 public:
     explicit PlaylistPage(const Playlist& playlist, QWidget* parent = nullptr);
     void updateTimeLabel(qint64 position, qint64 duration, QLabel* label);
+    void loadPlaylist(const Playlist& playlist);
 
 private slots:
     void playNextTrack();
     void playTrackAtIndex(int index);
 
 private:
+    void setupUI();
     void setStyle();
 
     Playlist playlistData;

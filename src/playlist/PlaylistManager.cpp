@@ -1,7 +1,6 @@
 #include "PlaylistManager.h"
 
 #include "../dialog/PlaylistDialog.h"
-#include "../page/PlaylistPage.h"
 
 PlaylistManager::PlaylistManager()
 {
@@ -56,7 +55,7 @@ void PlaylistManager::openAddPlaylistDialog()
     }
 }
 
-void PlaylistManager::openEditPlaylistDialog(const Playlist& existingPlaylist)
+std::optional<Playlist> PlaylistManager::openEditPlaylistDialog(const Playlist& existingPlaylist)
 {
     PlaylistDialog dialog(existingPlaylist, dialogParent);
     if (dialog.exec() == QDialog::Accepted) {
@@ -67,7 +66,10 @@ void PlaylistManager::openEditPlaylistDialog(const Playlist& existingPlaylist)
             .coverImagePath = dialog.getCoverImagePath(),
         };
         playlistRepository->update(playlist);
+        return playlist;
     }
+
+    return std::nullopt;
 }
 
 void PlaylistManager::applyFilterToGrid(const QString& selectedFilter)

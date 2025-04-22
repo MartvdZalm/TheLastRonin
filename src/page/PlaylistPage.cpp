@@ -13,8 +13,12 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     : QWidget(parent), playlistData(playlist)
 {
     setStyle();
+    setupUI();
+}
 
-    this->setWindowTitle(playlist.name);
+void PlaylistPage::setupUI()
+{
+    this->setWindowTitle(playlistData.name);
     this->showMaximized();
 
     player = new QMediaPlayer(this);
@@ -29,7 +33,7 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     addTrackRow->addWidget(editPlaylistBtn);
     addTrackRow->addStretch();
 
-    playlistData.tracks = PlaylistManager::instance().getTracksForPlaylist(playlist.id);
+    playlistData.tracks = PlaylistManager::instance().getTracksForPlaylist(playlistData.id);
     trackListWidget = new TrackListWidget(playlistData.tracks, this);
 
     connect(addTrackBtn, &QPushButton::clicked, this, [=]() mutable {
@@ -43,7 +47,11 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     });
 
     connect(editPlaylistBtn, &QPushButton::clicked, this, [=]() {
-        PlaylistManager::instance().openEditPlaylistDialog(playlistData);
+        auto result = PlaylistManager::instance().openEditPlaylistDialog(playlistData);
+
+        if (result.has_value()) {
+            loadPlaylist(result.value());
+        }
     });
 
     songLabel = new QLabel("No song playing", this);
@@ -118,7 +126,7 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     layout->setSpacing(15);
 
 
-    CoverImageWidget* coverImage = new CoverImageWidget(playlist.coverImagePath, this);
+    CoverImageWidget* coverImage = new CoverImageWidget(playlistData.coverImagePath, this);
     coverImage->setStyleSheet(R"(
         CoverImageWidget {
             border-radius: 8px;
@@ -127,7 +135,7 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     )");
 
 
-    PlaylistDetailsWidget* detailsWidget = new PlaylistDetailsWidget(playlist, this);
+    PlaylistDetailsWidget* detailsWidget = new PlaylistDetailsWidget(playlistData, this);
 
     layout->addWidget(coverImage);
     layout->addWidget(detailsWidget);
@@ -192,6 +200,25 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
             playNextTrack();
         }
     });
+}
+
+void PlaylistPage::loadPlaylist(const Playlist& playlist)
+{
+    playlistData = playlist;
+
+    QLayout* oldLayout = layout();
+    if (oldLayout) {
+        QLayoutItem* item;
+        while ((item = oldLayout->takeAt(0)) != nullptr) {
+            if (QWidget* widget = item->widget()) {
+                widget->deleteLater();
+            }
+            delete item;
+        }
+        delete oldLayout;
+    }
+
+    setupUI();
 }
 
 void PlaylistPage::updateTimeLabel(qint64 position, qint64 duration, QLabel* label)
