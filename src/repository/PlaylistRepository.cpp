@@ -20,6 +20,11 @@ int PlaylistRepository::insert(const Playlist& playlist)
     return db.insertPlaylist(playlist);
 }
 
+bool PlaylistRepository::update(const Playlist& playlist)
+{
+    return db.updatePlaylist(playlist);
+}
+
 bool PlaylistRepository::addTrackToPlaylist(int playlistId, const Track& track)
 {
     return db.addTrackToPlaylist(playlistId, track);

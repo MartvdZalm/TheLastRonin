@@ -23,8 +23,10 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
     audioOutput->setVolume(50);
 
     QPushButton* addTrackBtn = new QPushButton("Add Track");
+    QPushButton* editPlaylistBtn = new QPushButton("Edit Playlist");
     QHBoxLayout* addTrackRow = new QHBoxLayout;
     addTrackRow->addWidget(addTrackBtn);
+    addTrackRow->addWidget(editPlaylistBtn);
     addTrackRow->addStretch();
 
     playlistData.tracks = PlaylistManager::instance().getTracksForPlaylist(playlist.id);
@@ -38,6 +40,10 @@ PlaylistPage::PlaylistPage(const Playlist& playlist, QWidget* parent)
             trackListWidget->addTrack(newTrack);
             playlistData.tracks.append(newTrack);
         }
+    });
+
+    connect(editPlaylistBtn, &QPushButton::clicked, this, [=]() {
+        PlaylistManager::instance().openEditPlaylistDialog(playlistData);
     });
 
     songLabel = new QLabel("No song playing", this);

@@ -14,6 +14,7 @@ public:
 
     void setPlaylistGrid(QGridLayout* layout, QWidget* parentForDialogs);
     void openAddPlaylistDialog();
+    void openEditPlaylistDialog(const Playlist& playlist);
     void applyFilterToGrid(const QString& selectedFilter);
     void refreshGrid();
     void search(const QString& query);

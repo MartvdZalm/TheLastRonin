@@ -23,6 +23,7 @@ public:
     QVector<Album> getAllAlbums();
 
     int insertPlaylist(const Playlist& playlist);
+    bool updatePlaylist(const Playlist& playlist);
     bool addTrackToPlaylist(int playlistId, const Track& track);
     QVector<Playlist> getAllPlaylists();
     QVector<Track> getTracksForPlaylist(int playlistId);

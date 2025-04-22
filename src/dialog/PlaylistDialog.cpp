@@ -1,4 +1,4 @@
-#include "AddPlaylistDialog.h"
+#include "PlaylistDialog.h"
 
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
@@ -6,8 +6,19 @@
 #include <QFileDialog>
 #include <QPixmap>
 
-AddPlaylistDialog::AddPlaylistDialog(QWidget* parent)
+PlaylistDialog::PlaylistDialog(QWidget* parent)
     : QDialog(parent)
+{
+    setupUI();
+}
+
+PlaylistDialog::PlaylistDialog(const Playlist& existingPlaylist, QWidget* parent)
+{
+    setupUI();
+    populateFields(existingPlaylist);
+}
+
+void PlaylistDialog::setupUI()
 {
     setWindowTitle("Add Playlist");
 
@@ -26,7 +37,7 @@ AddPlaylistDialog::AddPlaylistDialog(QWidget* parent)
     imagePreview->setStyleSheet("border: 1px solid gray;");
     imagePreview->setAlignment(Qt::AlignCenter);
 
-    connect(chooseImageBtn, &QPushButton::clicked, this, &AddPlaylistDialog::chooseCoverImage);
+    connect(chooseImageBtn, &QPushButton::clicked, this, &PlaylistDialog::chooseCoverImage);
 
     QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -43,22 +54,30 @@ AddPlaylistDialog::AddPlaylistDialog(QWidget* parent)
     setLayout(layout);
 }
 
-QString AddPlaylistDialog::getName() const
+void PlaylistDialog::populateFields(const Playlist& playlist)
+{
+    nameEdit->setText(playlist.name);
+    descriptionEdit->setText(playlist.description);
+    coverImagePath = playlist.coverImagePath;
+    imagePreview->setPixmap(QPixmap(coverImagePath).scaled(imagePreview->size(), Qt::KeepAspectRatio));
+}
+
+QString PlaylistDialog::getName() const
 {
     return nameEdit->text();
 }
 
-QString AddPlaylistDialog::getDescription() const
+QString PlaylistDialog::getDescription() const
 {
     return descriptionEdit->text();
 }
 
-QString AddPlaylistDialog::getCoverImagePath() const
+QString PlaylistDialog::getCoverImagePath() const
 {
     return coverImagePath;
 }
 
-void AddPlaylistDialog::chooseCoverImage()
+void PlaylistDialog::chooseCoverImage()
 {
     QString path = QFileDialog::getOpenFileName(this, "Choose Playlist Cover", "", "Images (*.png *.jpg *.jpeg)");
     if (!path.isEmpty()) {

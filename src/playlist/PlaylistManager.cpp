@@ -1,6 +1,6 @@
 #include "PlaylistManager.h"
 
-#include "../dialog/AddPlaylistDialog.h"
+#include "../dialog/PlaylistDialog.h"
 #include "../page/PlaylistPage.h"
 
 PlaylistManager::PlaylistManager()
@@ -43,7 +43,7 @@ void PlaylistManager::search(const QString& query)
 
 void PlaylistManager::openAddPlaylistDialog()
 {
-    AddPlaylistDialog dialog(dialogParent);
+    PlaylistDialog dialog(dialogParent);
     if (dialog.exec() == QDialog::Accepted) {
         Playlist playlist {
             .name = dialog.getName(),
@@ -53,6 +53,20 @@ void PlaylistManager::openAddPlaylistDialog()
 
         playlist.id = playlistRepository->insert(playlist);
         gridController->addPlaylist(playlist);
+    }
+}
+
+void PlaylistManager::openEditPlaylistDialog(const Playlist& existingPlaylist)
+{
+    PlaylistDialog dialog(existingPlaylist, dialogParent);
+    if (dialog.exec() == QDialog::Accepted) {
+        Playlist playlist {
+            .id = existingPlaylist.id,
+            .name = dialog.getName(),
+            .description = dialog.getDescription(),
+            .coverImagePath = dialog.getCoverImagePath(),
+        };
+        playlistRepository->update(playlist);
     }
 }
 

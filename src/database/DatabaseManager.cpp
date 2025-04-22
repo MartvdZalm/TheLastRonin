@@ -137,6 +137,30 @@ int DatabaseManager::insertPlaylist(const Playlist& playlist)
     }
 }
 
+bool DatabaseManager::updatePlaylist(const Playlist& playlist)
+{
+    QSqlQuery query;
+    query.prepare(R"(
+        UPDATE playlists
+        SET name = :name,
+            description = :description,
+            coverImagePath = :coverImagePath,
+            updatedAt = CURRENT_TIMESTAMP
+        WHERE id = :id
+    )");
+    query.bindValue(":name", playlist.name);
+    query.bindValue(":description", playlist.description);
+    query.bindValue(":coverImagePath", playlist.coverImagePath);
+    query.bindValue(":id", playlist.id);
+
+    if (!query.exec()) {
+        qDebug() << "Failed to update playlist:" << query.lastError();
+        return false;
+    }
+
+    return true;
+}
+
 bool DatabaseManager::addTrackToPlaylist(int playlistId, const Track& track)
 {
     QSqlQuery query;

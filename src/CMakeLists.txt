@@ -26,8 +26,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         playlist/Track.h
         playlist/PlaylistManager.h
         playlist/PlaylistManager.cpp
-        dialog/AddPlaylistDialog.h
-        dialog/AddPlaylistDialog.cpp
+        dialog/PlaylistDialog.h
+        dialog/PlaylistDialog.cpp
         playlist/PlaylistCard.h
         playlist/PlaylistCard.cpp
         page/PlaylistPage.h
@@ -53,6 +53,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         playlist/PlaylistGridController.cpp
         styles/AppStyle.h
         styles/AppStyle.cpp
+
+
 
 
     )
