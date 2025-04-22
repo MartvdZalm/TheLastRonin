@@ -12,10 +12,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         database/DatabaseManager.h
         database/DatabaseManager.cpp
-
-
-
-
         components/dialog/PlaylistDialog.h
         components/dialog/PlaylistDialog.cpp
         components/home/PlaylistCard.h
@@ -35,8 +31,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         components/dialog/AddTrackDialog.h
         components/dialog/AddTrackDialog.cpp
         resources.qrc
-
-
         components/home/PlaylistGrid.h
         components/home/PlaylistGrid.cpp
         styles/AppStyle.h
