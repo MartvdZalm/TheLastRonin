@@ -1,17 +1,11 @@
 #include "AppStyle.h"
 #include "ButtonStyle.h"
 #include "InputStyle.h"
+#include "ComboBoxStyle.h"
 
 QString AppStyle::styleSheet()
 {
     QString base = R"(
-        QWidget {
-            background-color: #252525;
-            color: #e0e0e0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            font-size: 14px;
-        }
-
         QScrollBar:vertical {
             background: #2c2c2c;
             width: 12px;
@@ -25,16 +19,13 @@ QString AppStyle::styleSheet()
             border-radius: 4px;
         }
 
-        QScrollBar::handle:vertical:hover {
-            background: #777;
-        }
-
-        QScrollBar::add-line:vertical,
-        QScrollBar::sub-line:vertical {
-            background: none;
-            height: 0px;
+        QComboBox::down-arrow {
+            image: url(:/Images/ArrowDown);
         }
     )";
 
-    return base + InputStyle::styleSheet() + ButtonStyle::styleSheet();
+    return base +
+           InputStyle::styleSheet() +
+           ButtonStyle::styleSheet() +
+           ComboBoxStyle::styleSheet();
 }

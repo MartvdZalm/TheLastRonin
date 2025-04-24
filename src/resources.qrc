@@ -5,5 +5,6 @@
         <file alias="Pause">assets/images/pause.png</file>
         <file alias="Play">assets/images/play.png</file>
         <file alias="Prev">assets/images/prev.png</file>
+        <file alias="ArrowDown">assets/images/arrow-down.png</file>
     </qresource>
 </RCC>

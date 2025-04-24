@@ -32,6 +32,18 @@ void HomeWindow::setupUI()
     topBar->addWidget(addPlaylistBtn, 1);
     mainLayout->addLayout(topBar);
 
+    QHBoxLayout* sortFilterBar = new QHBoxLayout;
+
+    sortComboBox = new QComboBox(this);
+    sortComboBox->addItem("Choose Filter");
+    sortComboBox->addItem("Sort by Name");
+    sortComboBox->addItem("Sort by Creation Date");
+    sortComboBox->addItem("Sort by Recently Played");
+    sortFilterBar->addWidget(sortComboBox);
+    sortFilterBar->addStretch();
+
+    mainLayout->addLayout(sortFilterBar);
+
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
 
@@ -44,9 +56,7 @@ void HomeWindow::setupUI()
     mainLayout->addWidget(scrollArea);
     playlistGrid = new PlaylistGrid(playlistGridLayout, this);
 
-    for (const Playlist& playlist : playlistDAO.getAllPlaylists()) {
-        playlistGrid->addPlaylist(playlist);
-    }
+    updatePlaylistGrid(playlistDAO.getAllPlaylists());
 }
 
 void HomeWindow::setupConnections()
@@ -58,11 +68,13 @@ void HomeWindow::setupConnections()
     connect(searchInput, &QLineEdit::textChanged, this, [this]() {
         this->searchPlaylists(searchInput->text().trimmed());
     });
+
+    connect(sortComboBox, &QComboBox::currentTextChanged, this, &HomeWindow::onSortChanged);
 }
 
 void HomeWindow::reload()
 {
-    // playlistManager.refreshGrid();
+    updatePlaylistGrid(playlistDAO.getAllPlaylists());
 }
 
 void HomeWindow::setStyle()
@@ -116,12 +128,34 @@ void HomeWindow::showPlaylistDialog()
 
 void HomeWindow::searchPlaylists(const QString& query)
 {
-    QList<Playlist> results = playlistDAO.searchPlaylists(query);
-    playlistGrid->clearGrid();
+    updatePlaylistGrid(playlistDAO.searchPlaylists(query));
+}
 
-    for (const Playlist& playlist : results) {
+void HomeWindow::onSortChanged(const QString& sortBy)
+{
+    QList<Playlist> playlists = playlistDAO.getAllPlaylists();
+
+    if (sortBy == "Sort by Name") {
+        std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
+            return a.name < b.name;
+        });
+    } else if (sortBy == "Sort by Creation Date") {
+        std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
+            return a.createdAt < b.createdAt;
+        });
+    } else if (sortBy == "Sort by Recently Played") {
+        // std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
+        //     return a.lastPlayed > b.lastPlayed;
+        // });
+    }
+
+    updatePlaylistGrid(playlists);
+}
+
+void HomeWindow::updatePlaylistGrid(const QList<Playlist>& playlists)
+{
+    playlistGrid->clearGrid();
+    for (const Playlist& playlist : playlists) {
         playlistGrid->addPlaylist(playlist);
     }
 }
-
-

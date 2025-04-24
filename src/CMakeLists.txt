@@ -49,6 +49,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dao/TrackDAO.cpp
         service/TrackService.h
         service/TrackService.cpp
+        styles/ComboBoxStyle.h
+        styles/ComboBoxStyle.cpp
     )
 else()
     add_executable(TheLastRonin

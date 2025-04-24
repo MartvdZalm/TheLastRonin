@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QGridLayout>
+#include <QComboBox>
 
 class HomeWindow : public BaseWindow
 {
@@ -23,11 +24,15 @@ public:
 private:
     void showPlaylistDialog();
     void searchPlaylists(const QString& query);
+    void onSortChanged(const QString& sortBy);
+    void onFilterChanged(const QString& genre);
+    void updatePlaylistGrid(const QList<Playlist>& playlists);
 
     PlaylistGrid* playlistGrid = nullptr;
     QLineEdit* searchInput = nullptr;
     QPushButton* addPlaylistBtn = nullptr;
     QGridLayout* playlistGridLayout = nullptr;
+    QComboBox* sortComboBox = nullptr;
 
     PlaylistDAO playlistDAO;
 };
