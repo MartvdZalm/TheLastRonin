@@ -6,6 +6,7 @@
 #include "../components/playlist/PlaylistDetails.h"
 #include "../components/dialog/AddTrackDialog.h"
 #include "../components/dialog/PlaylistDialog.h"
+#include "../events/AppEvents.h"
 
 PlaylistWindow::PlaylistWindow(const Playlist& playlist, QWidget* parent)
     : BaseWindow(parent), playlistData(playlist)
@@ -75,6 +76,7 @@ void PlaylistWindow::setupConnections()
 
     connect(removePlaylistBtn, &QPushButton::clicked, this, [=]() {
         playlistDAO.deletePlaylist(playlistData.id);
+        AppEvents::instance().notifyPlaylistChanged();
         this->close();
     });
 
@@ -136,11 +138,6 @@ void PlaylistWindow::setupConnections()
     });
 }
 
-void PlaylistWindow::reload()
-{
-    loadPlaylist(playlistData);
-}
-
 void PlaylistWindow::setStyle()
 {
     this->setStyleSheet(R"(
@@ -198,6 +195,8 @@ void PlaylistWindow::setStyle()
         }
     )");
 }
+
+void PlaylistWindow::setupEvents() {}
 
 std::optional<Playlist> PlaylistWindow::showEditPlaylistDialog()
 {

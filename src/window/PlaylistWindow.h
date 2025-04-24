@@ -24,8 +24,8 @@ public:
 
     void setupUI() override;
     void setupConnections() override;
-    void reload() override;
     void setStyle() override;
+    void setupEvents() override;
 
 private:
     Playlist playlistData;

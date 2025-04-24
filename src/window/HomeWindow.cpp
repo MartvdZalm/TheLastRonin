@@ -1,5 +1,6 @@
 #include "HomeWindow.h"
 #include "../components/dialog/PlaylistDialog.h"
+#include "../events/AppEvents.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -11,6 +12,7 @@ HomeWindow::HomeWindow(QWidget* parent)
     setStyle();
     setupUI();
     setupConnections();
+    setupEvents();
 }
 
 void HomeWindow::setupUI()
@@ -72,11 +74,6 @@ void HomeWindow::setupConnections()
     connect(sortComboBox, &QComboBox::currentTextChanged, this, &HomeWindow::onSortChanged);
 }
 
-void HomeWindow::reload()
-{
-    updatePlaylistGrid(playlistDAO.getAllPlaylists());
-}
-
 void HomeWindow::setStyle()
 {
     this->setStyleSheet(R"(
@@ -109,6 +106,13 @@ void HomeWindow::setStyle()
             background-color: #3a80d2;
         }
     )");
+}
+
+void HomeWindow::setupEvents()
+{
+    connect(&AppEvents::instance(), &AppEvents::playlistChanged, this, [this]() {
+        updatePlaylistGrid(playlistDAO.getAllPlaylists());
+    });
 }
 
 void HomeWindow::showPlaylistDialog()

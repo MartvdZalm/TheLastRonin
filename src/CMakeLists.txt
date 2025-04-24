@@ -51,6 +51,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         service/TrackService.cpp
         styles/ComboBoxStyle.h
         styles/ComboBoxStyle.cpp
+        events/AppEvents.h
+        events/AppEvents.cpp
     )
 else()
     add_executable(TheLastRonin
