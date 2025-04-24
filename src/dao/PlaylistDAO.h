@@ -13,7 +13,7 @@ class PlaylistDAO
 public:
     PlaylistDAO();
 
-    bool insertPlaylist(const Playlist& playlist);
+    int insertPlaylist(const Playlist& playlist);
     bool updatePlaylist(const Playlist& playlist);
     bool deletePlaylist(int playlistId);
     QVector<Playlist> getAllPlaylists();

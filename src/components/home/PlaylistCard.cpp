@@ -24,6 +24,7 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent)
     cover->setPixmap(pixmap.scaled(cover->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
 
     QLabel* titleLabel = new QLabel(playlist.name, this);
+    titleLabel->setToolTip(playlist.name);
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setFixedHeight(titleHeight);
     titleLabel->setStyleSheet(R"(
@@ -34,6 +35,12 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent)
         }
     )");
     titleLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    titleLabel->setWordWrap(false);
+    titleLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
+    QFontMetrics metrics(titleLabel->font());
+    QString elidedText = metrics.elidedText(playlist.name, Qt::ElideRight, titleLabel->width() - 2);
+    titleLabel->setText(elidedText);
 
     previewLabel = new QLabel("Tracks: " + QString::number(playlist.tracks.size()), this);
     previewLabel->setAlignment(Qt::AlignCenter);

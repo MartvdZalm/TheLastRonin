@@ -4,10 +4,12 @@
 #include "BaseWindow.h"
 #include "../components/home/PlaylistGrid.h"
 #include "../dao/PlaylistDAO.h"
+#include "../dao/TrackDAO.h"
 #include <QPushButton>
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QComboBox>
+#include <QTimer>
 
 class HomeWindow : public BaseWindow
 {
@@ -23,6 +25,7 @@ public:
 
 private:
     void showPlaylistDialog();
+    void importPlaylistFromFolder();
     void searchPlaylists(const QString& query);
     void onSortChanged(const QString& sortBy);
     void onFilterChanged(const QString& genre);
@@ -31,10 +34,14 @@ private:
     PlaylistGrid* playlistGrid = nullptr;
     QLineEdit* searchInput = nullptr;
     QPushButton* addPlaylistBtn = nullptr;
+    QPushButton* importPlaylistBtn = nullptr;
     QGridLayout* playlistGridLayout = nullptr;
     QComboBox* sortComboBox = nullptr;
 
     PlaylistDAO playlistDAO;
+    TrackDAO trackDAO;
+
+    QTimer* searchTimer;
 };
 
 #endif // HOMEWINDOW_H

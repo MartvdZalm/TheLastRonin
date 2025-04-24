@@ -5,6 +5,10 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QScrollArea>
+#include <QDir>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QDirIterator>
 
 HomeWindow::HomeWindow(QWidget* parent)
     : BaseWindow(parent)
@@ -20,6 +24,10 @@ void HomeWindow::setupUI()
     this->setWindowTitle("Home");
     this->resize(1000, 700);
 
+    searchTimer = new QTimer(this);
+    searchTimer->setSingleShot(true);
+    searchTimer->setInterval(300);
+
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(20, 20, 20, 20);
     mainLayout->setSpacing(15);
@@ -28,13 +36,14 @@ void HomeWindow::setupUI()
     searchInput = new QLineEdit(this);
     searchInput->setPlaceholderText("Search playlists...");
     searchInput->setClearButtonEnabled(true);
-
-    addPlaylistBtn = new QPushButton("Add Playlist", this);
-    topBar->addWidget(searchInput, 3);
-    topBar->addWidget(addPlaylistBtn, 1);
+    topBar->addWidget(searchInput);
     mainLayout->addLayout(topBar);
 
     QHBoxLayout* sortFilterBar = new QHBoxLayout;
+    addPlaylistBtn = new QPushButton("Add Playlist", this);
+    sortFilterBar->addWidget(addPlaylistBtn);
+    importPlaylistBtn = new QPushButton("Import Playlist", this);
+    sortFilterBar->addWidget(importPlaylistBtn);
 
     sortComboBox = new QComboBox(this);
     sortComboBox->addItem("Choose Filter");
@@ -67,7 +76,15 @@ void HomeWindow::setupConnections()
         this->showPlaylistDialog();
     });
 
+    connect(importPlaylistBtn, &QPushButton::clicked, this, [this]() {
+        this->importPlaylistFromFolder();
+    });
+
     connect(searchInput, &QLineEdit::textChanged, this, [this]() {
+        searchTimer->start();
+    });
+
+    connect(searchTimer, &QTimer::timeout, this, [this]() {
         this->searchPlaylists(searchInput->text().trimmed());
     });
 
@@ -128,6 +145,54 @@ void HomeWindow::showPlaylistDialog()
         playlist.id = playlistDAO.insertPlaylist(playlist);
         playlistGrid->addPlaylist(playlist);
     }
+}
+
+void HomeWindow::importPlaylistFromFolder()
+{
+    QString folderPath = QFileDialog::getExistingDirectory(this, "Select Playlist Folder");
+
+    if (folderPath.isEmpty()) {
+        return;
+    }
+
+    QDir dir(folderPath);
+    QString playlistName = dir.dirName();
+
+    QString coverImagePath;
+    QStringList imageFiles = dir.entryList({ "*.png", "*.jpg", "*.jpeg" }, QDir::Files);
+    if (!imageFiles.isEmpty()) {
+        coverImagePath = dir.filePath(imageFiles.first());
+    }
+
+    QStringList audioFiles;
+    QDirIterator it(folderPath, { "*.mp3", "*.wav", "*.flac" }, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        audioFiles << it.next();
+    }
+
+    if (audioFiles.isEmpty()) {
+        QMessageBox::warning(this, "No Tracks Found", "No audio files were found in the selected folder.");
+        return;
+    }
+
+    Playlist playlist {
+        .name = playlistName,
+        .coverImagePath = coverImagePath
+    };
+    playlist.id = playlistDAO.insertPlaylist(playlist);
+
+    for (const QString& filePath : audioFiles) {
+        QFileInfo fileInfo(filePath);
+        Track track {
+            .title = fileInfo.baseName(),
+            .filePath = filePath,
+        };
+
+        trackDAO.insertTrack(playlist.id, track);
+    }
+
+    playlistGrid->addPlaylist(playlist);
+    AppEvents::instance().notifyPlaylistChanged();
 }
 
 void HomeWindow::searchPlaylists(const QString& query)
