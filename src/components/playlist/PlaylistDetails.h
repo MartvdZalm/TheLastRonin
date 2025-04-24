@@ -11,6 +11,8 @@ class PlaylistDetails : public QWidget
 public:
     explicit PlaylistDetails(const Playlist& playlist, QWidget* parent = nullptr);
 
+    void updateDetails(const Playlist& playlist);
+
 private:
     QLabel* nameLabel;
     QLabel* descriptionLabel;

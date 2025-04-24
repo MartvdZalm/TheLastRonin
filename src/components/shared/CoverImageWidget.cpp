@@ -17,3 +17,9 @@ CoverImageWidget::CoverImageWidget(const QString& imagePath, QWidget* parent)
     layout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(layout);
 }
+
+void CoverImageWidget::setImage(const QString& imagePath)
+{
+    QPixmap pixmap(imagePath);
+    imageLabel->setPixmap(pixmap.scaled(imageLabel->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+}

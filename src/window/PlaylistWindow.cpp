@@ -2,8 +2,6 @@
 #include <QPixmap>
 #include <QListWidgetItem>
 #include <QTimer>
-#include "../components/shared/CoverImageWidget.h"
-#include "../components/playlist/PlaylistDetails.h"
 #include "../components/dialog/AddTrackDialog.h"
 #include "../components/dialog/PlaylistDialog.h"
 #include "../events/AppEvents.h"
@@ -39,14 +37,14 @@ void PlaylistWindow::setupUI()
     playlistData.tracks = trackDAO.getTracksForPlaylist(playlistData.id);
     trackList = new TrackList(playlistData.tracks, this);
 
-    CoverImageWidget* coverImage = new CoverImageWidget(playlistData.coverImagePath, this);
-    PlaylistDetails* detailsWidget = new PlaylistDetails(playlistData, this);
+    coverImageWidget = new CoverImageWidget(playlistData.coverImagePath, this);
+    detailsWidget = new PlaylistDetails(playlistData, this);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(20, 20, 20, 20);
     layout->setSpacing(15);
 
-    layout->addWidget(coverImage);
+    layout->addWidget(coverImageWidget);
     layout->addWidget(detailsWidget);
     layout->addLayout(optionsRow);
     layout->addWidget(trackList, 1);
@@ -70,7 +68,7 @@ void PlaylistWindow::setupConnections()
     connect(editPlaylistBtn, &QPushButton::clicked, this, [=]() {
         auto result = this->showEditPlaylistDialog();
         if (result.has_value()) {
-            loadPlaylist(result.value());
+            refreshMetadata(result.value());
         }
     });
 
@@ -296,24 +294,21 @@ void PlaylistWindow::playNextTrack()
     }
 }
 
-void PlaylistWindow::loadPlaylist(const Playlist& playlist)
+void PlaylistWindow::refreshMetadata(const Playlist& updatedPlaylist)
 {
-    playlistData = playlist;
+    playlistData.name = updatedPlaylist.name;
+    playlistData.description = updatedPlaylist.description;
+    playlistData.coverImagePath = updatedPlaylist.coverImagePath;
 
-    QLayout* oldLayout = layout();
-    if (oldLayout) {
-        QLayoutItem* item;
-        while ((item = oldLayout->takeAt(0)) != nullptr) {
-            if (QWidget* widget = item->widget()) {
-                widget->deleteLater();
-            }
-            delete item;
-        }
-        delete oldLayout;
+    setWindowTitle(playlistData.name);
+
+    if (detailsWidget) {
+        detailsWidget->updateDetails(playlistData);
     }
 
-    setupUI();
-    setupConnections();
+    if (coverImageWidget) {
+        coverImageWidget->setImage(playlistData.coverImagePath);
+    }
 }
 
 void PlaylistWindow::initPlayer()

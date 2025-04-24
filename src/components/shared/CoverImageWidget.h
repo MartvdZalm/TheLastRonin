@@ -11,6 +11,8 @@ class CoverImageWidget : public QWidget
 public:
     explicit CoverImageWidget(const QString& imagePath, QWidget* parent = nullptr);
 
+    void setImage(const QString& imagePath);
+
 private:
     QLabel* imageLabel;
 };

@@ -6,6 +6,8 @@
 #include "../dao/TrackDAO.h"
 #include "../dao/PlaylistDAO.h"
 #include "BaseWindow.h"
+#include "../components/playlist/PlaylistDetails.h"
+#include "../components/shared/CoverImageWidget.h"
 #include <QWidget>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -40,6 +42,8 @@ private:
     QPushButton* pausePlayButton;
     QPushButton* prevButton;
     QPushButton* nextButton;
+    PlaylistDetails* detailsWidget;
+    CoverImageWidget* coverImageWidget;
     TrackList* trackList;
     int currentTrackIndex = 0;
 
@@ -55,7 +59,7 @@ private:
     void updateTimeLabel(qint64 position, qint64 duration, QLabel* label);
     void playTrackAtIndex(int index);
     void playNextTrack();
-    void loadPlaylist(const Playlist& playlist);
+    void refreshMetadata(const Playlist& updatedPlaylist);
     void initPlayer();
     void createControlButtons();
     void styleButton(QPushButton* button, const QString& iconPath = "");

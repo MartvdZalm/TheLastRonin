@@ -18,24 +18,27 @@ PlaylistDetails::PlaylistDetails(const Playlist& playlist, QWidget* parent)
         }
     )");
 
-    nameLabel = new QLabel("Name: " + playlist.name, this);
+    nameLabel = new QLabel(playlist.name, this);
     nameLabel->setObjectName("nameLabel");
 
-    if (playlist.description.isEmpty()) {
-
-    }
     tracksLabel = new QLabel("Tracks: " + QString::number(playlist.tracks.size()));
     tracksLabel->setObjectName("tracksLabel");
 
+    descriptionLabel = new QLabel(this);
+    descriptionLabel->setText(playlist.description);
+    descriptionLabel->setVisible(!playlist.description.isEmpty());
+
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(nameLabel);
-
-    if (!playlist.description.isEmpty()) {
-        descriptionLabel = new QLabel(playlist.description, this);
-        layout->addWidget(descriptionLabel);
-    }
-
+    layout->addWidget(descriptionLabel);
     layout->addWidget(tracksLabel);
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
+}
+
+void PlaylistDetails::updateDetails(const Playlist& playlist)
+{
+    nameLabel->setText(playlist.name);
+    descriptionLabel->setText(playlist.description);
+    tracksLabel->setText("Tracks: " + QString::number(playlist.tracks.size()));
 }
