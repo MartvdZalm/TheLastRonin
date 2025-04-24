@@ -217,3 +217,9 @@ void HomeWindow::updatePlaylistGrid(const QList<Playlist>& playlists)
         playlistGrid->addPlaylist(playlist);
     }
 }
+
+void HomeWindow::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    playlistGrid->updateColumns();
+}

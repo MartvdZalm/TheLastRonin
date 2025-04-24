@@ -22,6 +22,9 @@ public:
     void setStyle() override;
     void setupEvents() override;
 
+protected:
+    void resizeEvent(QResizeEvent* event) override;
+
 private:
     void showPlaylistDialog();
     void importPlaylistFromFolder();

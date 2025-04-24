@@ -13,6 +13,7 @@ PlaylistDialog::PlaylistDialog(QWidget* parent)
 }
 
 PlaylistDialog::PlaylistDialog(const Playlist& existingPlaylist, QWidget* parent)
+    : QDialog(parent)
 {
     setupUI();
     populateFields(existingPlaylist);

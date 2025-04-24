@@ -69,6 +69,7 @@ void PlaylistWindow::setupConnections()
         auto result = this->showEditPlaylistDialog();
         if (result.has_value()) {
             refreshMetadata(result.value());
+            AppEvents::instance().notifyPlaylistChanged();
         }
     });
 

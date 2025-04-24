@@ -16,12 +16,17 @@ public:
     void addPlaylist(const Playlist& playlist);
     void clearGrid();
     void openPlaylistPage(const Playlist& playlist);
+    void updateColumns();
 
 private:
     QGridLayout* layout;
     int currentRow = 0;
     int currentCol = 0;
-    const int maxCols = 4;
+    int maxCols = 4;
+    const int cardWidth = 250;
+    const int minSpacing = 15;
+
+    void calculateMaxColumns();
 
 signals:
     void playlistClicked(const Playlist& playlist);
