@@ -49,4 +49,3 @@ void PlaylistGrid::openPlaylistPage(const Playlist& playlist)
     page->setAttribute(Qt::WA_DeleteOnClose);
     page->show();
 }
-

@@ -9,7 +9,7 @@
 #include "../events/AppEvents.h"
 
 PlaylistWindow::PlaylistWindow(const Playlist& playlist, QWidget* parent)
-    : BaseWindow(parent), playlistData(playlist)
+    : BaseWindow(parent), playlistData(playlist), storedVolume(50), isMuted(false)
 {
     setStyle();
     setupUI();
@@ -136,6 +136,41 @@ void PlaylistWindow::setupConnections()
             playNextTrack();
         }
     });
+
+    connect(volumeSlider, &QSlider::valueChanged, this, [=](int value) {
+        if (!isMuted) {
+            storedVolume = value;
+        }
+        audioOutput->setVolume(value / 100.0f);
+
+        if (value == 0) {
+            muteButton->setIcon(QIcon(":/Images/Mute"));
+            isMuted = true;
+        } else {
+            muteButton->setIcon(QIcon(":/Images/Volume"));
+            isMuted = false;
+        }
+    });
+
+    connect(muteButton, &QPushButton::clicked, this, [=]() {
+        if (isMuted) {
+            audioOutput->setVolume(storedVolume / 100.0f);
+            volumeSlider->setValue(storedVolume);
+            muteButton->setIcon(QIcon(":/Images/Volume"));
+            isMuted = false;
+        } else {
+            if (volumeSlider->value() > 0) {
+                storedVolume = volumeSlider->value();
+            }
+            isMuted = true;
+            audioOutput->setVolume(0);
+            volumeSlider->setValue(0);
+            muteButton->setIcon(QIcon(":/Images/Mute"));
+        }
+    });
+
+    audioOutput->setVolume(storedVolume / 100.0f);
+    volumeSlider->setValue(storedVolume);
 }
 
 void PlaylistWindow::setStyle()
@@ -331,6 +366,34 @@ QWidget* PlaylistWindow::createPlayerBar()
     timeLabel->setStyleSheet("color: #888; font-size: 12px; padding-right: 10px;");
     timeLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
+    muteButton = new QPushButton(this);
+    muteButton->setIcon(QIcon(":/Images/Volume"));
+    muteButton->setFixedSize(24, 24);
+
+    volumeSlider = new QSlider(Qt::Horizontal, this);
+    volumeSlider->setRange(0, 100);
+    volumeSlider->setValue(storedVolume);
+    volumeSlider->setFixedWidth(100);
+    volumeSlider->setStyleSheet(R"(
+        QSlider::groove:horizontal {
+            background: #383838;
+            height: 4px;
+            border-radius: 2px;
+        }
+        QSlider::handle:horizontal {
+            background: #4a90e2;
+            width: 10px;
+            height: 10px;
+            margin: -3px 0;
+            border-radius: 5px;
+        }
+        QSlider::sub-page:horizontal {
+            background: #4a90e2;
+            border-radius: 2px;
+        }
+    )");
+
+
     QVBoxLayout* mainLayout = new QVBoxLayout(playerBar);
     mainLayout->setContentsMargins(5, 5, 5, 5);
     mainLayout->setSpacing(10);
@@ -340,7 +403,14 @@ QWidget* PlaylistWindow::createPlayerBar()
     controls->addWidget(prevButton);
     controls->addWidget(pausePlayButton);
     controls->addWidget(nextButton);
+
+    QHBoxLayout* volumeLayout = new QHBoxLayout();
+    volumeLayout->addWidget(muteButton);
+    volumeLayout->addWidget(volumeSlider);
+    volumeLayout->setSpacing(5);
+
     controls->addStretch();
+    controls->addLayout(volumeLayout);
 
     QHBoxLayout* progressLayout = new QHBoxLayout();
     progressLayout->addWidget(songLabel, 1);

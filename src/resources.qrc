@@ -6,5 +6,7 @@
         <file alias="Play">assets/images/play.png</file>
         <file alias="Prev">assets/images/prev.png</file>
         <file alias="ArrowDown">assets/images/arrow-down.png</file>
+        <file alias="Mute">assets/images/mute.png</file>
+        <file alias="Volume">assets/images/volume.png</file>
     </qresource>
 </RCC>

@@ -21,13 +21,6 @@ HomeWindow::HomeWindow(QWidget* parent)
 
 void HomeWindow::setupUI()
 {
-    this->setWindowTitle("Home");
-    this->resize(1000, 700);
-
-    searchTimer = new QTimer(this);
-    searchTimer->setSingleShot(true);
-    searchTimer->setInterval(300);
-
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(20, 20, 20, 20);
     mainLayout->setSpacing(15);
@@ -81,10 +74,6 @@ void HomeWindow::setupConnections()
     });
 
     connect(searchInput, &QLineEdit::textChanged, this, [this]() {
-        searchTimer->start();
-    });
-
-    connect(searchTimer, &QTimer::timeout, this, [this]() {
         this->searchPlaylists(searchInput->text().trimmed());
     });
 

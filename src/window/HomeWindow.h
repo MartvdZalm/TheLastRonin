@@ -9,7 +9,6 @@
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QComboBox>
-#include <QTimer>
 
 class HomeWindow : public BaseWindow
 {
@@ -40,8 +39,6 @@ private:
 
     PlaylistDAO playlistDAO;
     TrackDAO trackDAO;
-
-    QTimer* searchTimer;
 };
 
 #endif // HOMEWINDOW_H

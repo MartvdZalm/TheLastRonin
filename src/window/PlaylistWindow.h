@@ -43,6 +43,11 @@ private:
     TrackList* trackList;
     int currentTrackIndex = 0;
 
+    QSlider* volumeSlider;
+    QPushButton* muteButton;
+    bool isMuted = false;
+    int storedVolume = 50;
+
     TrackDAO trackDAO;
     PlaylistDAO playlistDAO;
 
