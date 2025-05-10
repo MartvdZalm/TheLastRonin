@@ -71,6 +71,18 @@ bool DatabaseManager::initSchema()
             return false;
         }
 
+        if (!query.exec(R"(
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT NOT NULL,
+                password TEXT NOT NULL,
+                client_id TEXT NOT NULL
+            )
+        )")) {
+            qDebug() << "Failed to create users table:" << query.lastError();
+            return false;
+        }
+
        return true;
 }
 

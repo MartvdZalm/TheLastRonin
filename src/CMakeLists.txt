@@ -53,6 +53,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         styles/ComboBoxStyle.cpp
         events/AppEvents.h
         events/AppEvents.cpp
+        window/SpotifyWindow.h
+        window/SpotifyWindow.cpp
+        dao/UserDAO.h
+        model/User.h
+        dao/UserDAO.cpp
 
 
     )
