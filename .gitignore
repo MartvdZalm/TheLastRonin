@@ -19,6 +19,7 @@ build-*/
 build/
 CMakeFiles/
 CMakeCache.txt
+CMakeLists.txt.user
 cmake_install.cmake
 Makefile
 compile_commands.json
