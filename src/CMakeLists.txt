@@ -60,6 +60,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dao/UserDAO.cpp
         service/SpotifyService.h
         service/SpotifyService.cpp
+        window/MainWindow.h
+        window/MainWindow.cpp
+        components/shared/NavigationBar.h
+        components/shared/NavigationBar.cpp
 
 
     )

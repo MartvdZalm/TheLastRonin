@@ -1,7 +1,7 @@
 #include <QApplication>
 
 #include "styles/AppStyle.h"
-#include "window/HomeWindow.h"
+#include "window/MainWindow.h"
 #include "database/DatabaseManager.h"
 
 int main(int argc, char *argv[])
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    HomeWindow window;
+    MainWindow window;
     window.setWindowTitle("TheLastRonin");
     window.showMaximized();
 

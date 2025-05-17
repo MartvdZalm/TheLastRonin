@@ -15,7 +15,6 @@ public:
     void setLayout(QGridLayout* newLayout);
     void addPlaylist(const Playlist& playlist);
     void clearGrid();
-    void openPlaylistPage(const Playlist& playlist);
     void updateColumns();
 
 private:

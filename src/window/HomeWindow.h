@@ -38,6 +38,7 @@ private:
     QPushButton* addPlaylistBtn = nullptr;
     QPushButton* importPlaylistBtn = nullptr;
     QPushButton* spotifyPageBtn = nullptr;
+    QPushButton* deleteDataBtn = nullptr;
     QGridLayout* playlistGridLayout = nullptr;
     QComboBox* sortComboBox = nullptr;
 

@@ -53,7 +53,6 @@ void PlaylistGrid::updateColumns()
 void PlaylistGrid::addPlaylist(const Playlist& playlist)
 {
     PlaylistCard* card = new PlaylistCard(playlist);
-    connect(card, &PlaylistCard::playlistClicked, this, &PlaylistGrid::openPlaylistPage);
     layout->addWidget(card, currentRow, currentCol);
 
     currentCol++;
@@ -77,11 +76,4 @@ void PlaylistGrid::clearGrid()
 
     currentRow = 0;
     currentCol = 0;
-}
-
-void PlaylistGrid::openPlaylistPage(const Playlist& playlist)
-{
-    PlaylistWindow* page = new PlaylistWindow(playlist);
-    page->setAttribute(Qt::WA_DeleteOnClose);
-    page->show();
 }

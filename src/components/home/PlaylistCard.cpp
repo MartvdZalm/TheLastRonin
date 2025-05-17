@@ -6,6 +6,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QPainter>
 #include <QLabel>
+#include "../../events/AppEvents.h"
 
 PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent)
     : QWidget(parent), playlistData(playlist)
@@ -64,7 +65,8 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent)
 void PlaylistCard::mousePressEvent(QMouseEvent* event)
 {
     Q_UNUSED(event);
-    emit playlistClicked(playlistData);
+
+    AppEvents::instance().notifyNavigateToPlaylist(playlistData);
 }
 
 bool PlaylistCard::eventFilter(QObject* watched, QEvent* event)

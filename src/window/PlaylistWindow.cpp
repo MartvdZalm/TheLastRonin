@@ -5,6 +5,8 @@
 #include "../components/dialog/AddTrackDialog.h"
 #include "../components/dialog/PlaylistDialog.h"
 #include "../events/AppEvents.h"
+#include "../components/shared/NavigationBar.h"
+#include "MainWindow.h"
 
 PlaylistWindow::PlaylistWindow(const Playlist& playlist, QWidget* parent)
     : BaseWindow(parent), playlistData(playlist), storedVolume(50), isMuted(false)
@@ -18,6 +20,25 @@ void PlaylistWindow::setupUI()
 {
     this->setWindowTitle(playlistData.name);
     this->showMaximized();
+
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(20, 20, 20, 20);
+    mainLayout->setSpacing(15);
+
+    NavigationBar* navBar = new NavigationBar(this);
+    navBar->setTitle("Home");
+
+    connect(navBar, &NavigationBar::backClicked, this, [this]() {
+        if (auto mainWindow = qobject_cast<MainWindow*>(window())) {
+            mainWindow->goBack();
+        }
+    });
+    connect(navBar, &NavigationBar::forwardClicked, this, [this]() {
+        if (auto mainWindow = qobject_cast<MainWindow*>(window())) {
+            mainWindow->goForward();
+        }
+    });
+    mainLayout->addWidget(navBar);
 
     initPlayer();
     createControlButtons();
@@ -40,15 +61,11 @@ void PlaylistWindow::setupUI()
     coverImageWidget = new CoverImageWidget(playlistData.coverImagePath, this);
     detailsWidget = new PlaylistDetails(playlistData, this);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->setContentsMargins(20, 20, 20, 20);
-    layout->setSpacing(15);
-
-    layout->addWidget(coverImageWidget);
-    layout->addWidget(detailsWidget);
-    layout->addLayout(optionsRow);
-    layout->addWidget(trackList, 1);
-    layout->addWidget(createPlayerBar());
+    mainLayout->addWidget(coverImageWidget);
+    mainLayout->addWidget(detailsWidget);
+    mainLayout->addLayout(optionsRow);
+    mainLayout->addWidget(trackList, 1);
+    mainLayout->addWidget(createPlayerBar());
 }
 
 void PlaylistWindow::setupConnections()

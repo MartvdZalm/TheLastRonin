@@ -12,9 +12,6 @@ class PlaylistCard : public QWidget
 public:
     explicit PlaylistCard(const Playlist& playlist, QWidget* parent = nullptr);
 
-signals:
-    void playlistClicked(Playlist playlist);
-
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     bool eventFilter(QObject* watched, QEvent* event) override;
