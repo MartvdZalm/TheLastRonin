@@ -11,3 +11,7 @@ void AppEvents::notifyPlaylistChanged()
     emit playlistChanged();
 }
 
+void AppEvents::notifyNavigateToPlaylist(const Playlist& playlist)
+{
+    emit navigateToPlaylist(playlist);
+}

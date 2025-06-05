@@ -1,13 +1,13 @@
 #include "SpotifyWindow.h"
 
-#include <QVBoxLayout>;
+#include <QVBoxLayout>
 #include <QDesktopServices>
-#include <QUrlQuery>;
-#include <QNetworkReply>;
-#include <QRandomGenerator>;
-#include <QRegularExpression>;
-#include <QJsonDocument>;
-#include <QJsonObject>;
+#include <QUrlQuery>
+#include <QNetworkReply>
+#include <QRandomGenerator>
+#include <QRegularExpression>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 SpotifyWindow::SpotifyWindow(QWidget* parent)
     : BaseWindow(parent)

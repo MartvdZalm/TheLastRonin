@@ -10,6 +10,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDirIterator>
+#include "../components/shared/NavigationBar.h"
+#include "MainWindow.h"
 
 HomeWindow::HomeWindow(QWidget* parent)
     : BaseWindow(parent)
@@ -26,6 +28,16 @@ void HomeWindow::setupUI()
     mainLayout->setContentsMargins(20, 20, 20, 20);
     mainLayout->setSpacing(15);
 
+    NavigationBar* navBar = new NavigationBar(this);
+
+    connect(navBar, &NavigationBar::backClicked, this, [this]() {
+        if (auto mainWindow = qobject_cast<MainWindow*>(window())) {
+            mainWindow->goBack();
+        }
+    });
+
+    mainLayout->addWidget(navBar);
+
     QHBoxLayout* topBar = new QHBoxLayout;
     searchInput = new QLineEdit(this);
     searchInput->setPlaceholderText("Search playlists...");
@@ -34,6 +46,8 @@ void HomeWindow::setupUI()
     mainLayout->addLayout(topBar);
 
     QHBoxLayout* sortFilterBar = new QHBoxLayout;
+    deleteDataBtn = new QPushButton("Delete Data", this);
+    sortFilterBar->addWidget(deleteDataBtn);
     addPlaylistBtn = new QPushButton("Add Playlist", this);
     sortFilterBar->addWidget(addPlaylistBtn);
     importPlaylistBtn = new QPushButton("Import Playlist", this);
@@ -69,6 +83,19 @@ void HomeWindow::setupUI()
 
 void HomeWindow::setupConnections()
 {
+    connect(deleteDataBtn, &QPushButton::clicked, this, [this]() {
+
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this,
+                                      "Confirm Deletion",
+                                      "Are you sure you want to delete all your data? This cannot be undone.",
+                                      QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes) {
+            DatabaseManager::instance().deleteUserData();
+        }
+    });
+
     connect(addPlaylistBtn, &QPushButton::clicked, this, [this]() {
         this->showPlaylistDialog();
     });
@@ -93,13 +120,6 @@ void HomeWindow::setupConnections()
 void HomeWindow::setStyle()
 {
     this->setStyleSheet(R"(
-        QWidget {
-            background-color: #1e1e1e;
-            color: #f0f0f0;
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 14px;
-        }
-
         QLineEdit {
             padding: 8px;
             border: 1px solid #444;

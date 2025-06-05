@@ -8,5 +8,7 @@
         <file alias="ArrowDown">assets/images/arrow-down.png</file>
         <file alias="Mute">assets/images/mute.png</file>
         <file alias="Volume">assets/images/volume.png</file>
+        <file alias="ArrowForward">assets/images/arrow-forward.png</file>
+        <file alias="ArrowBack">assets/images/arrow-back.png</file>
     </qresource>
 </RCC>

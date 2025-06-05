@@ -23,6 +23,7 @@ class PlaylistWindow : public BaseWindow
 
 public:
     explicit PlaylistWindow(const Playlist& playlist, QWidget* parent = nullptr);
+    ~PlaylistWindow();
 
     void setupUI() override;
     void setupConnections() override;

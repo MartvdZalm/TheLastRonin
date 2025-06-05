@@ -13,6 +13,7 @@ public:
     bool openDatabase();
     void closeDatabase();
     bool initSchema();
+    bool deleteUserData();
     bool executeQuery(const QString& query, const QMap<QString, QVariant>& bindings = {});
 
 private:

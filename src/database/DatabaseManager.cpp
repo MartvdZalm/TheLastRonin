@@ -86,6 +86,25 @@ bool DatabaseManager::initSchema()
        return true;
 }
 
+bool DatabaseManager::deleteUserData()
+{
+    closeDatabase();
+
+    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/musicplayer.db";
+    if (QFile::exists(dbPath)) {
+        if (QFile::remove(dbPath)) {
+            qDebug() << "User data deleted successfully.";
+            return true;
+        } else {
+            qDebug() << "Failed to delete database file.";
+            return false;
+        }
+    } else {
+        qDebug() << "Database file does not exist.";
+        return true;
+    }
+}
+
 bool DatabaseManager::executeQuery(const QString& queryStr, const QMap<QString, QVariant>& bindings)
 {
     QSqlQuery query;
