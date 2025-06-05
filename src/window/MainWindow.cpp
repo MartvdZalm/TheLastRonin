@@ -6,6 +6,9 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
+    stackedWidget = new QStackedWidget(this);
+    setCentralWidget(stackedWidget);
+
     showHomePage();
 
     this->setStyleSheet(R"(
@@ -20,37 +23,27 @@ MainWindow::MainWindow(QWidget* parent)
     connect(&AppEvents::instance(), &AppEvents::navigateToPlaylist, this, &MainWindow::showPlaylistPage);
 }
 
-MainWindow::~MainWindow()
-{
-    delete currentPage;
-    while (!backStack.isEmpty()) {
-        delete backStack.pop();
-    }
-    while (!forwardStack.isEmpty()) {
-        delete forwardStack.pop();
-    }
-}
+MainWindow::~MainWindow() {}
 
 void MainWindow::setPage(BaseWindow* newPage, bool addToHistory)
 {
-    if (currentPage && addToHistory) {
-        backStack.push(currentPage);
-        currentPage->hide();
-    } else if (currentPage) {
-        delete currentPage;
+    if (!newPage) return;
+
+    if (stackedWidget->count() > 0) {
+        if (!addToHistory) {
+            QWidget* oldPage = stackedWidget->currentWidget();
+            stackedWidget->removeWidget(oldPage);
+            oldPage->deleteLater();
+        }
     }
 
-    forwardStack.clear();
-
-    currentPage = newPage;
-    setCentralWidget(currentPage);
-    currentPage->show();
+    stackedWidget->addWidget(newPage);
+    stackedWidget->setCurrentWidget(newPage);
 }
 
 void MainWindow::showHomePage()
 {
-    setPage(new HomeWindow(this));
-
+    setPage(new HomeWindow(this), false);
 }
 
 void MainWindow::showPlaylistPage(const Playlist& playlist)
@@ -60,23 +53,10 @@ void MainWindow::showPlaylistPage(const Playlist& playlist)
 
 void MainWindow::goBack()
 {
-    if (backStack.isEmpty()) {
-        return;
+    if (stackedWidget->count() > 1) {
+        QWidget* oldPage = stackedWidget->currentWidget();
+        stackedWidget->setCurrentIndex(stackedWidget->currentIndex() - 1);
+        stackedWidget->removeWidget(oldPage);
+        oldPage->deleteLater();
     }
-
-    forwardStack.push(currentPage);
-    BaseWindow* previous = backStack.pop();
-    setPage(previous, false);
 }
-
-void MainWindow::goForward()
-{
-    if (forwardStack.isEmpty()) {
-        return;
-    }
-
-    backStack.push(currentPage);
-    BaseWindow* next = forwardStack.pop();
-    setPage(next, false);
-}
-

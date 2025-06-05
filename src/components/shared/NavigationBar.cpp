@@ -6,28 +6,25 @@ NavigationBar::NavigationBar(QWidget* parent)
 {
     backButton = new QPushButton(QIcon(":/Images/ArrowBack"), "", this);
     forwardButton = new QPushButton(QIcon(":/Images/ArrowForward"), "", this);
-    titleLabel = new QLabel("Title", this);
 
     backButton->setToolTip("Go back");
     forwardButton->setToolTip("Go forward");
+
+    backButton->setFixedSize(40, 40);
+    forwardButton->setFixedSize(40, 40);
 
     auto layout = new QHBoxLayout(this);
     layout->addWidget(backButton);
     layout->addWidget(forwardButton);
     layout->addStretch();
-    layout->addWidget(titleLabel);
-    layout->addStretch();
-
     layout->setContentsMargins(5, 5, 5, 5);
+    layout->setSpacing(5);
     setLayout(layout);
+
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     connect(backButton, &QPushButton::clicked, this, &NavigationBar::backClicked);
     connect(forwardButton, &QPushButton::clicked, this, &NavigationBar::forwardClicked);
-}
-
-void NavigationBar::setTitle(const QString& title)
-{
-    titleLabel->setText(title);
 }
 
 void NavigationBar::setBackEnabled(bool enabled)

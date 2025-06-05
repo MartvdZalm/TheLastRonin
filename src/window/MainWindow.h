@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStackedWidget>
 #include <QStack>
 #include "../model/Playlist.h"
 #include "BaseWindow.h"
@@ -18,12 +19,9 @@ public:
     void showPlaylistPage(const Playlist& playlist);
 
     void goBack();
-    void goForward();
 
 private:
-    BaseWindow* currentPage = nullptr;
-    QStack<BaseWindow*> backStack;
-    QStack<BaseWindow*> forwardStack;
+    QStackedWidget* stackedWidget;
 
     void setPage(BaseWindow* newPage, bool addToHistory = true);
 };

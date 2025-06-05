@@ -16,6 +16,26 @@ PlaylistWindow::PlaylistWindow(const Playlist& playlist, QWidget* parent)
     setupConnections();
 }
 
+PlaylistWindow::~PlaylistWindow()
+{
+    // Disconnect all signals first
+    disconnect();
+
+    // Stop and clean up media player
+    if (player) {
+        player->stop();
+        player->deleteLater();
+        player = nullptr;
+    }
+
+    if (audioOutput) {
+        audioOutput->deleteLater();
+        audioOutput = nullptr;
+    }
+
+    qDebug() << "PlaylistWindow destroyed safely";
+}
+
 void PlaylistWindow::setupUI()
 {
     this->setWindowTitle(playlistData.name);
@@ -26,18 +46,13 @@ void PlaylistWindow::setupUI()
     mainLayout->setSpacing(15);
 
     NavigationBar* navBar = new NavigationBar(this);
-    navBar->setTitle("Home");
 
     connect(navBar, &NavigationBar::backClicked, this, [this]() {
         if (auto mainWindow = qobject_cast<MainWindow*>(window())) {
             mainWindow->goBack();
         }
     });
-    connect(navBar, &NavigationBar::forwardClicked, this, [this]() {
-        if (auto mainWindow = qobject_cast<MainWindow*>(window())) {
-            mainWindow->goForward();
-        }
-    });
+
     mainLayout->addWidget(navBar);
 
     initPlayer();
@@ -93,7 +108,7 @@ void PlaylistWindow::setupConnections()
     connect(removePlaylistBtn, &QPushButton::clicked, this, [=]() {
         playlistDAO.deletePlaylist(playlistData.id);
         AppEvents::instance().notifyPlaylistChanged();
-        this->close();
+        // this->close();
     });
 
     connect(trackList, &QListWidget::itemClicked, this, [=](QListWidgetItem* item) {
@@ -206,8 +221,6 @@ void PlaylistWindow::setStyle()
             border: none;
             border-radius: 4px;
             padding: 8px 16px;
-            font-size: 14px;
-            min-width: 80px;
         }
 
         QPushButton:hover {

@@ -8,6 +8,7 @@ PlaylistDetails::PlaylistDetails(const Playlist& playlist, QWidget* parent)
         QLabel {
             font-weight: bold;
             color: white;
+background-color: transparent;
         }
 
         #nameLabel {

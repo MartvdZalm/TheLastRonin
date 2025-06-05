@@ -29,18 +29,13 @@ void HomeWindow::setupUI()
     mainLayout->setSpacing(15);
 
     NavigationBar* navBar = new NavigationBar(this);
-    navBar->setTitle("Home");
 
     connect(navBar, &NavigationBar::backClicked, this, [this]() {
         if (auto mainWindow = qobject_cast<MainWindow*>(window())) {
             mainWindow->goBack();
         }
     });
-    connect(navBar, &NavigationBar::forwardClicked, this, [this]() {
-        if (auto mainWindow = qobject_cast<MainWindow*>(window())) {
-            mainWindow->goForward();
-        }
-    });
+
     mainLayout->addWidget(navBar);
 
     QHBoxLayout* topBar = new QHBoxLayout;

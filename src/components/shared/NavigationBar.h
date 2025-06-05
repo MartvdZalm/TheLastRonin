@@ -13,7 +13,6 @@ class NavigationBar : public QWidget
 public:
     explicit NavigationBar(QWidget* parent = nullptr);
 
-    void setTitle(const QString& title);
     void setBackEnabled(bool enabled);
     void setForwardEnabled(bool enabled);
 
@@ -24,7 +23,6 @@ signals:
 private:
     QPushButton* backButton;
     QPushButton* forwardButton;
-    QLabel* titleLabel;
 };
 
 #endif // NAVIGATIONBAR_H
