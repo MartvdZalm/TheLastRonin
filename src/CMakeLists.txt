@@ -53,8 +53,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         styles/ComboBoxStyle.cpp
         events/AppEvents.h
         events/AppEvents.cpp
-        window/SpotifyWindow.h
-        window/SpotifyWindow.cpp
+
+
         dao/UserDAO.h
         model/User.h
         dao/UserDAO.cpp
@@ -64,6 +64,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         window/MainWindow.cpp
         components/shared/NavigationBar.h
         components/shared/NavigationBar.cpp
+        components/playlist/MiniPlayerWindow.h
+        components/playlist/MiniPlayerWindow.cpp
 
 
     )

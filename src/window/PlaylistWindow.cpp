@@ -9,19 +9,17 @@
 #include "MainWindow.h"
 
 PlaylistWindow::PlaylistWindow(const Playlist& playlist, QWidget* parent)
-    : BaseWindow(parent), playlistData(playlist), storedVolume(50), isMuted(false)
+    : BaseWindow(parent), playlistData(playlist), storedVolume(50), isMuted(false), miniPlayer(nullptr), isMiniPlayerActive(false)
 {
-    setStyle();
-    setupUI();
-    setupConnections();
+    this->setStyle();
+    this->setupUI();
+    this->setupConnections();
 }
 
 PlaylistWindow::~PlaylistWindow()
 {
-    // Disconnect all signals first
     disconnect();
 
-    // Stop and clean up media player
     if (player) {
         player->stop();
         player->deleteLater();
@@ -108,7 +106,6 @@ void PlaylistWindow::setupConnections()
     connect(removePlaylistBtn, &QPushButton::clicked, this, [=]() {
         playlistDAO.deletePlaylist(playlistData.id);
         AppEvents::instance().notifyPlaylistChanged();
-        // this->close();
     });
 
     connect(trackList, &QListWidget::itemClicked, this, [=](QListWidgetItem* item) {
@@ -116,11 +113,14 @@ void PlaylistWindow::setupConnections()
         playTrackAtIndex(index);
     });
 
+    connect(miniPlayerToggleButton, &QPushButton::clicked, this, &PlaylistWindow::toggleMiniPlayer);
+
     connect(player, &QMediaPlayer::positionChanged, this, [=](qint64 position) {
         if (!progressSlider->isSliderDown() && player->duration() > 0) {
             progressSlider->setValue(static_cast<int>(position));
             updateTimeLabel(position, player->duration(), timeLabel);
         }
+        syncMiniPlayerControls();
     });
 
     connect(player, &QMediaPlayer::durationChanged, this, [=](qint64 duration) {
@@ -308,12 +308,8 @@ void PlaylistWindow::playTrackAtIndex(int index)
         player->play();
 
         trackList->setCurrentRow(index);
-
-        QTimer::singleShot(100, this, [=]() {
-            player->setSource(QUrl::fromLocalFile(track.filePath));
-            player->play();
-        });
     }
+    syncMiniPlayerControls();
 }
 
 void PlaylistWindow::playNextTrack()
@@ -419,6 +415,10 @@ QWidget* PlaylistWindow::createPlayerBar()
         }
     )");
 
+    miniPlayerToggleButton = new QPushButton("📱", this);
+    miniPlayerToggleButton->setFixedSize(24, 24);
+    miniPlayerToggleButton->setToolTip("Open Mini Player");
+    styleButton(miniPlayerToggleButton);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(playerBar);
     mainLayout->setContentsMargins(5, 5, 5, 5);
@@ -437,6 +437,7 @@ QWidget* PlaylistWindow::createPlayerBar()
 
     controls->addStretch();
     controls->addLayout(volumeLayout);
+    controls->addWidget(miniPlayerToggleButton);
 
     QHBoxLayout* progressLayout = new QHBoxLayout();
     progressLayout->addWidget(songLabel, 1);
@@ -447,4 +448,92 @@ QWidget* PlaylistWindow::createPlayerBar()
     mainLayout->addLayout(progressLayout);
 
     return playerBar;
+}
+
+void PlaylistWindow::toggleMiniPlayer()
+{
+    if (!isMiniPlayerActive) {
+        miniPlayer = new MiniPlayerWindow(nullptr);
+        miniPlayer->setPlayerData(player, audioOutput);
+
+        if (currentTrackIndex >= 0 && currentTrackIndex < playlistData.tracks.size()) {
+            miniPlayer->updateTrackInfo(playlistData.tracks[currentTrackIndex]);
+        }
+
+        miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
+        miniPlayer->updateProgress(player->position(), player->duration());
+
+        connect(miniPlayer, &MiniPlayerWindow::playPauseClicked, this, [this]() {
+            pausePlayButton->click();
+        });
+
+        connect(miniPlayer, &MiniPlayerWindow::nextClicked, this, [this]() {
+            nextButton->click();
+        });
+
+        connect(miniPlayer, &MiniPlayerWindow::prevClicked, this, [this]() {
+            prevButton->click();
+        });
+
+        connect(miniPlayer, &MiniPlayerWindow::progressChanged, this, [this](int position) {
+            if (player->duration() > 0) {
+                player->setPosition(position);
+            }
+        });
+
+        connect(miniPlayer, &MiniPlayerWindow::volumeChanged, this, [this](int volume) {
+            volumeSlider->setValue(volume);
+        });
+
+        connect(miniPlayer, &MiniPlayerWindow::miniPlayerClosed, this, &PlaylistWindow::onMiniPlayerClosed);
+
+        miniPlayer->show();
+        isMiniPlayerActive = true;
+        miniPlayerToggleButton->setText("🔙");
+        miniPlayerToggleButton->setToolTip("Close Mini Player");
+
+        this->showMinimized();
+
+    } else {
+        if (miniPlayer) {
+            miniPlayer->close();
+            miniPlayer->deleteLater();
+            miniPlayer = nullptr;
+        }
+        isMiniPlayerActive = false;
+        miniPlayerToggleButton->setText("📱");
+        miniPlayerToggleButton->setToolTip("Open Mini Player");
+
+        this->showNormal();
+        this->raise();
+        this->activateWindow();
+    }
+}
+
+void PlaylistWindow::onMiniPlayerClosed()
+{
+    isMiniPlayerActive = false;
+    miniPlayerToggleButton->setText("📱");
+    miniPlayerToggleButton->setToolTip("Open Mini Player");
+
+    if (miniPlayer) {
+        miniPlayer->deleteLater();
+        miniPlayer = nullptr;
+    }
+
+    this->showNormal();
+    this->raise();
+    this->activateWindow();
+}
+
+void PlaylistWindow::syncMiniPlayerControls()
+{
+    if (miniPlayer && isMiniPlayerActive) {
+        if (currentTrackIndex >= 0 && currentTrackIndex < playlistData.tracks.size()) {
+            miniPlayer->updateTrackInfo(playlistData.tracks[currentTrackIndex]);
+        }
+
+        miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
+        miniPlayer->updateProgress(player->position(), player->duration());
+    }
 }

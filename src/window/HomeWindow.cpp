@@ -1,5 +1,4 @@
 #include "HomeWindow.h"
-#include "SpotifyWindow.h"
 #include "../components/dialog/PlaylistDialog.h"
 #include "../events/AppEvents.h"
 #include <QVBoxLayout>
@@ -61,9 +60,6 @@ void HomeWindow::setupUI()
     sortFilterBar->addWidget(sortComboBox);
     sortFilterBar->addStretch();
 
-    spotifyPageBtn = new QPushButton("Spotify", this);
-    sortFilterBar->addWidget(spotifyPageBtn);
-
     mainLayout->addLayout(sortFilterBar);
 
     QScrollArea* scrollArea = new QScrollArea(this);
@@ -102,12 +98,6 @@ void HomeWindow::setupConnections()
 
     connect(importPlaylistBtn, &QPushButton::clicked, this, [this]() {
         this->importPlaylistFromFolder();
-    });
-
-    connect(spotifyPageBtn, &QPushButton::clicked, this, [this]() {
-        SpotifyWindow* page = new SpotifyWindow();
-        page->setAttribute(Qt::WA_DeleteOnClose);
-        page->show();
     });
 
     connect(searchInput, &QLineEdit::textChanged, this, [this]() {

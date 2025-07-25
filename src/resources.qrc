@@ -10,5 +10,6 @@
         <file alias="Volume">assets/images/volume.png</file>
         <file alias="ArrowForward">assets/images/arrow-forward.png</file>
         <file alias="ArrowBack">assets/images/arrow-back.png</file>
+        <file alias="Close">assets/images/close.png</file>
     </qresource>
 </RCC>

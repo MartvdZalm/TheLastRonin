@@ -8,6 +8,7 @@
 #include "BaseWindow.h"
 #include "../components/playlist/PlaylistDetails.h"
 #include "../components/shared/CoverImageWidget.h"
+#include "../components/playlist/MiniPlayerWindow.h"
 #include <QWidget>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -48,6 +49,10 @@ private:
     TrackList* trackList;
     int currentTrackIndex = 0;
 
+    MiniPlayerWindow* miniPlayer;
+    QPushButton* miniPlayerToggleButton;
+    bool isMiniPlayerActive;
+
     QSlider* volumeSlider;
     QPushButton* muteButton;
     bool isMuted = false;
@@ -65,6 +70,11 @@ private:
     void createControlButtons();
     void styleButton(QPushButton* button, const QString& iconPath = "");
     QWidget* createPlayerBar();
+
+private slots:
+    void toggleMiniPlayer();
+    void onMiniPlayerClosed();
+    void syncMiniPlayerControls();
 };
 
 #endif // PLAYLISTWINDOW_H
