@@ -1,0 +1,4 @@
+#ifndef PLAYBACKBAR_H
+#define PLAYBACKBAR_H
+
+#endif // PLAYBACKBAR_H

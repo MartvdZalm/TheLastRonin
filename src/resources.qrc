@@ -11,5 +11,7 @@
         <file alias="ArrowForward">assets/images/arrow-forward.png</file>
         <file alias="ArrowBack">assets/images/arrow-back.png</file>
         <file alias="Close">assets/images/close.png</file>
+        <file alias="PictureInPicture">assets/images/PictureInPicture.png</file>
+        <file alias="PictureInPictureClose">assets/images/PictureInPictureClose.png</file>
     </qresource>
 </RCC>

@@ -25,6 +25,7 @@ public:
     void updateTrackInfo(const Track &track);
     void updateProgress(qint64 position, qint64 duration);
     void updatePlayPauseButton(bool isPlaying);
+    void updateVolumeSlider(int volume);
 
 signals:
     void playPauseClicked();

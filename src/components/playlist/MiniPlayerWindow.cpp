@@ -4,6 +4,7 @@
 #include <QScreen>
 #include <QCloseEvent>
 #include <QFile>
+#include <iostream>
 
 MiniPlayerWindow::MiniPlayerWindow(QWidget* parent)
     : QWidget(parent), playerRef(nullptr), audioOutputRef(nullptr), isDragging(false)
@@ -11,6 +12,7 @@ MiniPlayerWindow::MiniPlayerWindow(QWidget* parent)
     this->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    this->setMaximumWidth(250);
     this->adjustSize();
 
     this->setupUI();
@@ -180,7 +182,7 @@ void MiniPlayerWindow::setPlayerData(QMediaPlayer* player, QAudioOutput* audioOu
 void MiniPlayerWindow::updateTrackInfo(const Track& track)
 {
     this->track = track;
-    songLabel->setText(track.title + "\n" + track.artist);
+    songLabel->setText(track.title);
 }
 
 void MiniPlayerWindow::updateProgress(qint64 position, qint64 duration)
@@ -198,6 +200,11 @@ void MiniPlayerWindow::updatePlayPauseButton(bool isPlaying)
     } else {
         playPauseButton->setIcon(QIcon(":/Images/Play"));
     }
+}
+
+void MiniPlayerWindow::updateVolumeSlider(int volume)
+{
+    volumeSlider->setValue(volume);
 }
 
 void MiniPlayerWindow::onPlayPauseClicked()

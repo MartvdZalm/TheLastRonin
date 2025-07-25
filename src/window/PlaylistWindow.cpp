@@ -146,6 +146,10 @@ void PlaylistWindow::setupConnections()
             player->play();
             pausePlayButton->setIcon(QIcon(":/Images/Pause"));
         }
+
+        if (isMiniPlayerActive) {
+            miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
+        }
     });
 
     connect(prevButton, &QPushButton::clicked, this, [=]() {
@@ -307,6 +311,11 @@ void PlaylistWindow::playTrackAtIndex(int index)
         player->setSource(QUrl::fromLocalFile(track.filePath));
         player->play();
 
+        QTimer::singleShot(100, this, [=]() {
+            player->setSource(QUrl::fromLocalFile(track.filePath));
+            player->play();
+        });
+
         trackList->setCurrentRow(index);
     }
     syncMiniPlayerControls();
@@ -415,10 +424,10 @@ QWidget* PlaylistWindow::createPlayerBar()
         }
     )");
 
-    miniPlayerToggleButton = new QPushButton("📱", this);
+    miniPlayerToggleButton = new QPushButton(this);
+    miniPlayerToggleButton->setIcon(QIcon(":/Images/PictureInPicture"));
     miniPlayerToggleButton->setFixedSize(24, 24);
     miniPlayerToggleButton->setToolTip("Open Mini Player");
-    styleButton(miniPlayerToggleButton);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(playerBar);
     mainLayout->setContentsMargins(5, 5, 5, 5);
@@ -462,6 +471,7 @@ void PlaylistWindow::toggleMiniPlayer()
 
         miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
         miniPlayer->updateProgress(player->position(), player->duration());
+        miniPlayer->updateVolumeSlider(volumeSlider->value());
 
         connect(miniPlayer, &MiniPlayerWindow::playPauseClicked, this, [this]() {
             pausePlayButton->click();
@@ -489,7 +499,7 @@ void PlaylistWindow::toggleMiniPlayer()
 
         miniPlayer->show();
         isMiniPlayerActive = true;
-        miniPlayerToggleButton->setText("🔙");
+        miniPlayerToggleButton->setIcon(QIcon(":/Images/PictureInPictureClose"));
         miniPlayerToggleButton->setToolTip("Close Mini Player");
 
         this->showMinimized();
@@ -501,7 +511,7 @@ void PlaylistWindow::toggleMiniPlayer()
             miniPlayer = nullptr;
         }
         isMiniPlayerActive = false;
-        miniPlayerToggleButton->setText("📱");
+        miniPlayerToggleButton->setIcon(QIcon(":/Images/PictureInPicture"));
         miniPlayerToggleButton->setToolTip("Open Mini Player");
 
         this->showNormal();
@@ -513,12 +523,11 @@ void PlaylistWindow::toggleMiniPlayer()
 void PlaylistWindow::onMiniPlayerClosed()
 {
     isMiniPlayerActive = false;
-    miniPlayerToggleButton->setText("📱");
+    miniPlayerToggleButton->setIcon(QIcon(":/Images/PictureInPicture"));
     miniPlayerToggleButton->setToolTip("Open Mini Player");
 
     if (miniPlayer) {
-        miniPlayer->deleteLater();
-        miniPlayer = nullptr;
+        miniPlayer->close();
     }
 
     this->showNormal();

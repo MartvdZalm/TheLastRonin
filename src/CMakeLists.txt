@@ -58,14 +58,14 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dao/UserDAO.h
         model/User.h
         dao/UserDAO.cpp
-        service/SpotifyService.h
-        service/SpotifyService.cpp
         window/MainWindow.h
         window/MainWindow.cpp
         components/shared/NavigationBar.h
         components/shared/NavigationBar.cpp
         components/playlist/MiniPlayerWindow.h
         components/playlist/MiniPlayerWindow.cpp
+        components/shared/PlaybackBar.h
+        components/shared/PlaybackBar.cpp
 
 
     )
