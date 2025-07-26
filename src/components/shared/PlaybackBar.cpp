@@ -44,15 +44,92 @@ PlaybackBar* PlaybackBar::instance()
 
 void PlaybackBar::setupUI()
 {
-    player = new QMediaPlayer(this);
-    audioOutput = new QAudioOutput(this);
-    player->setAudioOutput(audioOutput);
-    audioOutput->setVolume(50);
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(5, 15, 5, 15);
+
+    QHBoxLayout* controls = new QHBoxLayout();
+    controls->setContentsMargins(0, 0, 0, 0);
+
+    prevButton = new QPushButton(this);
+    prevButton->setIcon(QIcon(":/Images/Prev"));
+    prevButton->setStyleSheet(ButtonStyle::primary());
+
+    pausePlayButton = new QPushButton(this);
+    pausePlayButton->setIcon(QIcon(":/Images/Pause"));
+    pausePlayButton->setStyleSheet(ButtonStyle::primary());
+
+    nextButton = new QPushButton(this);
+    nextButton->setIcon(QIcon(":/Images/Next"));
+    nextButton->setStyleSheet(ButtonStyle::primary());
+
+    controls->addStretch();
+    controls->addWidget(prevButton);
+    controls->addWidget(pausePlayButton);
+    controls->addWidget(nextButton);
+    controls->addStretch();
+
+    QHBoxLayout* centerRow = new QHBoxLayout();
+    centerRow->setContentsMargins(0, 0, 0, 0);
 
     songLabel = new QLabel("No song playing", this);
     songLabel->setStyleSheet(
         "background-color: #2a2a2a; color: #4a90e2; font-size: 16px; font-weight: bold; padding-left: 10px;");
     songLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+    QHBoxLayout* volumeLayout = new QHBoxLayout();
+
+    muteButton = new QPushButton(this);
+    muteButton->setIcon(QIcon(":/Images/Volume"));
+    muteButton->setFixedSize(24, 24);
+    muteButton->setStyleSheet(ButtonStyle::primary());
+
+    volumeSlider = new QSlider(Qt::Horizontal, this);
+    volumeSlider->setRange(0, 100);
+    volumeSlider->setValue(storedVolume);
+    volumeSlider->setFixedWidth(100);
+    volumeSlider->setStyleSheet(R"(
+        QSlider {
+            background-color: #2a2a2a;
+        }
+
+        QSlider::groove:horizontal {
+            background: #383838;
+            height: 4px;
+            border-radius: 2px;
+        }
+        QSlider::handle:horizontal {
+            background: #4a90e2;
+            width: 10px;
+            height: 10px;
+            margin: -3px 0;
+            border-radius: 5px;
+        }
+        QSlider::sub-page:horizontal {
+            background: #4a90e2;
+            border-radius: 2px;
+        }
+    )");
+
+    miniPlayerToggleButton = new QPushButton(this);
+    miniPlayerToggleButton->setIcon(QIcon(":/Images/PictureInPicture"));
+    miniPlayerToggleButton->setFixedSize(24, 24);
+    miniPlayerToggleButton->setToolTip("Open Mini Player");
+    miniPlayerToggleButton->setStyleSheet(ButtonStyle::primary());
+
+    volumeLayout->addWidget(muteButton);
+    volumeLayout->addWidget(volumeSlider);
+    volumeLayout->addWidget(miniPlayerToggleButton);
+
+    centerRow->addWidget(songLabel);
+    centerRow->addLayout(volumeLayout);
+
+    QHBoxLayout* progressLayout = new QHBoxLayout();
+    progressLayout->setContentsMargins(0, 0, 0, 0);
+
+    player = new QMediaPlayer(this);
+    audioOutput = new QAudioOutput(this);
+    player->setAudioOutput(audioOutput);
+    audioOutput->setVolume(50);
 
     progressSlider = new QSlider(Qt::Horizontal, this);
     progressSlider->setRange(0, 100);
@@ -86,81 +163,13 @@ void PlaybackBar::setupUI()
     timeLabel->setStyleSheet("background-color: #2a2a2a; color: #888; font-size: 12px; padding-right: 10px;");
     timeLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    muteButton = new QPushButton(this);
-    muteButton->setIcon(QIcon(":/Images/Volume"));
-    muteButton->setFixedSize(24, 24);
-    muteButton->setStyleSheet(ButtonStyle::styleSheet());
-
-    volumeSlider = new QSlider(Qt::Horizontal, this);
-    volumeSlider->setRange(0, 100);
-    volumeSlider->setValue(storedVolume);
-    volumeSlider->setFixedWidth(100);
-    volumeSlider->setStyleSheet(R"(
-        QSlider {
-            background-color: #2a2a2a;
-        }
-
-        QSlider::groove:horizontal {
-            background: #383838;
-            height: 4px;
-            border-radius: 2px;
-        }
-        QSlider::handle:horizontal {
-            background: #4a90e2;
-            width: 10px;
-            height: 10px;
-            margin: -3px 0;
-            border-radius: 5px;
-        }
-        QSlider::sub-page:horizontal {
-            background: #4a90e2;
-            border-radius: 2px;
-        }
-    )");
-
-    miniPlayerToggleButton = new QPushButton(this);
-    miniPlayerToggleButton->setIcon(QIcon(":/Images/PictureInPicture"));
-    miniPlayerToggleButton->setFixedSize(24, 24);
-    miniPlayerToggleButton->setToolTip("Open Mini Player");
-    miniPlayerToggleButton->setStyleSheet(ButtonStyle::styleSheet());
-
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(5, 5, 5, 5);
-    mainLayout->setSpacing(10);
-
-    pausePlayButton = new QPushButton(this);
-    pausePlayButton->setIcon(QIcon(":/Images/Pause"));
-    pausePlayButton->setStyleSheet(ButtonStyle::styleSheet());
-
-    prevButton = new QPushButton(this);
-    prevButton->setIcon(QIcon(":/Images/Prev"));
-    prevButton->setStyleSheet(ButtonStyle::styleSheet());
-
-    nextButton = new QPushButton(this);
-    nextButton->setIcon(QIcon(":/Images/Next"));
-    nextButton->setStyleSheet(ButtonStyle::styleSheet());
-
-    QHBoxLayout* controls = new QHBoxLayout();
-    controls->addStretch();
-    controls->addWidget(prevButton);
-    controls->addWidget(pausePlayButton);
-    controls->addWidget(nextButton);
-
-    QHBoxLayout* volumeLayout = new QHBoxLayout();
-    volumeLayout->addWidget(muteButton);
-    volumeLayout->addWidget(volumeSlider);
-    volumeLayout->setSpacing(5);
-
-    controls->addStretch();
-    controls->addLayout(volumeLayout);
-    controls->addWidget(miniPlayerToggleButton);
-
-    QHBoxLayout* progressLayout = new QHBoxLayout();
-    progressLayout->addWidget(songLabel, 1);
-    progressLayout->addWidget(progressSlider, 4);
-    progressLayout->addWidget(timeLabel, 1);
+    progressLayout->addStretch();
+    progressLayout->addWidget(progressSlider);
+    progressLayout->addWidget(timeLabel);
+    progressLayout->addStretch();
 
     mainLayout->addLayout(controls);
+    mainLayout->addLayout(centerRow);
     mainLayout->addLayout(progressLayout);
 }
 

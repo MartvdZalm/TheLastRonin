@@ -12,8 +12,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         database/DatabaseManager.h
         database/DatabaseManager.cpp
-        components/dialog/PlaylistDialog.h
-        components/dialog/PlaylistDialog.cpp
+        components/dialog/AddPlaylistDialog.h
+        components/dialog/AddPlaylistDialog.cpp
         components/home/PlaylistCard.h
         components/home/PlaylistCard.cpp
         window/PlaylistWindow.h
@@ -60,8 +60,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         window/MainWindow.cpp
         components/shared/NavigationBar.h
         components/shared/NavigationBar.cpp
-        components/playlist/MiniPlayerWindow.h
-        components/playlist/MiniPlayerWindow.cpp
+        components/shared/MiniPlayerWindow.h
+        components/shared/MiniPlayerWindow.cpp
         components/shared/PlaybackBar.h
         components/shared/PlaybackBar.cpp
         styles/AppStyle.h

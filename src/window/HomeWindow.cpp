@@ -1,10 +1,11 @@
 #include "HomeWindow.h"
-#include "../components/dialog/PlaylistDialog.h"
+#include "../components/dialog/AddPlaylistDialog.h"
 #include "../components/shared/NavigationBar.h"
 #include "../components/shared/PlaybackBar.h"
 #include "../events/AppEvents.h"
 #include "../styles/ButtonStyle.h"
 #include "../styles/ComboBoxStyle.h"
+#include "../styles/InputStyle.h"
 #include "MainWindow.h"
 #include <QDir>
 #include <QDirIterator>
@@ -45,20 +46,21 @@ void HomeWindow::setupUI()
     searchInput = new QLineEdit(this);
     searchInput->setPlaceholderText("Search playlists...");
     searchInput->setClearButtonEnabled(true);
+    searchInput->setStyleSheet(InputStyle::primary());
     topBar->addWidget(searchInput);
     mainLayout->addLayout(topBar);
 
     QHBoxLayout* sortFilterBar = new QHBoxLayout;
     deleteDataBtn = new QPushButton("Delete Data", this);
-    deleteDataBtn->setStyleSheet(ButtonStyle::styleSheet());
+    deleteDataBtn->setStyleSheet(ButtonStyle::remove());
     sortFilterBar->addWidget(deleteDataBtn);
 
     addPlaylistBtn = new QPushButton("Add Playlist", this);
-    addPlaylistBtn->setStyleSheet(ButtonStyle::styleSheet());
+    addPlaylistBtn->setStyleSheet(ButtonStyle::primary());
     sortFilterBar->addWidget(addPlaylistBtn);
 
     importPlaylistBtn = new QPushButton("Import Playlist", this);
-    importPlaylistBtn->setStyleSheet(ButtonStyle::styleSheet());
+    importPlaylistBtn->setStyleSheet(ButtonStyle::primary());
     sortFilterBar->addWidget(importPlaylistBtn);
 
     sortComboBox = new QComboBox(this);
@@ -66,7 +68,7 @@ void HomeWindow::setupUI()
     sortComboBox->addItem("Sort by Name");
     sortComboBox->addItem("Sort by Creation Date");
     sortComboBox->addItem("Sort by Recently Played");
-    sortComboBox->setStyleSheet(ComboBoxStyle::styleSheet());
+    sortComboBox->setStyleSheet(ComboBoxStyle::primary());
     sortFilterBar->addWidget(sortComboBox);
     sortFilterBar->addStretch();
 
@@ -121,7 +123,7 @@ void HomeWindow::setupEvents()
 
 void HomeWindow::showPlaylistDialog()
 {
-    PlaylistDialog dialog(this);
+    AddPlaylistDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted)
     {
         Playlist playlist{

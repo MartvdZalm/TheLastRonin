@@ -1,11 +1,12 @@
 #include "PlaylistWindow.h"
+#include "../components/dialog/AddPlaylistDialog.h"
 #include "../components/dialog/AddTrackDialog.h"
-#include "../components/dialog/PlaylistDialog.h"
 #include "../components/shared/NavigationBar.h"
 #include "../events/AppEvents.h"
 #include "../styles/ButtonStyle.h"
 #include "MainWindow.h"
 #include <QListWidgetItem>
+#include <QMessageBox>
 #include <QPixmap>
 #include <QTimer>
 
@@ -40,16 +41,14 @@ void PlaylistWindow::setupUI()
     mainLayout->addWidget(navBar);
 
     addTrackBtn = new QPushButton("Add Track");
-    addTrackBtn->setStyleSheet(ButtonStyle::styleSheet());
+    addTrackBtn->setStyleSheet(ButtonStyle::primary());
 
     editPlaylistBtn = new QPushButton("Edit Playlist");
-    editPlaylistBtn->setStyleSheet(ButtonStyle::styleSheet());
+    editPlaylistBtn->setStyleSheet(ButtonStyle::primary());
 
     removePlaylistBtn = new QPushButton("Delete Playlist");
-    removePlaylistBtn->setStyleSheet(ButtonStyle::styleSheet());
-
+    removePlaylistBtn->setStyleSheet(ButtonStyle::remove());
     styleButton(removePlaylistBtn);
-    removePlaylistBtn->setStyleSheet("background-color: red;");
 
     QHBoxLayout* optionsRow = new QHBoxLayout;
     optionsRow->addWidget(addTrackBtn);
@@ -101,10 +100,18 @@ void PlaylistWindow::setupConnections()
             });
 
     connect(removePlaylistBtn, &QPushButton::clicked, this,
-            [=]()
+            [this]()
             {
-                playlistDAO.deletePlaylist(playlistData.id);
-                AppEvents::instance().notifyPlaylistChanged();
+                QMessageBox::StandardButton reply;
+                reply = QMessageBox::question(this, "Confirm Deletion",
+                                              "Are you sure you want to delete this playlist? This cannot be undone.",
+                                              QMessageBox::Yes | QMessageBox::No);
+
+                if (reply == QMessageBox::Yes)
+                {
+                    playlistDAO.deletePlaylist(playlistData.id);
+                    AppEvents::instance().notifyPlaylistChanged();
+                }
             });
 
     connect(trackList, &QListWidget::itemClicked, this,
@@ -139,7 +146,7 @@ void PlaylistWindow::setupEvents() {}
 
 std::optional<Playlist> PlaylistWindow::showEditPlaylistDialog()
 {
-    PlaylistDialog dialog(playlistData, this);
+    AddPlaylistDialog dialog(playlistData, this);
     if (dialog.exec() == QDialog::Accepted)
     {
         Playlist playlist{

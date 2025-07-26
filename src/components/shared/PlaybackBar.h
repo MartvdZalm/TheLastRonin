@@ -3,7 +3,7 @@
 
 #include "../../model/Playlist.h"
 #include "../../model/Track.h"
-#include "../playlist/MiniPlayerWindow.h"
+#include "../shared/MiniPlayerWindow.h"
 #include <QAudioOutput>
 #include <QLabel>
 #include <QListWidget>

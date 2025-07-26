@@ -6,7 +6,7 @@
 class InputStyle
 {
   public:
-    static QString styleSheet();
+    static QString primary();
 };
 
 #endif // INPUTSTYLE_H

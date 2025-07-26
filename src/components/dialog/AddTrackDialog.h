@@ -9,10 +9,6 @@ class AddTrackDialog : public QDialog
 {
     Q_OBJECT
 
-  public:
-    AddTrackDialog(QWidget* parent = nullptr);
-    Track getTrack() const;
-
   private:
     QLineEdit* titleInput;
     QLineEdit* artistInput;
@@ -20,6 +16,11 @@ class AddTrackDialog : public QDialog
     QPushButton* chooseFileButton;
     QString selectedFilePath;
 
+  public:
+    AddTrackDialog(QWidget* parent = nullptr);
+    Track getTrack() const;
+
+  private:
     void setupUI();
 };
 

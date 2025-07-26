@@ -6,10 +6,10 @@
 NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
 {
     backButton = new QPushButton(QIcon(":/Images/ArrowBack"), "", this);
-    backButton->setStyleSheet(ButtonStyle::styleSheet());
+    backButton->setStyleSheet(ButtonStyle::primary());
 
     forwardButton = new QPushButton(QIcon(":/Images/ArrowForward"), "", this);
-    forwardButton->setStyleSheet(ButtonStyle::styleSheet());
+    forwardButton->setStyleSheet(ButtonStyle::primary());
 
     backButton->setToolTip("Go back");
     forwardButton->setToolTip("Go forward");

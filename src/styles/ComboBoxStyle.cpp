@@ -1,6 +1,6 @@
 #include "ComboBoxStyle.h"
 
-QString ComboBoxStyle::styleSheet()
+QString ComboBoxStyle::primary()
 {
     return R"(
         QComboBox {

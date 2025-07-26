@@ -6,7 +6,8 @@
 class ButtonStyle
 {
   public:
-    static QString styleSheet();
+    static QString primary();
+    static QString remove();
 };
 
 #endif // BUTTONSTYLE_H

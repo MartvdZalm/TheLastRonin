@@ -9,16 +9,16 @@ class PlaylistCard : public QWidget
 {
     Q_OBJECT
 
-  public:
-    explicit PlaylistCard(const Playlist& playlist, QWidget* parent = nullptr);
-
-  protected:
-    void mousePressEvent(QMouseEvent* event) override;
-    bool eventFilter(QObject* watched, QEvent* event) override;
-
   private:
     Playlist playlistData;
     QLabel* previewLabel;
+
+  public:
+    explicit PlaylistCard(const Playlist& playlist, QWidget* parent = nullptr);
+
+  private:
+    void mousePressEvent(QMouseEvent* event) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
 };
 
 #endif // PLAYLISTCARD_H

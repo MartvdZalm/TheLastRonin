@@ -6,7 +6,7 @@
 class ComboBoxStyle
 {
   public:
-    static QString styleSheet();
+    static QString primary();
 };
 
 #endif // COMBOBOXSTYLE_H

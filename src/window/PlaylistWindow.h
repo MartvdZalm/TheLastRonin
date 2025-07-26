@@ -1,10 +1,10 @@
 #ifndef PLAYLISTWINDOW_H
 #define PLAYLISTWINDOW_H
 
-#include "../components/playlist/MiniPlayerWindow.h"
 #include "../components/playlist/PlaylistDetails.h"
 #include "../components/playlist/TrackList.h"
 #include "../components/shared/CoverImageWidget.h"
+#include "../components/shared/MiniPlayerWindow.h"
 #include "../components/shared/PlaybackBar.h"
 #include "../dao/PlaylistDAO.h"
 #include "../dao/TrackDAO.h"

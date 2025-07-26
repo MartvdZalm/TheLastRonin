@@ -1,6 +1,6 @@
 #include "InputStyle.h"
 
-QString InputStyle::styleSheet()
+QString InputStyle::primary()
 {
     return R"(
         QLineEdit {

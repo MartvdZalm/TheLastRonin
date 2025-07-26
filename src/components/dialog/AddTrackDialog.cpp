@@ -24,7 +24,7 @@ void AddTrackDialog::setupUI()
     filePathInput = new QLineEdit(this);
     filePathInput->setReadOnly(true);
     chooseFileButton = new QPushButton("Choose Audio File...", this);
-    chooseFileButton->setStyleSheet(ButtonStyle::styleSheet());
+    chooseFileButton->setStyleSheet(ButtonStyle::primary());
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel("Title:"));
@@ -63,8 +63,8 @@ void AddTrackDialog::setupUI()
     QPushButton* okButton = buttons->button(QDialogButtonBox::Ok);
     QPushButton* cancelButton = buttons->button(QDialogButtonBox::Cancel);
 
-    okButton->setStyleSheet(ButtonStyle::styleSheet());
-    cancelButton->setStyleSheet(ButtonStyle::styleSheet());
+    okButton->setStyleSheet(ButtonStyle::primary());
+    cancelButton->setStyleSheet(ButtonStyle::primary());
 
     connect(buttons, &QDialogButtonBox::accepted, this,
             [=]()
