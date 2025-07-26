@@ -5,7 +5,7 @@
 
 class ComboBoxStyle
 {
-public:
+  public:
     static QString styleSheet();
 };
 

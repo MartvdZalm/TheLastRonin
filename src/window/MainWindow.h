@@ -1,17 +1,17 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QStackedWidget>
-#include <QStack>
 #include "../model/Playlist.h"
 #include "BaseWindow.h"
+#include <QMainWindow>
+#include <QStack>
+#include <QStackedWidget>
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public:
+  public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
@@ -20,11 +20,10 @@ public:
 
     void goBack();
 
-private:
+  private:
     QStackedWidget* stackedWidget;
 
     void setPage(BaseWindow* newPage, bool addToHistory = true);
 };
 
 #endif // MAINWINDOW_H
-

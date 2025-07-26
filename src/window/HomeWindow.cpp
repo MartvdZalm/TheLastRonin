@@ -1,21 +1,22 @@
 #include "HomeWindow.h"
 #include "../components/dialog/PlaylistDialog.h"
+#include "../components/shared/NavigationBar.h"
+#include "../components/shared/PlaybackBar.h"
 #include "../events/AppEvents.h"
-#include <QVBoxLayout>
+#include "../styles/ButtonStyle.h"
+#include "../styles/ComboBoxStyle.h"
+#include "MainWindow.h"
+#include <QDir>
+#include <QDirIterator>
+#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QScrollArea>
-#include <QDir>
-#include <QFileDialog>
 #include <QMessageBox>
-#include <QDirIterator>
-#include "../components/shared/NavigationBar.h"
-#include "MainWindow.h"
+#include <QScrollArea>
+#include <QVBoxLayout>
 
-HomeWindow::HomeWindow(QWidget* parent)
-    : BaseWindow(parent)
+HomeWindow::HomeWindow(QWidget* parent) : BaseWindow(parent)
 {
-    setStyle();
     setupUI();
     setupConnections();
     setupEvents();
@@ -29,11 +30,14 @@ void HomeWindow::setupUI()
 
     NavigationBar* navBar = new NavigationBar(this);
 
-    connect(navBar, &NavigationBar::backClicked, this, [this]() {
-        if (auto mainWindow = qobject_cast<MainWindow*>(window())) {
-            mainWindow->goBack();
-        }
-    });
+    connect(navBar, &NavigationBar::backClicked, this,
+            [this]()
+            {
+                if (auto mainWindow = qobject_cast<MainWindow*>(window()))
+                {
+                    mainWindow->goBack();
+                }
+            });
 
     mainLayout->addWidget(navBar);
 
@@ -46,10 +50,15 @@ void HomeWindow::setupUI()
 
     QHBoxLayout* sortFilterBar = new QHBoxLayout;
     deleteDataBtn = new QPushButton("Delete Data", this);
+    deleteDataBtn->setStyleSheet(ButtonStyle::styleSheet());
     sortFilterBar->addWidget(deleteDataBtn);
+
     addPlaylistBtn = new QPushButton("Add Playlist", this);
+    addPlaylistBtn->setStyleSheet(ButtonStyle::styleSheet());
     sortFilterBar->addWidget(addPlaylistBtn);
+
     importPlaylistBtn = new QPushButton("Import Playlist", this);
+    importPlaylistBtn->setStyleSheet(ButtonStyle::styleSheet());
     sortFilterBar->addWidget(importPlaylistBtn);
 
     sortComboBox = new QComboBox(this);
@@ -57,6 +66,7 @@ void HomeWindow::setupUI()
     sortComboBox->addItem("Sort by Name");
     sortComboBox->addItem("Sort by Creation Date");
     sortComboBox->addItem("Sort by Recently Played");
+    sortComboBox->setStyleSheet(ComboBoxStyle::styleSheet());
     sortFilterBar->addWidget(sortComboBox);
     sortFilterBar->addStretch();
 
@@ -79,73 +89,42 @@ void HomeWindow::setupUI()
 
 void HomeWindow::setupConnections()
 {
-    connect(deleteDataBtn, &QPushButton::clicked, this, [this]() {
+    connect(deleteDataBtn, &QPushButton::clicked, this,
+            [this]()
+            {
+                QMessageBox::StandardButton reply;
+                reply = QMessageBox::question(this, "Confirm Deletion",
+                                              "Are you sure you want to delete all your data? This cannot be undone.",
+                                              QMessageBox::Yes | QMessageBox::No);
 
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this,
-                                      "Confirm Deletion",
-                                      "Are you sure you want to delete all your data? This cannot be undone.",
-                                      QMessageBox::Yes | QMessageBox::No);
+                if (reply == QMessageBox::Yes)
+                {
+                    DatabaseManager::instance().deleteUserData();
+                }
+            });
 
-        if (reply == QMessageBox::Yes) {
-            DatabaseManager::instance().deleteUserData();
-        }
-    });
+    connect(addPlaylistBtn, &QPushButton::clicked, this, [this]() { this->showPlaylistDialog(); });
 
-    connect(addPlaylistBtn, &QPushButton::clicked, this, [this]() {
-        this->showPlaylistDialog();
-    });
+    connect(importPlaylistBtn, &QPushButton::clicked, this, [this]() { this->importPlaylistFromFolder(); });
 
-    connect(importPlaylistBtn, &QPushButton::clicked, this, [this]() {
-        this->importPlaylistFromFolder();
-    });
-
-    connect(searchInput, &QLineEdit::textChanged, this, [this]() {
-        this->searchPlaylists(searchInput->text().trimmed());
-    });
+    connect(searchInput, &QLineEdit::textChanged, this,
+            [this]() { this->searchPlaylists(searchInput->text().trimmed()); });
 
     connect(sortComboBox, &QComboBox::currentTextChanged, this, &HomeWindow::onSortChanged);
 }
 
-void HomeWindow::setStyle()
-{
-    this->setStyleSheet(R"(
-        QLineEdit {
-            padding: 8px;
-            border: 1px solid #444;
-            border-radius: 5px;
-        }
-
-        QPushButton {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 16px;
-        }
-
-        QPushButton:hover {
-            background-color: #5aa0f2;
-        }
-
-        QPushButton:pressed {
-            background-color: #3a80d2;
-        }
-    )");
-}
-
 void HomeWindow::setupEvents()
 {
-    connect(&AppEvents::instance(), &AppEvents::playlistChanged, this, [this]() {
-        updatePlaylistGrid(playlistDAO.getAllPlaylists());
-    });
+    connect(&AppEvents::instance(), &AppEvents::playlistChanged, this,
+            [this]() { updatePlaylistGrid(playlistDAO.getAllPlaylists()); });
 }
 
 void HomeWindow::showPlaylistDialog()
 {
     PlaylistDialog dialog(this);
-    if (dialog.exec() == QDialog::Accepted) {
-        Playlist playlist {
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        Playlist playlist{
             .name = dialog.getName(),
             .description = dialog.getDescription(),
             .coverImagePath = dialog.getCoverImagePath(),
@@ -160,7 +139,8 @@ void HomeWindow::importPlaylistFromFolder()
 {
     QString folderPath = QFileDialog::getExistingDirectory(this, "Select Playlist Folder");
 
-    if (folderPath.isEmpty()) {
+    if (folderPath.isEmpty())
+    {
         return;
     }
 
@@ -168,31 +148,32 @@ void HomeWindow::importPlaylistFromFolder()
     QString playlistName = dir.dirName();
 
     QString coverImagePath;
-    QStringList imageFiles = dir.entryList({ "*.png", "*.jpg", "*.jpeg" }, QDir::Files);
-    if (!imageFiles.isEmpty()) {
+    QStringList imageFiles = dir.entryList({"*.png", "*.jpg", "*.jpeg"}, QDir::Files);
+    if (!imageFiles.isEmpty())
+    {
         coverImagePath = dir.filePath(imageFiles.first());
     }
 
     QStringList audioFiles;
-    QDirIterator it(folderPath, { "*.mp3", "*.wav", "*.flac" }, QDir::Files, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
+    QDirIterator it(folderPath, {"*.mp3", "*.wav", "*.flac"}, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext())
+    {
         audioFiles << it.next();
     }
 
-    if (audioFiles.isEmpty()) {
+    if (audioFiles.isEmpty())
+    {
         QMessageBox::warning(this, "No Tracks Found", "No audio files were found in the selected folder.");
         return;
     }
 
-    Playlist playlist {
-        .name = playlistName,
-        .coverImagePath = coverImagePath
-    };
+    Playlist playlist{.name = playlistName, .coverImagePath = coverImagePath};
     playlist.id = playlistDAO.insertPlaylist(playlist);
 
-    for (const QString& filePath : audioFiles) {
+    for (const QString& filePath : audioFiles)
+    {
         QFileInfo fileInfo(filePath);
-        Track track {
+        Track track{
             .title = fileInfo.baseName(),
             .filePath = filePath,
         };
@@ -213,15 +194,18 @@ void HomeWindow::onSortChanged(const QString& sortBy)
 {
     QList<Playlist> playlists = playlistDAO.getAllPlaylists();
 
-    if (sortBy == "Sort by Name") {
-        std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
-            return a.name < b.name;
-        });
-    } else if (sortBy == "Sort by Creation Date") {
-        std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
-            return a.createdAt < b.createdAt;
-        });
-    } else if (sortBy == "Sort by Recently Played") {
+    if (sortBy == "Sort by Name")
+    {
+        std::sort(playlists.begin(), playlists.end(),
+                  [](const Playlist& a, const Playlist& b) { return a.name < b.name; });
+    }
+    else if (sortBy == "Sort by Creation Date")
+    {
+        std::sort(playlists.begin(), playlists.end(),
+                  [](const Playlist& a, const Playlist& b) { return a.createdAt < b.createdAt; });
+    }
+    else if (sortBy == "Sort by Recently Played")
+    {
         // std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
         //     return a.lastPlayed > b.lastPlayed;
         // });
@@ -233,7 +217,8 @@ void HomeWindow::onSortChanged(const QString& sortBy)
 void HomeWindow::updatePlaylistGrid(const QList<Playlist>& playlists)
 {
     playlistGrid->clearGrid();
-    for (const Playlist& playlist : playlists) {
+    for (const Playlist& playlist : playlists)
+    {
         playlistGrid->addPlaylist(playlist);
     }
 }

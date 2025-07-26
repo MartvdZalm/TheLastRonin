@@ -1,10 +1,9 @@
 #include "MiniPlayerWindow.h"
 
 #include <QApplication>
-#include <QScreen>
 #include <QCloseEvent>
 #include <QFile>
-#include <iostream>
+#include <QScreen>
 
 MiniPlayerWindow::MiniPlayerWindow(QWidget* parent)
     : QWidget(parent), playerRef(nullptr), audioOutputRef(nullptr), isDragging(false)
@@ -167,7 +166,8 @@ void MiniPlayerWindow::setStyle()
 
 void MiniPlayerWindow::styleButton(QPushButton* button, const QString& iconPath)
 {
-    if (!iconPath.isEmpty()) {
+    if (!iconPath.isEmpty())
+    {
         button->setIcon(QIcon(iconPath));
     }
     button->setObjectName("iconButton");
@@ -187,7 +187,8 @@ void MiniPlayerWindow::updateTrackInfo(const Track& track)
 
 void MiniPlayerWindow::updateProgress(qint64 position, qint64 duration)
 {
-    if (!progressSlider->isSliderDown() && duration > 0) {
+    if (!progressSlider->isSliderDown() && duration > 0)
+    {
         progressSlider->setMaximum(static_cast<int>(duration));
         progressSlider->setValue(static_cast<int>(position));
     }
@@ -195,9 +196,12 @@ void MiniPlayerWindow::updateProgress(qint64 position, qint64 duration)
 
 void MiniPlayerWindow::updatePlayPauseButton(bool isPlaying)
 {
-    if (isPlaying) {
+    if (isPlaying)
+    {
         playPauseButton->setIcon(QIcon(":/Images/Pause"));
-    } else {
+    }
+    else
+    {
         playPauseButton->setIcon(QIcon(":/Images/Play"));
     }
 }
@@ -234,7 +238,8 @@ void MiniPlayerWindow::onVolumeSliderChanged(int volume)
 
 void MiniPlayerWindow::mousePressEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
+    {
         isDragging = true;
         dragStartPosition = event->globalPosition().toPoint();
         windowStartPosition = pos();
@@ -244,7 +249,8 @@ void MiniPlayerWindow::mousePressEvent(QMouseEvent* event)
 
 void MiniPlayerWindow::mouseMoveEvent(QMouseEvent* event)
 {
-    if (isDragging && (event->buttons() & Qt::LeftButton)) {
+    if (isDragging && (event->buttons() & Qt::LeftButton))
+    {
         QPoint delta = event->globalPosition().toPoint() - dragStartPosition;
         move(windowStartPosition + delta);
     }
@@ -253,7 +259,8 @@ void MiniPlayerWindow::mouseMoveEvent(QMouseEvent* event)
 
 void MiniPlayerWindow::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
+    {
         isDragging = false;
     }
     QWidget::mouseReleaseEvent(event);

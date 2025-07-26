@@ -33,8 +33,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         resources.qrc
         components/home/PlaylistGrid.h
         components/home/PlaylistGrid.cpp
-        styles/AppStyle.h
-        styles/AppStyle.cpp
         window/BaseWindow.h
         window/BaseWindow.cpp
         window/HomeWindow.h
@@ -66,6 +64,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         components/playlist/MiniPlayerWindow.cpp
         components/shared/PlaybackBar.h
         components/shared/PlaybackBar.cpp
+        styles/AppStyle.h
+        styles/AppStyle.cpp
 
 
     )

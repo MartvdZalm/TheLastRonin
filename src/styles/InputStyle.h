@@ -5,7 +5,7 @@
 
 class InputStyle
 {
-public:
+  public:
     static QString styleSheet();
 };
 

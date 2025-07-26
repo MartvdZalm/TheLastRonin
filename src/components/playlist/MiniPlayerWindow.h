@@ -1,33 +1,33 @@
 #ifndef MINIPLAYERWINDOW_H
 #define MINIPLAYERWINDOW_H
 
-#include <QWidget>
-#include <QLabel>
-#include <QPushButton>
-#include <QSlider>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QMediaPlayer>
+#include "../../model/Track.h"
 #include <QAudioOutput>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMediaPlayer>
 #include <QMouseEvent>
 #include <QPoint>
-#include "../../model/Track.h"
+#include <QPushButton>
+#include <QSlider>
+#include <QVBoxLayout>
+#include <QWidget>
 
 class MiniPlayerWindow : public QWidget
 {
     Q_OBJECT
 
-public:
+  public:
     explicit MiniPlayerWindow(QWidget* parent = nullptr);
     ~MiniPlayerWindow();
 
     void setPlayerData(QMediaPlayer* player, QAudioOutput* audioOutput);
-    void updateTrackInfo(const Track &track);
+    void updateTrackInfo(const Track& track);
     void updateProgress(qint64 position, qint64 duration);
     void updatePlayPauseButton(bool isPlaying);
     void updateVolumeSlider(int volume);
 
-signals:
+  signals:
     void playPauseClicked();
     void nextClicked();
     void prevClicked();
@@ -36,20 +36,20 @@ signals:
     void miniPlayerClosed();
     void expandToFullPlayer();
 
-protected:
+  protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
     void closeEvent(QCloseEvent* event) override;
 
-private slots:
+  private slots:
     void onPlayPauseClicked();
     void onNextClicked();
     void onPrevClicked();
     void onProgressSliderMoved(int position);
     void onVolumeSliderChanged(int volume);
 
-private:
+  private:
     void setupUI();
     void setStyle();
     void styleButton(QPushButton* button, const QString& iconPath = "");

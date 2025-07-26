@@ -1,26 +1,26 @@
 #ifndef NAVIGATIONBAR_H
 #define NAVIGATIONBAR_H
 
-#include <QWidget>
-#include <QPushButton>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPushButton>
+#include <QWidget>
 
 class NavigationBar : public QWidget
 {
     Q_OBJECT
 
-public:
+  public:
     explicit NavigationBar(QWidget* parent = nullptr);
 
     void setBackEnabled(bool enabled);
     void setForwardEnabled(bool enabled);
 
-signals:
+  signals:
     void backClicked();
     void forwardClicked();
 
-private:
+  private:
     QPushButton* backButton;
     QPushButton* forwardButton;
 };

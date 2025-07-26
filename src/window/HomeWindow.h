@@ -1,31 +1,30 @@
 #ifndef HOMEWINDOW_H
 #define HOMEWINDOW_H
 
-#include "BaseWindow.h"
 #include "../components/home/PlaylistGrid.h"
 #include "../dao/PlaylistDAO.h"
 #include "../dao/TrackDAO.h"
-#include <QPushButton>
-#include <QLineEdit>
-#include <QGridLayout>
+#include "BaseWindow.h"
 #include <QComboBox>
+#include <QGridLayout>
+#include <QLineEdit>
+#include <QPushButton>
 
 class HomeWindow : public BaseWindow
 {
     Q_OBJECT
 
-public:
+  public:
     explicit HomeWindow(QWidget* parent = nullptr);
 
     void setupUI() override;
     void setupConnections() override;
-    void setStyle() override;
     void setupEvents() override;
 
-protected:
+  protected:
     void resizeEvent(QResizeEvent* event) override;
 
-private:
+  private:
     void showPlaylistDialog();
     void importPlaylistFromFolder();
     void searchPlaylists(const QString& query);

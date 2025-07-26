@@ -12,12 +12,16 @@ int main(int argc, char *argv[])
 
     DatabaseManager& db = DatabaseManager::instance();
 
-    if (db.openDatabase()) {
-        if (!db.initSchema()) {
+    if (db.openDatabase())
+    {
+        if (!db.initSchema())
+        {
             qCritical() << "Failed to initialize database schema.";
             return -1;
         }
-    } else {
+    }
+    else
+    {
         qCritical() << "Failed to open the database. Exiting.";
         return -1;
     }

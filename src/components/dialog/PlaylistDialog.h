@@ -1,16 +1,16 @@
 #ifndef PLAYLISTDIALOG_H
 #define PLAYLISTDIALOG_H
 
+#include "../../model/Playlist.h"
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include "../../model/Playlist.h"
 
 class PlaylistDialog : public QDialog
 {
     Q_OBJECT
 
-public:
+  public:
     PlaylistDialog(QWidget* parent = nullptr);
     PlaylistDialog(const Playlist& existingPlaylist, QWidget* parent = nullptr);
 
@@ -18,10 +18,10 @@ public:
     QString getDescription() const;
     QString getCoverImagePath() const;
 
-private slots:
+  private slots:
     void chooseCoverImage();
 
-private:
+  private:
     void setupUI();
     void populateFields(const Playlist& playlist);
 

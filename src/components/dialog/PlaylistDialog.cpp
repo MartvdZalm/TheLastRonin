@@ -1,19 +1,18 @@
 #include "PlaylistDialog.h"
 
-#include <QVBoxLayout>
+#include "../../styles/ButtonStyle.h"
 #include <QDialogButtonBox>
-#include <QPushButton>
 #include <QFileDialog>
 #include <QPixmap>
+#include <QPushButton>
+#include <QVBoxLayout>
 
-PlaylistDialog::PlaylistDialog(QWidget* parent)
-    : QDialog(parent)
+PlaylistDialog::PlaylistDialog(QWidget* parent) : QDialog(parent)
 {
     setupUI();
 }
 
-PlaylistDialog::PlaylistDialog(const Playlist& existingPlaylist, QWidget* parent)
-    : QDialog(parent)
+PlaylistDialog::PlaylistDialog(const Playlist& existingPlaylist, QWidget* parent) : QDialog(parent)
 {
     setupUI();
     populateFields(existingPlaylist);
@@ -29,6 +28,8 @@ void PlaylistDialog::setupUI()
     descriptionEdit = new QLineEdit;
 
     QPushButton* chooseImageBtn = new QPushButton("Choose Cover Image");
+    chooseImageBtn->setStyleSheet(ButtonStyle::styleSheet());
+
     QHBoxLayout* imageRow = new QHBoxLayout;
     imageRow->addWidget(chooseImageBtn);
     imageRow->addStretch();
@@ -41,6 +42,13 @@ void PlaylistDialog::setupUI()
     connect(chooseImageBtn, &QPushButton::clicked, this, &PlaylistDialog::chooseCoverImage);
 
     QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
+    QPushButton* okButton = buttons->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttons->button(QDialogButtonBox::Cancel);
+
+    okButton->setStyleSheet(ButtonStyle::styleSheet());
+    cancelButton->setStyleSheet(ButtonStyle::styleSheet());
+
     connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
@@ -81,7 +89,8 @@ QString PlaylistDialog::getCoverImagePath() const
 void PlaylistDialog::chooseCoverImage()
 {
     QString path = QFileDialog::getOpenFileName(this, "Choose Playlist Cover", "", "Images (*.png *.jpg *.jpeg)");
-    if (!path.isEmpty()) {
+    if (!path.isEmpty())
+    {
         coverImagePath = path;
         QPixmap pix(path);
         imagePreview->setPixmap(pix.scaled(imagePreview->size(), Qt::KeepAspectRatio));

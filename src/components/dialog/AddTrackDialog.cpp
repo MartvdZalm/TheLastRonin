@@ -1,16 +1,16 @@
 #include "AddTrackDialog.h"
 
-#include <QVBoxLayout>
-#include <QLineEdit>
-#include <QDialogButtonBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QFileInfo>
-#include <QFileDialog>
 #include "../../model/Track.h"
+#include "../../styles/ButtonStyle.h"
+#include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
 
-AddTrackDialog::AddTrackDialog(QWidget* parent)
-    : QDialog(parent)
+AddTrackDialog::AddTrackDialog(QWidget* parent) : QDialog(parent)
 {
     setupUI();
     this->setWindowTitle("Add Track");
@@ -24,9 +24,7 @@ void AddTrackDialog::setupUI()
     filePathInput = new QLineEdit(this);
     filePathInput->setReadOnly(true);
     chooseFileButton = new QPushButton("Choose Audio File...", this);
-
-    QPushButton* addButton = new QPushButton("Add", this);
-    QPushButton* cancelButton = new QPushButton("Cancel", this);
+    chooseFileButton->setStyleSheet(ButtonStyle::styleSheet());
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel("Title:"));
@@ -40,42 +38,51 @@ void AddTrackDialog::setupUI()
     fileRow->addWidget(chooseFileButton);
     layout->addLayout(fileRow);
 
-    QHBoxLayout* buttonRow = new QHBoxLayout;
-    buttonRow->addWidget(addButton);
-    buttonRow->addWidget(cancelButton);
-    layout->addLayout(buttonRow);
+    connect(chooseFileButton, &QPushButton::clicked, this,
+            [=]()
+            {
+                QString filePath = QFileDialog::getOpenFileName(
+                    this, "Choose Audio File", "",
+                    "Audio Files (*.mp3 *.wav);;MP3 Files (*.mp3);;WAV Files (*.wav);;All Files (*)");
 
-    connect(chooseFileButton, &QPushButton::clicked, this, [=]() {
-        QString filePath = QFileDialog::getOpenFileName(
-            this,
-            "Choose Audio File",
-            "",
-            "Audio Files (*.mp3 *.wav);;MP3 Files (*.mp3);;WAV Files (*.wav);;All Files (*)"
-            );
+                if (!filePath.isEmpty())
+                {
+                    filePathInput->setText(filePath);
+                    selectedFilePath = filePath;
 
-        if (!filePath.isEmpty()) {
-            filePathInput->setText(filePath);
-            selectedFilePath = filePath;
+                    if (titleInput->text().isEmpty())
+                    {
+                        QFileInfo fileInfo(filePath);
+                        titleInput->setText(fileInfo.baseName());
+                    }
+                }
+            });
 
-            if (titleInput->text().isEmpty()) {
-                QFileInfo fileInfo(filePath);
-                titleInput->setText(fileInfo.baseName());
-            }
-        }
-    });
+    QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
-    connect(addButton, &QPushButton::clicked, this, [=]() {
-        if (!selectedFilePath.isEmpty()) {
-            accept();
-        }
-    });
+    QPushButton* okButton = buttons->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttons->button(QDialogButtonBox::Cancel);
+
+    okButton->setStyleSheet(ButtonStyle::styleSheet());
+    cancelButton->setStyleSheet(ButtonStyle::styleSheet());
+
+    connect(buttons, &QDialogButtonBox::accepted, this,
+            [=]()
+            {
+                if (!selectedFilePath.isEmpty())
+                {
+                    accept();
+                }
+            });
 
     connect(cancelButton, &QPushButton::clicked, this, &AddTrackDialog::reject);
+
+    layout->addWidget(buttons);
 }
 
 Track AddTrackDialog::getTrack() const
 {
-    return Track {
+    return Track{
         .title = titleInput->text(),
         .filePath = selectedFilePath,
         .artist = artistInput->text(),

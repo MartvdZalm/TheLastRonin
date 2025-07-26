@@ -1,9 +1,9 @@
 #include "UserDAO.h"
 
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
 #include <QCryptographicHash>
+#include <QDebug>
+#include <QSqlError>
+#include <QSqlQuery>
 
 UserDAO::UserDAO() : db(DatabaseManager::instance()) {}
 
@@ -22,7 +22,8 @@ bool UserDAO::insertUser(const User& user)
     query.bindValue(":password", hashedPassword);
     query.bindValue(":client_id", user.clientId);
 
-    if (!query.exec()) {
+    if (!query.exec())
+    {
         qWarning() << "Failed to insert user:" << query.lastError().text();
         return false;
     }

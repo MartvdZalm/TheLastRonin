@@ -1,12 +1,12 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
-#include <QString>
 #include <QSqlDatabase>
+#include <QString>
 
 class DatabaseManager
 {
-public:
+  public:
     DatabaseManager();
     static DatabaseManager& instance();
 
@@ -16,7 +16,7 @@ public:
     bool deleteUserData();
     bool executeQuery(const QString& query, const QMap<QString, QVariant>& bindings = {});
 
-private:
+  private:
     QSqlDatabase db;
 };
 

@@ -1,15 +1,15 @@
 #ifndef PLAYLISTGRID_H
 #define PLAYLISTGRID_H
 
-#include <QObject>
-#include <QGridLayout>
 #include "../../model/Playlist.h"
+#include <QGridLayout>
+#include <QObject>
 
 class PlaylistGrid : public QObject
 {
     Q_OBJECT
 
-public:
+  public:
     explicit PlaylistGrid(QGridLayout* layout, QObject* parent = nullptr);
 
     void setLayout(QGridLayout* newLayout);
@@ -17,7 +17,7 @@ public:
     void clearGrid();
     void updateColumns();
 
-private:
+  private:
     QGridLayout* layout;
     int currentRow = 0;
     int currentCol = 0;
@@ -26,9 +26,6 @@ private:
     const int minSpacing = 15;
 
     void calculateMaxColumns();
-
-signals:
-    void playlistClicked(const Playlist& playlist);
 };
 
 #endif // PLAYLISTGRID_H

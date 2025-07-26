@@ -5,7 +5,8 @@ PlaylistService::PlaylistService() {}
 
 bool PlaylistService::createPlaylist(const Playlist& playlist)
 {
-    if (playlist.name.isEmpty()) {
+    if (playlist.name.isEmpty())
+    {
         qDebug() << "Playlist name cannot be empty!";
         return false;
     }
@@ -15,7 +16,8 @@ bool PlaylistService::createPlaylist(const Playlist& playlist)
 
 bool PlaylistService::updatePlaylist(const Playlist& playlist)
 {
-    if (playlist.name.isEmpty()) {
+    if (playlist.name.isEmpty())
+    {
         qDebug() << "Playlist name cannot be empty!";
         return false;
     }

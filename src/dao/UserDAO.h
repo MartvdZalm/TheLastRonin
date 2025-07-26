@@ -6,12 +6,12 @@
 
 class UserDAO
 {
-public:
+  public:
     UserDAO();
 
     bool insertUser(const User& user);
 
-private:
+  private:
     DatabaseManager& db;
 };
 

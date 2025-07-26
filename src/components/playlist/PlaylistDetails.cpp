@@ -1,14 +1,13 @@
 #include "PlaylistDetails.h"
 #include <QVBoxLayout>
 
-PlaylistDetails::PlaylistDetails(const Playlist& playlist, QWidget* parent)
-    : QWidget(parent)
+PlaylistDetails::PlaylistDetails(const Playlist& playlist, QWidget* parent) : QWidget(parent)
 {
     this->setStyleSheet(R"(
         QLabel {
             font-weight: bold;
             color: white;
-background-color: transparent;
+            background-color: transparent;
         }
 
         #nameLabel {

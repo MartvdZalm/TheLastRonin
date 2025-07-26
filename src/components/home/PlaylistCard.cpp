@@ -1,15 +1,14 @@
 #include "PlaylistCard.h"
 
-#include <QVBoxLayout>
-#include <QPixmap>
-#include <QMouseEvent>
-#include <QGraphicsDropShadowEffect>
-#include <QPainter>
-#include <QLabel>
 #include "../../events/AppEvents.h"
+#include <QGraphicsDropShadowEffect>
+#include <QLabel>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPixmap>
+#include <QVBoxLayout>
 
-PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent)
-    : QWidget(parent), playlistData(playlist)
+PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(parent), playlistData(playlist)
 {
     const int cardWidth = 250;
     const int coverHeight = 200;
@@ -71,12 +70,16 @@ void PlaylistCard::mousePressEvent(QMouseEvent* event)
 
 bool PlaylistCard::eventFilter(QObject* watched, QEvent* event)
 {
-    if (watched == this) {
+    if (watched == this)
+    {
         QLabel* cover = qobject_cast<QLabel*>(watched);
 
-        if (event->type() == QEvent::Enter) {
+        if (event->type() == QEvent::Enter)
+        {
             previewLabel->setVisible(true);
-        } else if (event->type() == QEvent::Leave) {
+        }
+        else if (event->type() == QEvent::Leave)
+        {
             previewLabel->setVisible(false);
         }
     }

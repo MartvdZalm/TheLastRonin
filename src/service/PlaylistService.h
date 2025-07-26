@@ -6,7 +6,7 @@
 
 class PlaylistService
 {
-public:
+  public:
     PlaylistService();
 
     bool createPlaylist(const Playlist& playlist);
@@ -15,7 +15,7 @@ public:
     QVector<Playlist> getAllPlaylists();
     QVector<Playlist> searchPlaylists(const QString& query);
 
-private:
+  private:
     PlaylistDAO playlistDAO;
 };
 

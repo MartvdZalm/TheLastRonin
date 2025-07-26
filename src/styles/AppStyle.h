@@ -5,7 +5,7 @@
 
 class AppStyle
 {
-public:
+  public:
     static QString styleSheet();
 };
 

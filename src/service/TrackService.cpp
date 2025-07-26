@@ -5,7 +5,8 @@ TrackService::TrackService() {}
 
 bool TrackService::addTrackToPlaylist(int playlistId, const Track& track)
 {
-    if (track.title.isEmpty() || track.filePath.isEmpty()) {
+    if (track.title.isEmpty() || track.filePath.isEmpty())
+    {
         qDebug() << "Track title and file path are required.";
         return false;
     }

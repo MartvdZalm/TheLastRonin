@@ -5,7 +5,7 @@
 
 class ButtonStyle
 {
-public:
+  public:
     static QString styleSheet();
 };
 

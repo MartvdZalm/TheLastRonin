@@ -1,11 +1,15 @@
 #include "NavigationBar.h"
+
+#include "../../styles/ButtonStyle.h"
 #include <QIcon>
 
-NavigationBar::NavigationBar(QWidget* parent)
-    : QWidget(parent)
+NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
 {
     backButton = new QPushButton(QIcon(":/Images/ArrowBack"), "", this);
+    backButton->setStyleSheet(ButtonStyle::styleSheet());
+
     forwardButton = new QPushButton(QIcon(":/Images/ArrowForward"), "", this);
+    forwardButton->setStyleSheet(ButtonStyle::styleSheet());
 
     backButton->setToolTip("Go back");
     forwardButton->setToolTip("Go forward");

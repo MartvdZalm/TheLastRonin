@@ -1,19 +1,19 @@
 #ifndef ADDTRACKDIALOG_H
 #define ADDTRACKDIALOG_H
 
-#include <QLineEdit>
-#include <QDialog>
 #include "../../model/Track.h"
+#include <QDialog>
+#include <QLineEdit>
 
 class AddTrackDialog : public QDialog
 {
     Q_OBJECT
 
-public:
+  public:
     AddTrackDialog(QWidget* parent = nullptr);
     Track getTrack() const;
 
-private:
+  private:
     QLineEdit* titleInput;
     QLineEdit* artistInput;
     QLineEdit* filePathInput;

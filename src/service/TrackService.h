@@ -5,14 +5,14 @@
 
 class TrackService
 {
-public:
+  public:
     TrackService();
 
     bool addTrackToPlaylist(int playlistId, const Track& track);
     bool deleteTrack(int trackId);
     QVector<Track> getTracks(int playlistId);
 
-private:
+  private:
     TrackDAO trackDao;
 };
 

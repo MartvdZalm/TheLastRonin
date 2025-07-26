@@ -1,13 +1,21 @@
 #include "MainWindow.h"
+#include "../events/AppEvents.h"
 #include "HomeWindow.h"
 #include "PlaylistWindow.h"
-#include "../events/AppEvents.h"
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
-    stackedWidget = new QStackedWidget(this);
-    setCentralWidget(stackedWidget);
+    QWidget* container = new QWidget(this);
+    QVBoxLayout* mainLayout = new QVBoxLayout(container);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
+
+    stackedWidget = new QStackedWidget(container);
+
+    mainLayout->addWidget(stackedWidget);
+    mainLayout->addWidget(PlaybackBar::instance());
+
+    setCentralWidget(container);
 
     showHomePage();
 
@@ -27,10 +35,13 @@ MainWindow::~MainWindow() {}
 
 void MainWindow::setPage(BaseWindow* newPage, bool addToHistory)
 {
-    if (!newPage) return;
+    if (!newPage)
+        return;
 
-    if (stackedWidget->count() > 0) {
-        if (!addToHistory) {
+    if (stackedWidget->count() > 0)
+    {
+        if (!addToHistory)
+        {
             QWidget* oldPage = stackedWidget->currentWidget();
             stackedWidget->removeWidget(oldPage);
             oldPage->deleteLater();
@@ -53,7 +64,8 @@ void MainWindow::showPlaylistPage(const Playlist& playlist)
 
 void MainWindow::goBack()
 {
-    if (stackedWidget->count() > 1) {
+    if (stackedWidget->count() > 1)
+    {
         QWidget* oldPage = stackedWidget->currentWidget();
         stackedWidget->setCurrentIndex(stackedWidget->currentIndex() - 1);
         stackedWidget->removeWidget(oldPage);

@@ -1,7 +1,7 @@
 #include "PlaylistDAO.h"
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QDebug>
+#include <QSqlError>
+#include <QSqlQuery>
 
 PlaylistDAO::PlaylistDAO() : db(DatabaseManager::instance()) {}
 
@@ -17,7 +17,8 @@ int PlaylistDAO::insertPlaylist(const Playlist& playlist)
     query.bindValue(":description", playlist.description);
     query.bindValue(":coverImagePath", playlist.coverImagePath);
 
-    if (!query.exec()) {
+    if (!query.exec())
+    {
         qWarning() << "Failed to insert playlist:" << query.lastError().text();
         return -1;
     }
@@ -72,10 +73,12 @@ QVector<Playlist> PlaylistDAO::getAllPlaylists()
         ORDER BY p.id, t.trackNumber
     )");
 
-    while (query.next()) {
+    while (query.next())
+    {
         int playlistId = query.value(0).toInt();
 
-        if (!playlistMap.contains(playlistId)) {
+        if (!playlistMap.contains(playlistId))
+        {
             Playlist playlist;
             playlist.id = playlistId;
             playlist.name = query.value(1).toString();
@@ -86,7 +89,8 @@ QVector<Playlist> PlaylistDAO::getAllPlaylists()
             playlistMap[playlistId] = playlist;
         }
 
-        if (!query.value(6).isNull()) {
+        if (!query.value(6).isNull())
+        {
             Track track;
             track.id = query.value(6).toInt();
             track.title = query.value(7).toString();
@@ -102,8 +106,6 @@ QVector<Playlist> PlaylistDAO::getAllPlaylists()
     return playlistMap.values().toVector();
 }
 
-
-
 QVector<Playlist> PlaylistDAO::searchPlaylists(const QString& query)
 {
     QVector<Playlist> result;
@@ -118,12 +120,15 @@ QVector<Playlist> PlaylistDAO::searchPlaylists(const QString& query)
 
     QSqlQuery dbQuery;
     dbQuery.prepare(queryStr);
-    for (auto it = bindings.begin(); it != bindings.end(); ++it) {
+    for (auto it = bindings.begin(); it != bindings.end(); ++it)
+    {
         dbQuery.bindValue(it.key(), it.value());
     }
 
-    if (dbQuery.exec()) {
-        while (dbQuery.next()) {
+    if (dbQuery.exec())
+    {
+        while (dbQuery.next())
+        {
             Playlist p;
             p.id = dbQuery.value(0).toInt();
             p.name = dbQuery.value(1).toString();
@@ -131,7 +136,9 @@ QVector<Playlist> PlaylistDAO::searchPlaylists(const QString& query)
             p.coverImagePath = dbQuery.value(3).toString();
             result.append(p);
         }
-    } else {
+    }
+    else
+    {
         qDebug() << "Failed to search playlists:" << dbQuery.lastError();
     }
 

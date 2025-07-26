@@ -1,16 +1,16 @@
 #include "TrackList.h"
 
-#include <QListWidget>
-#include <QLabel>
-#include <QHBoxLayout>
 #include <QEvent>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QListWidget>
 
-TrackList::TrackList(const QVector<Track>& tracks, QWidget* parent)
-    : QListWidget(parent)
+TrackList::TrackList(const QVector<Track>& tracks, QWidget* parent) : QListWidget(parent)
 {
     setupStyle();
 
-    for (int i = 0; i < tracks.size(); ++i) {
+    for (int i = 0; i < tracks.size(); ++i)
+    {
         const Track& track = tracks[i];
         QListWidgetItem* item = new QListWidgetItem(this);
         item->setSizeHint(QSize(0, 50));
@@ -18,7 +18,6 @@ TrackList::TrackList(const QVector<Track>& tracks, QWidget* parent)
 
         setItemWidget(item, createTrackItemWidget(track, i + 1));
     }
-
 }
 
 void TrackList::addTrack(const Track& track)
@@ -58,7 +57,8 @@ QWidget* TrackList::createTrackItemWidget(const Track& track, int index)
     )");
 
     QString titleText = track.title;
-    if (!track.artist.isEmpty()) {
+    if (!track.artist.isEmpty())
+    {
         titleText += "\n<span style='color: #aaa; font-size: 12px;'>" + track.artist + "</span>";
     }
     titleLabel->setText(titleText);
@@ -95,21 +95,27 @@ void TrackList::updateItemWidgetStyle(QWidget* widget, bool hovered)
             background-color: %1;
             border-radius: 4px;
         }
-    )").arg(hovered ? "#383838" : "transparent"));
+    )")
+                              .arg(hovered ? "#383838" : "transparent"));
     widget->style()->unpolish(widget);
     widget->style()->polish(widget);
 }
 
 bool TrackList::eventFilter(QObject* obj, QEvent* event)
 {
-    if (event->type() == QEvent::Enter) {
+    if (event->type() == QEvent::Enter)
+    {
         QWidget* widget = qobject_cast<QWidget*>(obj);
-        if (widget) {
+        if (widget)
+        {
             updateItemWidgetStyle(widget, true);
         }
-    } else if (event->type() == QEvent::Leave) {
+    }
+    else if (event->type() == QEvent::Leave)
+    {
         QWidget* widget = qobject_cast<QWidget*>(obj);
-        if (widget) {
+        if (widget)
+        {
             updateItemWidgetStyle(widget, false);
         }
     }
@@ -118,7 +124,8 @@ bool TrackList::eventFilter(QObject* obj, QEvent* event)
 
 QString TrackList::formatDuration(qint64 milliseconds) const
 {
-    if (milliseconds <= 0) return "--:--";
+    if (milliseconds <= 0)
+        return "--:--";
 
     int seconds = milliseconds / 1000;
     int minutes = seconds / 60;

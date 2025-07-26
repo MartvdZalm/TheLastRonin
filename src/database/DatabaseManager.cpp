@@ -1,10 +1,10 @@
 #include "DatabaseManager.h"
 
-#include <QStandardPaths>
-#include <QDir>
 #include <QDebug>
+#include <QDir>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QStandardPaths>
 
 DatabaseManager::DatabaseManager()
 {
@@ -24,7 +24,8 @@ DatabaseManager& DatabaseManager::instance()
 
 bool DatabaseManager::openDatabase()
 {
-    if (!db.open()) {
+    if (!db.open())
+    {
         qDebug() << "Failed to open database:" << db.lastError();
         return false;
     }
@@ -38,9 +39,9 @@ void DatabaseManager::closeDatabase()
 
 bool DatabaseManager::initSchema()
 {
-        QSqlQuery query;
+    QSqlQuery query;
 
-        if (!query.exec(R"(
+    if (!query.exec(R"(
             CREATE TABLE IF NOT EXISTS playlists (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
@@ -49,12 +50,13 @@ bool DatabaseManager::initSchema()
                 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        )")) {
-            qDebug() << "Failed to create playlists table:" << query.lastError();
-            return false;
-        }
+        )"))
+    {
+        qDebug() << "Failed to create playlists table:" << query.lastError();
+        return false;
+    }
 
-        if (!query.exec(R"(
+    if (!query.exec(R"(
             CREATE TABLE IF NOT EXISTS tracks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
@@ -66,24 +68,26 @@ bool DatabaseManager::initSchema()
                 playlistId INTEGER,
                 FOREIGN KEY (playlistId) REFERENCES playlists(id)
             )
-        )")) {
-            qDebug() << "Failed to create tracks table:" << query.lastError();
-            return false;
-        }
+        )"))
+    {
+        qDebug() << "Failed to create tracks table:" << query.lastError();
+        return false;
+    }
 
-        if (!query.exec(R"(
+    if (!query.exec(R"(
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 email TEXT NOT NULL,
                 password TEXT NOT NULL,
                 client_id TEXT NOT NULL
             )
-        )")) {
-            qDebug() << "Failed to create users table:" << query.lastError();
-            return false;
-        }
+        )"))
+    {
+        qDebug() << "Failed to create users table:" << query.lastError();
+        return false;
+    }
 
-       return true;
+    return true;
 }
 
 bool DatabaseManager::deleteUserData()
@@ -91,15 +95,21 @@ bool DatabaseManager::deleteUserData()
     closeDatabase();
 
     QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/musicplayer.db";
-    if (QFile::exists(dbPath)) {
-        if (QFile::remove(dbPath)) {
+    if (QFile::exists(dbPath))
+    {
+        if (QFile::remove(dbPath))
+        {
             qDebug() << "User data deleted successfully.";
             return true;
-        } else {
+        }
+        else
+        {
             qDebug() << "Failed to delete database file.";
             return false;
         }
-    } else {
+    }
+    else
+    {
         qDebug() << "Database file does not exist.";
         return true;
     }
@@ -110,14 +120,15 @@ bool DatabaseManager::executeQuery(const QString& queryStr, const QMap<QString, 
     QSqlQuery query;
     query.prepare(queryStr);
 
-    for (auto it = bindings.begin(); it != bindings.end(); ++it) {
+    for (auto it = bindings.begin(); it != bindings.end(); ++it)
+    {
         query.bindValue(it.key(), it.value());
     }
 
-    if (!query.exec()) {
+    if (!query.exec())
+    {
         qDebug() << "Query failed:" << query.lastError();
         return false;
     }
     return true;
 }
-

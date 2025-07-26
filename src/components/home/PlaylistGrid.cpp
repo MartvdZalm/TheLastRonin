@@ -1,18 +1,17 @@
 #include "PlaylistGrid.h"
-#include "PlaylistCard.h"
 #include "../../window/PlaylistWindow.h"
+#include "PlaylistCard.h"
 
-PlaylistGrid::PlaylistGrid(QGridLayout* layout, QObject* parent)
-    : QObject(parent), layout(layout)
+PlaylistGrid::PlaylistGrid(QGridLayout* layout, QObject* parent) : QObject(parent), layout(layout)
 {
     layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     calculateMaxColumns();
-
 }
 
 void PlaylistGrid::calculateMaxColumns()
 {
-    if (!layout || !layout->parentWidget()) {
+    if (!layout || !layout->parentWidget())
+    {
         maxCols = 4;
         return;
     }
@@ -36,14 +35,17 @@ void PlaylistGrid::updateColumns()
     currentCol = 0;
 
     QList<QLayoutItem*> items;
-    while (QLayoutItem* item = layout->takeAt(0)) {
+    while (QLayoutItem* item = layout->takeAt(0))
+    {
         items.append(item);
     }
 
-    for (QLayoutItem* item : items) {
+    for (QLayoutItem* item : items)
+    {
         layout->addWidget(item->widget(), currentRow, currentCol);
         currentCol++;
-        if (currentCol >= maxCols) {
+        if (currentCol >= maxCols)
+        {
             currentCol = 0;
             currentRow++;
         }
@@ -56,7 +58,8 @@ void PlaylistGrid::addPlaylist(const Playlist& playlist)
     layout->addWidget(card, currentRow, currentCol);
 
     currentCol++;
-    if (currentCol >= maxCols) {
+    if (currentCol >= maxCols)
+    {
         currentCol = 0;
         currentRow++;
     }
@@ -64,12 +67,14 @@ void PlaylistGrid::addPlaylist(const Playlist& playlist)
 
 void PlaylistGrid::clearGrid()
 {
-    if (!layout) {
+    if (!layout)
+    {
         return;
     }
 
     QLayoutItem* item;
-    while ((item = layout->takeAt(0)) != nullptr) {
+    while ((item = layout->takeAt(0)) != nullptr)
+    {
         delete item->widget();
         delete item;
     }

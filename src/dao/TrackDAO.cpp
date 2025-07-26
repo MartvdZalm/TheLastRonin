@@ -1,7 +1,7 @@
 #include "TrackDAO.h"
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QDebug>
+#include <QSqlError>
+#include <QSqlQuery>
 
 TrackDAO::TrackDAO() : db(DatabaseManager::instance()) {}
 
@@ -21,7 +21,8 @@ bool TrackDAO::insertTrack(int playlistId, const Track& track)
     query.bindValue(":trackNumber", track.trackNumber);
     query.bindValue(":playlistId", playlistId);
 
-    if (!query.exec()) {
+    if (!query.exec())
+    {
         qDebug() << "Failed to insert track:" << query.lastError();
         return false;
     }
@@ -35,7 +36,8 @@ bool TrackDAO::deleteTrack(int trackId)
     query.prepare("DELETE FROM tracks WHERE id = :id");
     query.bindValue(":id", trackId);
 
-    if (!query.exec()) {
+    if (!query.exec())
+    {
         qDebug() << "Failed to delete track:" << query.lastError();
         return false;
     }
@@ -47,11 +49,14 @@ QVector<Track> TrackDAO::getTracksForPlaylist(int playlistId)
 {
     QVector<Track> tracks;
     QSqlQuery query;
-    query.prepare("SELECT id, title, filePath, artist, album, duration, trackNumber FROM tracks WHERE playlistId = :playlistId");
+    query.prepare(
+        "SELECT id, title, filePath, artist, album, duration, trackNumber FROM tracks WHERE playlistId = :playlistId");
     query.bindValue(":playlistId", playlistId);
 
-    if (query.exec()) {
-        while (query.next()) {
+    if (query.exec())
+    {
+        while (query.next())
+        {
             Track track;
             track.id = query.value(0).toInt();
             track.title = query.value(1).toString();
@@ -62,7 +67,9 @@ QVector<Track> TrackDAO::getTracksForPlaylist(int playlistId)
             track.trackNumber = query.value(6).toInt();
             tracks.append(track);
         }
-    } else {
+    }
+    else
+    {
         qDebug() << "Failed to fetch tracks:" << query.lastError();
     }
 

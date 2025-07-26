@@ -1,22 +1,22 @@
 #ifndef PLAYLISTCARD_H
 #define PLAYLISTCARD_H
 
-#include <QWidget>
-#include <QLabel>
 #include "../../model/Playlist.h"
+#include <QLabel>
+#include <QWidget>
 
 class PlaylistCard : public QWidget
 {
     Q_OBJECT
 
-public:
+  public:
     explicit PlaylistCard(const Playlist& playlist, QWidget* parent = nullptr);
 
-protected:
+  protected:
     void mousePressEvent(QMouseEvent* event) override;
     bool eventFilter(QObject* watched, QEvent* event) override;
 
-private:
+  private:
     Playlist playlistData;
     QLabel* previewLabel;
 };

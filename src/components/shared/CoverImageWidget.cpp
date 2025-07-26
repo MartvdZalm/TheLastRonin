@@ -2,8 +2,7 @@
 
 #include <QVBoxLayout>
 
-CoverImageWidget::CoverImageWidget(const QString& imagePath, QWidget* parent)
-    : QWidget(parent)
+CoverImageWidget::CoverImageWidget(const QString& imagePath, QWidget* parent) : QWidget(parent)
 {
     imageLabel = new QLabel(this);
     imageLabel->setFixedSize(300, 300);

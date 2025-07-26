@@ -7,20 +7,19 @@
 class TrackList : public QListWidget
 {
     Q_OBJECT
-public:
+  public:
     explicit TrackList(const QVector<Track>& tracks, QWidget* parent = nullptr);
     void addTrack(const Track& track);
 
     void setupStyle();
     QWidget* createTrackItemWidget(const Track& track, int index);
 
-protected:
+  protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
 
-private:
+  private:
     QString formatDuration(qint64 milliseconds) const;
     void updateItemWidgetStyle(QWidget* widget, bool hovered);
-
 };
 
 #endif // TRACKLIST_H

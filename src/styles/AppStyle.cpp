@@ -1,11 +1,8 @@
 #include "AppStyle.h"
-#include "ButtonStyle.h"
-#include "InputStyle.h"
-#include "ComboBoxStyle.h"
 
 QString AppStyle::styleSheet()
 {
-    QString base = R"(
+    return R"(
         QScrollBar:vertical {
             background: #2c2c2c;
             width: 12px;
@@ -23,9 +20,4 @@ QString AppStyle::styleSheet()
             image: url(:/Images/ArrowDown);
         }
     )";
-
-    return base +
-           InputStyle::styleSheet() +
-           ButtonStyle::styleSheet() +
-           ComboBoxStyle::styleSheet();
 }
