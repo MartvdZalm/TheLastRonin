@@ -66,6 +66,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         components/shared/PlaybackBar.cpp
         styles/AppStyle.h
         styles/AppStyle.cpp
+        styles/SliderStyle.h
+        styles/SliderStyle.cpp
 
 
     )

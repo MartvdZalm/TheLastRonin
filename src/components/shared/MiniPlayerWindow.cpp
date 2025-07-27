@@ -4,6 +4,9 @@
 #include <QCloseEvent>
 #include <QFile>
 #include <QScreen>
+#include "PlaybackBar.h"
+#include "../../styles/ButtonStyle.h"
+#include "../../styles/SliderStyle.h"
 
 MiniPlayerWindow::MiniPlayerWindow(QWidget* parent)
     : QWidget(parent), playerRef(nullptr), audioOutputRef(nullptr), isDragging(false)
@@ -13,9 +16,8 @@ MiniPlayerWindow::MiniPlayerWindow(QWidget* parent)
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     this->setMaximumWidth(250);
     this->adjustSize();
-
     this->setupUI();
-    this->setStyle();
+    this->setupConnections();
 
     QScreen* screen = QApplication::primaryScreen();
     QRect screenRect = screen->availableGeometry();
@@ -32,6 +34,12 @@ void MiniPlayerWindow::setupUI()
 
     QWidget* contentWidget = new QWidget(this);
     contentWidget->setObjectName("contentWidget");
+    contentWidget->setStyleSheet(R"(
+        #contentWidget {
+            background-color: rgba(42, 42, 42, 230);
+            border-radius: 12px;
+        }
+    )");
 
     QVBoxLayout* contentLayout = new QVBoxLayout(contentWidget);
     contentLayout->setContentsMargins(12, 12, 12, 12);
@@ -42,17 +50,22 @@ void MiniPlayerWindow::setupUI()
     songLabel->setWordWrap(true);
     songLabel->setMinimumHeight(40);
     songLabel->setText(track.title);
-    songLabel->setObjectName("songLabel");
+    songLabel->setStyleSheet("color: white;");
 
     QHBoxLayout* controlsLayout = new QHBoxLayout;
     controlsLayout->setSpacing(6);
 
     prevButton = new QPushButton(this);
+    prevButton->setIcon(QIcon(":/Images/Prev"));
+    prevButton->setStyleSheet(ButtonStyle::primary());
+
     playPauseButton = new QPushButton(this);
+    playPauseButton->setIcon(QIcon(":/Images/Pause"));
+    playPauseButton->setStyleSheet(ButtonStyle::primary());
+
     nextButton = new QPushButton(this);
-    styleButton(prevButton, ":/Images/Prev");
-    styleButton(playPauseButton, ":/Images/Pause");
-    styleButton(nextButton, ":/Images/Next");
+    nextButton->setIcon(QIcon(":/Images/Next"));
+    nextButton->setStyleSheet(ButtonStyle::primary());
 
     controlsLayout->addStretch();
     controlsLayout->addWidget(prevButton);
@@ -63,6 +76,7 @@ void MiniPlayerWindow::setupUI()
     progressSlider = new QSlider(Qt::Horizontal, this);
     progressSlider->setRange(0, 100);
     progressSlider->setValue(0);
+    progressSlider->setStyleSheet(SliderStyle::primary());
 
     QHBoxLayout* volumeLayout = new QHBoxLayout;
     volumeLayout->setSpacing(4);
@@ -70,12 +84,14 @@ void MiniPlayerWindow::setupUI()
 
     volumeButton = new QPushButton(this);
     volumeButton->setFixedSize(20, 20);
-    this->styleButton(volumeButton, ":/Images/Volume");
+    volumeButton->setIcon(QIcon(":/Images/Volume"));
+    volumeButton->setStyleSheet(ButtonStyle::primary());
 
     volumeSlider = new QSlider(Qt::Horizontal, this);
     volumeSlider->setRange(0, 100);
     volumeSlider->setValue(50);
     volumeSlider->setFixedSize(80, 20);
+    volumeSlider->setStyleSheet(SliderStyle::primary());
 
     volumeLayout->addStretch();
     volumeLayout->addWidget(volumeButton);
@@ -83,9 +99,11 @@ void MiniPlayerWindow::setupUI()
 
     QHBoxLayout* windowLayout = new QHBoxLayout;
     windowLayout->setAlignment(Qt::AlignRight);
+
     closeButton = new QPushButton(this);
     closeButton->setFixedSize(20, 20);
-    this->styleButton(closeButton, ":/Images/Close");
+    closeButton->setIcon(QIcon(":/Images/Close"));
+    closeButton->setStyleSheet(ButtonStyle::primary());
     windowLayout->addWidget(closeButton);
 
     contentLayout->addLayout(windowLayout);
@@ -96,81 +114,16 @@ void MiniPlayerWindow::setupUI()
     contentLayout->addStretch();
 
     rootLayout->addWidget(contentWidget);
+}
 
+void MiniPlayerWindow::setupConnections()
+{
     connect(playPauseButton, &QPushButton::clicked, this, &MiniPlayerWindow::onPlayPauseClicked);
     connect(nextButton, &QPushButton::clicked, this, &MiniPlayerWindow::onNextClicked);
     connect(prevButton, &QPushButton::clicked, this, &MiniPlayerWindow::onPrevClicked);
     connect(progressSlider, &QSlider::sliderMoved, this, &MiniPlayerWindow::onProgressSliderMoved);
     connect(volumeSlider, &QSlider::valueChanged, this, &MiniPlayerWindow::onVolumeSliderChanged);
     connect(closeButton, &QPushButton::clicked, this, &QWidget::close);
-}
-
-void MiniPlayerWindow::setStyle()
-{
-    setStyleSheet(R"(
-        #contentWidget {
-            background-color: rgba(42, 42, 42, 230);
-            border-radius: 12px;
-        }
-
-        QPushButton {
-            background-color: rgba(74, 144, 226, 180);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        QPushButton:hover {
-            background-color: rgba(90, 160, 242, 200);
-        }
-
-        QPushButton:pressed {
-            background-color: rgba(58, 128, 210, 180);
-        }
-
-        QLabel {
-            color: #e0e0e0;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        QSlider {
-            height: 4px;
-        }
-
-        QSlider::groove:horizontal {
-            background: rgba(56, 56, 56, 180);
-            height: 4px;
-            border-radius: 2px;
-        }
-
-        QSlider::handle:horizontal {
-            background: #4a90e2;
-            width: 8px;
-            height: 8px;
-            margin: -2px 0;
-            border-radius: 4px;
-        }
-
-        QSlider::sub-page:horizontal {
-            background: #4a90e2;
-            border-radius: 2px;
-        }
-
-        #songLabel {
-            font-size: 16px;
-        }
-    )");
-}
-
-void MiniPlayerWindow::styleButton(QPushButton* button, const QString& iconPath)
-{
-    if (!iconPath.isEmpty())
-    {
-        button->setIcon(QIcon(iconPath));
-    }
-    button->setObjectName("iconButton");
 }
 
 void MiniPlayerWindow::setPlayerData(QMediaPlayer* player, QAudioOutput* audioOutput)

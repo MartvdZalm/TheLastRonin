@@ -1,6 +1,7 @@
 #include "PlaybackBar.h"
 
 #include "../../styles/ButtonStyle.h"
+#include "../../styles/SliderStyle.h"
 #include <QTimer>
 
 PlaybackBar::PlaybackBar(QWidget* parent)
@@ -87,28 +88,7 @@ void PlaybackBar::setupUI()
     volumeSlider->setRange(0, 100);
     volumeSlider->setValue(storedVolume);
     volumeSlider->setFixedWidth(100);
-    volumeSlider->setStyleSheet(R"(
-        QSlider {
-            background-color: #2a2a2a;
-        }
-
-        QSlider::groove:horizontal {
-            background: #383838;
-            height: 4px;
-            border-radius: 2px;
-        }
-        QSlider::handle:horizontal {
-            background: #4a90e2;
-            width: 10px;
-            height: 10px;
-            margin: -3px 0;
-            border-radius: 5px;
-        }
-        QSlider::sub-page:horizontal {
-            background: #4a90e2;
-            border-radius: 2px;
-        }
-    )");
+    volumeSlider->setStyleSheet(SliderStyle::primary());
 
     miniPlayerToggleButton = new QPushButton(this);
     miniPlayerToggleButton->setIcon(QIcon(":/Images/PictureInPicture"));
@@ -134,30 +114,7 @@ void PlaybackBar::setupUI()
     progressSlider = new QSlider(Qt::Horizontal, this);
     progressSlider->setRange(0, 100);
     progressSlider->setValue(0);
-    progressSlider->setStyleSheet(R"(
-        QSlider {
-            height: 6px;
-        }
-
-        QSlider::groove:horizontal {
-            background: #383838;
-            height: 6px;
-            border-radius: 3px;
-        }
-
-        QSlider::handle:horizontal {
-            background: #4a90e2;
-            width: 12px;
-            height: 12px;
-            margin: -3px 0;
-            border-radius: 6px;
-        }
-
-        QSlider::sub-page:horizontal {
-            background: #4a90e2;
-            border-radius: 3px;
-        }
-    )");
+    progressSlider->setStyleSheet(SliderStyle::primary());
 
     timeLabel = new QLabel("00:00 / 00:00", this);
     timeLabel->setStyleSheet("background-color: #2a2a2a; color: #888; font-size: 12px; padding-right: 10px;");
@@ -322,11 +279,13 @@ void PlaybackBar::toggleMiniPlayer()
         miniPlayer->updateProgress(player->position(), player->duration());
         miniPlayer->updateVolumeSlider(volumeSlider->value());
 
-        connect(miniPlayer, &MiniPlayerWindow::playPauseClicked, this, [this]() { pausePlayButton->click(); });
+        connect(miniPlayer, &MiniPlayerWindow::playPauseClicked, this, [this]() { this->pausePlayButton->click(); });
 
-        connect(miniPlayer, &MiniPlayerWindow::nextClicked, this, [this]() { nextButton->click(); });
+        connect(miniPlayer, &MiniPlayerWindow::nextClicked, this, [this]() { this->nextButton->click(); });
 
-        connect(miniPlayer, &MiniPlayerWindow::prevClicked, this, [this]() { prevButton->click(); });
+        connect(miniPlayer, &MiniPlayerWindow::prevClicked, this, [this]() { this->prevButton->click(); });
+
+        connect(miniPlayer, &MiniPlayerWindow::muteClicked, this, [this]() { this->muteButton->click(); });
 
         connect(miniPlayer, &MiniPlayerWindow::progressChanged, this,
                 [this](int position)
