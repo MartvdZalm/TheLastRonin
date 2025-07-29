@@ -7,20 +7,25 @@ NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
 {
     backButton = new QPushButton(QIcon(":/Images/ArrowBack"), "", this);
     backButton->setStyleSheet(ButtonStyle::primary());
+    backButton->setToolTip("Go back");
+    backButton->setFixedSize(40, 40);
 
     forwardButton = new QPushButton(QIcon(":/Images/ArrowForward"), "", this);
     forwardButton->setStyleSheet(ButtonStyle::primary());
-
-    backButton->setToolTip("Go back");
     forwardButton->setToolTip("Go forward");
-
-    backButton->setFixedSize(40, 40);
     forwardButton->setFixedSize(40, 40);
 
-    auto layout = new QHBoxLayout(this);
+    settingsButton = new QPushButton(QIcon(":/Images/Settings"), "", this);
+    settingsButton->setStyleSheet(ButtonStyle::primary());
+    settingsButton->setToolTip("Settings");
+    settingsButton->setFixedSize(40, 40);
+
+    QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(backButton);
     layout->addWidget(forwardButton);
     layout->addStretch();
+    layout->addWidget(settingsButton);
+
     layout->setContentsMargins(5, 5, 5, 5);
     layout->setSpacing(5);
     setLayout(layout);
@@ -29,6 +34,7 @@ NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
 
     connect(backButton, &QPushButton::clicked, this, &NavigationBar::backClicked);
     connect(forwardButton, &QPushButton::clicked, this, &NavigationBar::forwardClicked);
+    connect(settingsButton, &QPushButton::clicked, this, &NavigationBar::settingsClicked);
 }
 
 void NavigationBar::setBackEnabled(bool enabled)

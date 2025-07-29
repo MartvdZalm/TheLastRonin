@@ -3,6 +3,8 @@
 #include "styles/AppStyle.h"
 #include "window/MainWindow.h"
 #include "database/DatabaseManager.h"
+#include "dao/SettingsDAO.h"
+#include "service/LanguageService.h"
 
 int main(int argc, char *argv[])
 {
@@ -24,6 +26,13 @@ int main(int argc, char *argv[])
     {
         qCritical() << "Failed to open the database. Exiting.";
         return -1;
+    }
+
+    SettingsDAO settingsDAO;
+    QString savedLanguage = settingsDAO.getSetting("language");
+    if (!savedLanguage.isEmpty())
+    {
+        LanguageService::instance().loadLanguage(savedLanguage);
     }
 
     MainWindow window;

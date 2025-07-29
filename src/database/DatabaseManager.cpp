@@ -87,6 +87,37 @@ bool DatabaseManager::initSchema()
         return false;
     }
 
+    if (!query.exec(R"(
+        CREATE TABLE IF NOT EXISTS settings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            key TEXT NOT NULL UNIQUE,
+            value TEXT,
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    )"))
+    {
+        qDebug() << "Failed to create settings table:" << query.lastError();
+        return false;
+    }
+
+    if (!query.exec("SELECT COUNT(*) FROM settings"))
+    {
+        qDebug() << "Failed to check settings count:" << query.lastError();
+        return false;
+    }
+
+    query.next();
+    int settingsCount = query.value(0).toInt();
+
+    if (settingsCount == 0)
+    {
+        if (!query.exec("INSERT INTO settings (key, value) VALUES ('language', 'English')"))
+        {
+            qDebug() << "Failed to insert default language setting:" << query.lastError();
+        }
+    }
+
     return true;
 }
 

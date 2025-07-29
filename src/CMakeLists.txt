@@ -68,6 +68,14 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         styles/AppStyle.cpp
         styles/SliderStyle.h
         styles/SliderStyle.cpp
+        window/SettingsWindow.cpp
+        window/SettingsWindow.h
+        styles/ListStyle.h
+        styles/ListStyle.cpp
+        dao/SettingsDAO.cpp
+        dao/SettingsDAO.h
+        service/LanguageService.h
+        service/LanguageService.cpp
 
 
     )

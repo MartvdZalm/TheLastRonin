@@ -39,8 +39,10 @@ void HomeWindow::setupUI()
                     mainWindow->goBack();
                 }
             });
-
     mainLayout->addWidget(navBar);
+
+    connect(navBar, &NavigationBar::settingsClicked, this,
+            [this]() { AppEvents::instance().notifyNavigateToSettings(); });
 
     QHBoxLayout* topBar = new QHBoxLayout;
     searchInput = new QLineEdit(this);

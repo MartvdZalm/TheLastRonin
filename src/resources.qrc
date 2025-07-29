@@ -13,5 +13,6 @@
         <file alias="Close">assets/images/close.png</file>
         <file alias="PictureInPicture">assets/images/PictureInPicture.png</file>
         <file alias="PictureInPictureClose">assets/images/PictureInPictureClose.png</file>
+        <file alias="Settings">assets/images/settings.png</file>
     </qresource>
 </RCC>

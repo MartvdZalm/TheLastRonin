@@ -285,8 +285,6 @@ void PlaybackBar::toggleMiniPlayer()
 
         connect(miniPlayer, &MiniPlayerWindow::prevClicked, this, [this]() { this->prevButton->click(); });
 
-        connect(miniPlayer, &MiniPlayerWindow::muteClicked, this, [this]() { this->muteButton->click(); });
-
         connect(miniPlayer, &MiniPlayerWindow::progressChanged, this,
                 [this](int position)
                 {

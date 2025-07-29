@@ -19,10 +19,12 @@ class NavigationBar : public QWidget
   signals:
     void backClicked();
     void forwardClicked();
+    void settingsClicked();
 
   private:
     QPushButton* backButton;
     QPushButton* forwardButton;
+    QPushButton* settingsButton;
 };
 
 #endif // NAVIGATIONBAR_H

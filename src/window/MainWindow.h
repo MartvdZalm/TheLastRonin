@@ -11,18 +11,18 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-  public:
-    explicit MainWindow(QWidget* parent = nullptr);
-    ~MainWindow();
-
-    void showHomePage();
-    void showPlaylistPage(const Playlist& playlist);
-
-    void goBack();
-
   private:
     QStackedWidget* stackedWidget;
 
+  public:
+    explicit MainWindow(QWidget* parent = nullptr);
+    ~MainWindow();
+    void goBack();
+
+  private:
+    void showHomePage();
+    void showPlaylistPage(const Playlist& playlist);
+    void showSettingsPage();
     void setPage(BaseWindow* newPage, bool addToHistory = true);
 };
 

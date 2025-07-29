@@ -2,6 +2,7 @@
 #include "../events/AppEvents.h"
 #include "HomeWindow.h"
 #include "PlaylistWindow.h"
+#include "SettingsWindow.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
@@ -28,7 +29,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
         }
     )");
 
+    connect(&AppEvents::instance(), &AppEvents::navigateToHome, this, &MainWindow::showHomePage);
     connect(&AppEvents::instance(), &AppEvents::navigateToPlaylist, this, &MainWindow::showPlaylistPage);
+    connect(&AppEvents::instance(), &AppEvents::navigateToSettings, this, &MainWindow::showSettingsPage);
 }
 
 MainWindow::~MainWindow() {}
@@ -60,6 +63,11 @@ void MainWindow::showHomePage()
 void MainWindow::showPlaylistPage(const Playlist& playlist)
 {
     setPage(new PlaylistWindow(playlist, this));
+}
+
+void MainWindow::showSettingsPage()
+{
+    setPage(new SettingsWindow(this), false);
 }
 
 void MainWindow::goBack()
