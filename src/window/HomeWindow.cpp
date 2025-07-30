@@ -46,30 +46,30 @@ void HomeWindow::setupUI()
 
     QHBoxLayout* topBar = new QHBoxLayout;
     searchInput = new QLineEdit(this);
-    searchInput->setPlaceholderText("Search playlists...");
+    searchInput->setPlaceholderText(tr("Search playlists..."));
     searchInput->setClearButtonEnabled(true);
     searchInput->setStyleSheet(InputStyle::primary());
     topBar->addWidget(searchInput);
     mainLayout->addLayout(topBar);
 
     QHBoxLayout* sortFilterBar = new QHBoxLayout;
-    deleteDataBtn = new QPushButton("Delete Data", this);
+    deleteDataBtn = new QPushButton(tr("Delete Data"), this);
     deleteDataBtn->setStyleSheet(ButtonStyle::remove());
     sortFilterBar->addWidget(deleteDataBtn);
 
-    addPlaylistBtn = new QPushButton("Add Playlist", this);
+    addPlaylistBtn = new QPushButton(tr("Add Playlist"), this);
     addPlaylistBtn->setStyleSheet(ButtonStyle::primary());
     sortFilterBar->addWidget(addPlaylistBtn);
 
-    importPlaylistBtn = new QPushButton("Import Playlist", this);
+    importPlaylistBtn = new QPushButton(tr("Import Playlist"), this);
     importPlaylistBtn->setStyleSheet(ButtonStyle::primary());
     sortFilterBar->addWidget(importPlaylistBtn);
 
     sortComboBox = new QComboBox(this);
-    sortComboBox->addItem("Choose Filter");
-    sortComboBox->addItem("Sort by Name");
-    sortComboBox->addItem("Sort by Creation Date");
-    sortComboBox->addItem("Sort by Recently Played");
+    sortComboBox->addItem(tr("Choose Filter"));
+    sortComboBox->addItem(tr("Sort by Name"));
+    sortComboBox->addItem(tr("Sort by Creation Date"));
+    sortComboBox->addItem(tr("Sort by Recently Played"));
     sortComboBox->setStyleSheet(ComboBoxStyle::primary());
     sortFilterBar->addWidget(sortComboBox);
     sortFilterBar->addStretch();
@@ -97,8 +97,8 @@ void HomeWindow::setupConnections()
             [this]()
             {
                 QMessageBox::StandardButton reply;
-                reply = QMessageBox::question(this, "Confirm Deletion",
-                                              "Are you sure you want to delete all your data? This cannot be undone.",
+                reply = QMessageBox::question(this, tr("Confirm Deletion"),
+                                              tr("Are you sure you want to delete all your data? This cannot be undone."),
                                               QMessageBox::Yes | QMessageBox::No);
 
                 if (reply == QMessageBox::Yes)
@@ -141,7 +141,7 @@ void HomeWindow::showPlaylistDialog()
 
 void HomeWindow::importPlaylistFromFolder()
 {
-    QString folderPath = QFileDialog::getExistingDirectory(this, "Select Playlist Folder");
+    QString folderPath = QFileDialog::getExistingDirectory(this, tr("Select Playlist Folder"));
 
     if (folderPath.isEmpty())
     {
@@ -167,7 +167,7 @@ void HomeWindow::importPlaylistFromFolder()
 
     if (audioFiles.isEmpty())
     {
-        QMessageBox::warning(this, "No Tracks Found", "No audio files were found in the selected folder.");
+        QMessageBox::warning(this, tr("No Tracks Found"), tr("No audio files were found in the selected folder."));
         return;
     }
 
@@ -198,17 +198,17 @@ void HomeWindow::onSortChanged(const QString& sortBy)
 {
     QList<Playlist> playlists = playlistDAO.getAllPlaylists();
 
-    if (sortBy == "Sort by Name")
+    if (sortBy == tr("Sort by Name"))
     {
         std::sort(playlists.begin(), playlists.end(),
                   [](const Playlist& a, const Playlist& b) { return a.name < b.name; });
     }
-    else if (sortBy == "Sort by Creation Date")
+    else if (sortBy == tr("Sort by Creation Date"))
     {
         std::sort(playlists.begin(), playlists.end(),
                   [](const Playlist& a, const Playlist& b) { return a.createdAt < b.createdAt; });
     }
-    else if (sortBy == "Sort by Recently Played")
+    else if (sortBy == tr("Sort by Recently Played"))
     {
         // std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
         //     return a.lastPlayed > b.lastPlayed;

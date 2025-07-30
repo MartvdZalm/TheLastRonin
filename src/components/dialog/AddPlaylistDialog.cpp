@@ -10,7 +10,7 @@
 
 AddPlaylistDialog::AddPlaylistDialog(QWidget* parent) : QDialog(parent)
 {
-    this->setWindowTitle("Add Playlist");
+    this->setWindowTitle(tr("Add Playlist"));
     this->setFixedWidth(350);
     this->setupUI();
 }
@@ -27,24 +27,24 @@ void AddPlaylistDialog::setupUI()
     mainLayout->setContentsMargins(20, 20, 20, 20);
     mainLayout->setSpacing(10);
 
-    mainLayout->addWidget(new QLabel("Playlist name:"));
+    mainLayout->addWidget(new QLabel(tr("Playlist name:")));
     nameEdit = new QLineEdit();
     nameEdit->setStyleSheet(InputStyle::primary());
     mainLayout->addWidget(nameEdit);
 
-    mainLayout->addWidget(new QLabel("Description (Optional):"));
+    mainLayout->addWidget(new QLabel(tr("Description (Optional):")));
     descriptionEdit = new QLineEdit();
     descriptionEdit->setStyleSheet(InputStyle::primary());
     mainLayout->addWidget(descriptionEdit);
 
     QHBoxLayout* imageRow = new QHBoxLayout();
-    QPushButton* chooseImageBtn = new QPushButton("Choose");
+    QPushButton* chooseImageBtn = new QPushButton(tr("Choose"));
     chooseImageBtn->setStyleSheet(ButtonStyle::primary());
     imageRow->addWidget(chooseImageBtn);
     imageRow->addStretch();
     mainLayout->addLayout(imageRow);
 
-    imagePreview = new QLabel("No image selected");
+    imagePreview = new QLabel(tr("No image selected"));
     imagePreview->setFixedSize(250, 120);
     imagePreview->setStyleSheet("border: 1px solid gray;");
     imagePreview->setAlignment(Qt::AlignCenter);
@@ -91,7 +91,7 @@ QString AddPlaylistDialog::getCoverImagePath() const
 
 void AddPlaylistDialog::chooseCoverImage()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Choose Playlist Cover", "", "Images (*.png *.jpg *.jpeg)");
+    QString path = QFileDialog::getOpenFileName(this, tr("Choose Playlist Cover"), "", tr("Images (*.png *.jpg *.jpeg)"));
     if (!path.isEmpty())
     {
         coverImagePath = path;

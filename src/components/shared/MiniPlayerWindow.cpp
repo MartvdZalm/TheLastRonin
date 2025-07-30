@@ -45,7 +45,7 @@ void MiniPlayerWindow::setupUI()
     contentLayout->setContentsMargins(12, 12, 12, 12);
     contentLayout->setSpacing(10);
 
-    songLabel = new QLabel("No song playing", this);
+    songLabel = new QLabel(tr("No song playing"), this);
     songLabel->setAlignment(Qt::AlignCenter);
     songLabel->setWordWrap(true);
     songLabel->setMinimumHeight(40);

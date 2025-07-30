@@ -72,7 +72,7 @@ void PlaybackBar::setupUI()
     QHBoxLayout* centerRow = new QHBoxLayout();
     centerRow->setContentsMargins(0, 0, 0, 0);
 
-    songLabel = new QLabel("No song playing", this);
+    songLabel = new QLabel(tr("No song playing"), this);
     songLabel->setStyleSheet(
         "background-color: #2a2a2a; color: #4a90e2; font-size: 16px; font-weight: bold; padding-left: 10px;");
     songLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);

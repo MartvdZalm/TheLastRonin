@@ -13,7 +13,7 @@
 AddTrackDialog::AddTrackDialog(QWidget* parent) : QDialog(parent)
 {
     setupUI();
-    this->setWindowTitle("Add Track");
+    this->setWindowTitle(tr("Add Track"));
     this->setFixedWidth(500);
 }
 
@@ -23,15 +23,15 @@ void AddTrackDialog::setupUI()
     artistInput = new QLineEdit(this);
     filePathInput = new QLineEdit(this);
     filePathInput->setReadOnly(true);
-    chooseFileButton = new QPushButton("Choose Audio File...", this);
+    chooseFileButton = new QPushButton(tr("Choose Audio File..."), this);
     chooseFileButton->setStyleSheet(ButtonStyle::primary());
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(new QLabel("Title:"));
+    layout->addWidget(new QLabel(tr("Title:")));
     layout->addWidget(titleInput);
-    layout->addWidget(new QLabel("Artist:"));
+    layout->addWidget(new QLabel(tr("Artist:")));
     layout->addWidget(artistInput);
-    layout->addWidget(new QLabel("File:"));
+    layout->addWidget(new QLabel(tr("File:")));
 
     QHBoxLayout* fileRow = new QHBoxLayout;
     fileRow->addWidget(filePathInput);
@@ -42,8 +42,8 @@ void AddTrackDialog::setupUI()
             [=]()
             {
                 QString filePath = QFileDialog::getOpenFileName(
-                    this, "Choose Audio File", "",
-                    "Audio Files (*.mp3 *.wav);;MP3 Files (*.mp3);;WAV Files (*.wav);;All Files (*)");
+                    this, tr("Choose Audio File"), "",
+                    tr("Audio Files (*.mp3 *.wav);;MP3 Files (*.mp3);;WAV Files (*.wav);;All Files (*)"));
 
                 if (!filePath.isEmpty())
                 {

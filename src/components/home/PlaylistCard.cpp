@@ -42,7 +42,7 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(
     QString elidedText = metrics.elidedText(playlist.name, Qt::ElideRight, titleLabel->width() - 2);
     titleLabel->setText(elidedText);
 
-    previewLabel = new QLabel("Tracks: " + QString::number(playlist.tracks.size()), this);
+    previewLabel = new QLabel(tr("Tracks: ") + QString::number(playlist.tracks.size()), this);
     previewLabel->setAlignment(Qt::AlignCenter);
     previewLabel->setStyleSheet("background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px;");
     previewLabel->setVisible(false);

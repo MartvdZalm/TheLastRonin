@@ -40,13 +40,13 @@ void PlaylistWindow::setupUI()
 
     mainLayout->addWidget(navBar);
 
-    addTrackBtn = new QPushButton("Add Track");
+    addTrackBtn = new QPushButton(tr("Add Track"));
     addTrackBtn->setStyleSheet(ButtonStyle::primary());
 
-    editPlaylistBtn = new QPushButton("Edit Playlist");
+    editPlaylistBtn = new QPushButton(tr("Edit Playlist"));
     editPlaylistBtn->setStyleSheet(ButtonStyle::primary());
 
-    removePlaylistBtn = new QPushButton("Delete Playlist");
+    removePlaylistBtn = new QPushButton(tr("Delete Playlist"));
     removePlaylistBtn->setStyleSheet(ButtonStyle::remove());
     styleButton(removePlaylistBtn);
 
@@ -103,8 +103,8 @@ void PlaylistWindow::setupConnections()
             [this]()
             {
                 QMessageBox::StandardButton reply;
-                reply = QMessageBox::question(this, "Confirm Deletion",
-                                              "Are you sure you want to delete this playlist? This cannot be undone.",
+                reply = QMessageBox::question(this, tr("Confirm Deletion"),
+                                              tr("Are you sure you want to delete this playlist? This cannot be undone."),
                                               QMessageBox::Yes | QMessageBox::No);
 
                 if (reply == QMessageBox::Yes)
