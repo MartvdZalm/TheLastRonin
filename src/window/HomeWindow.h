@@ -2,8 +2,8 @@
 #define HOMEWINDOW_H
 
 #include "../components/home/PlaylistGrid.h"
-#include "../dao/PlaylistDAO.h"
-#include "../dao/TrackDAO.h"
+#include "../repository/PlaylistRepository.h"
+#include "../repository/TrackRepository.h"
 #include "BaseWindow.h"
 #include <QComboBox>
 #include <QGridLayout>
@@ -40,8 +40,8 @@ class HomeWindow : public BaseWindow
     QGridLayout* playlistGridLayout = nullptr;
     QComboBox* sortComboBox = nullptr;
 
-    PlaylistDAO playlistDAO;
-    TrackDAO trackDAO;
+    PlaylistRepository playlistRepository;
+    TrackRepository trackRepository;
 };
 
 #endif // HOMEWINDOW_H

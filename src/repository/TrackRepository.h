@@ -1,14 +1,14 @@
-#ifndef TRACKDAO_H
-#define TRACKDAO_H
+#ifndef TRACKREPOSITORY_H
+#define TRACKREPOSITORY_H
 
 #include "../database/DatabaseManager.h"
 #include "../model/Track.h"
 #include <QVector>
 
-class TrackDAO
+class TrackRepository
 {
   public:
-    TrackDAO();
+    TrackRepository();
 
     bool insertTrack(int playlistId, const Track& track);
     bool deleteTrack(int trackId);
@@ -17,4 +17,4 @@ class TrackDAO
   private:
     DatabaseManager& db;
 };
-#endif // TRACKDAO_H
+#endif // TRACKREPOSITORY_H

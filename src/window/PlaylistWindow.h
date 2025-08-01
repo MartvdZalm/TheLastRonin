@@ -6,9 +6,9 @@
 #include "../components/shared/CoverImageWidget.h"
 #include "../components/shared/MiniPlayerWindow.h"
 #include "../components/shared/PlaybackBar.h"
-#include "../dao/PlaylistDAO.h"
-#include "../dao/TrackDAO.h"
 #include "../model/Playlist.h"
+#include "../repository/PlaylistRepository.h"
+#include "../repository/TrackRepository.h"
 #include "BaseWindow.h"
 #include <QAudioOutput>
 #include <QLabel>
@@ -18,6 +18,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <optional>
+
 
 class PlaylistWindow : public BaseWindow
 {
@@ -42,8 +43,8 @@ class PlaylistWindow : public BaseWindow
     TrackList* trackList;
     int currentTrackIndex = 0;
 
-    TrackDAO trackDAO;
-    PlaylistDAO playlistDAO;
+    TrackRepository trackRepository;
+    PlaylistRepository playlistRepository;
 
     std::optional<Playlist> showEditPlaylistDialog();
     void playTrackAtIndex(int index);

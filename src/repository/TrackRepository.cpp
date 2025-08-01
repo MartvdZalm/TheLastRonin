@@ -1,11 +1,11 @@
-#include "TrackDAO.h"
+#include "TrackRepository.h"
 #include <QDebug>
 #include <QSqlError>
 #include <QSqlQuery>
 
-TrackDAO::TrackDAO() : db(DatabaseManager::instance()) {}
+TrackRepository::TrackRepository() : db(DatabaseManager::instance()) {}
 
-bool TrackDAO::insertTrack(int playlistId, const Track& track)
+bool TrackRepository::insertTrack(int playlistId, const Track& track)
 {
     QSqlQuery query;
     query.prepare(R"(
@@ -30,7 +30,7 @@ bool TrackDAO::insertTrack(int playlistId, const Track& track)
     return true;
 }
 
-bool TrackDAO::deleteTrack(int trackId)
+bool TrackRepository::deleteTrack(int trackId)
 {
     QSqlQuery query;
     query.prepare("DELETE FROM tracks WHERE id = :id");
@@ -45,7 +45,7 @@ bool TrackDAO::deleteTrack(int trackId)
     return true;
 }
 
-QVector<Track> TrackDAO::getTracksForPlaylist(int playlistId)
+QVector<Track> TrackRepository::getTracksForPlaylist(int playlistId)
 {
     QVector<Track> tracks;
     QSqlQuery query;

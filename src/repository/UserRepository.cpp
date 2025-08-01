@@ -1,13 +1,13 @@
-#include "UserDAO.h"
+#include "UserRepository.h"
 
 #include <QCryptographicHash>
 #include <QDebug>
 #include <QSqlError>
 #include <QSqlQuery>
 
-UserDAO::UserDAO() : db(DatabaseManager::instance()) {}
+UserRepository::UserRepository() : db(DatabaseManager::instance()) {}
 
-bool UserDAO::insertUser(const User& user)
+bool UserRepository::insertUser(const User& user)
 {
     QSqlQuery query;
     query.prepare(R"(

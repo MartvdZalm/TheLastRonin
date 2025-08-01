@@ -11,7 +11,7 @@ bool PlaylistService::createPlaylist(const Playlist& playlist)
         return false;
     }
 
-    return playlistDAO.insertPlaylist(playlist);
+    return playlistRepository.insertPlaylist(playlist);
 }
 
 bool PlaylistService::updatePlaylist(const Playlist& playlist)
@@ -22,20 +22,20 @@ bool PlaylistService::updatePlaylist(const Playlist& playlist)
         return false;
     }
 
-    return playlistDAO.updatePlaylist(playlist);
+    return playlistRepository.updatePlaylist(playlist);
 }
 
 bool PlaylistService::deletePlaylist(int playlistId)
 {
-    return playlistDAO.deletePlaylist(playlistId);
+    return playlistRepository.deletePlaylist(playlistId);
 }
 
 QVector<Playlist> PlaylistService::getAllPlaylists()
 {
-    return playlistDAO.getAllPlaylists();
+    return playlistRepository.getAllPlaylists();
 }
 
 QVector<Playlist> PlaylistService::searchPlaylists(const QString& query)
 {
-    return playlistDAO.searchPlaylists(query);
+    return playlistRepository.searchPlaylists(query);
 }

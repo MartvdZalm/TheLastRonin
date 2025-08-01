@@ -88,7 +88,7 @@ void HomeWindow::setupUI()
     mainLayout->addWidget(scrollArea);
     playlistGrid = new PlaylistGrid(playlistGridLayout, this);
 
-    updatePlaylistGrid(playlistDAO.getAllPlaylists());
+    updatePlaylistGrid(playlistRepository.getAllPlaylists());
 }
 
 void HomeWindow::setupConnections()
@@ -97,9 +97,10 @@ void HomeWindow::setupConnections()
             [this]()
             {
                 QMessageBox::StandardButton reply;
-                reply = QMessageBox::question(this, tr("Confirm Deletion"),
-                                              tr("Are you sure you want to delete all your data? This cannot be undone."),
-                                              QMessageBox::Yes | QMessageBox::No);
+                reply =
+                    QMessageBox::question(this, tr("Confirm Deletion"),
+                                          tr("Are you sure you want to delete all your data? This cannot be undone."),
+                                          QMessageBox::Yes | QMessageBox::No);
 
                 if (reply == QMessageBox::Yes)
                 {
@@ -120,7 +121,7 @@ void HomeWindow::setupConnections()
 void HomeWindow::setupEvents()
 {
     connect(&AppEvents::instance(), &AppEvents::playlistChanged, this,
-            [this]() { updatePlaylistGrid(playlistDAO.getAllPlaylists()); });
+            [this]() { updatePlaylistGrid(playlistRepository.getAllPlaylists()); });
 }
 
 void HomeWindow::showPlaylistDialog()
@@ -134,7 +135,7 @@ void HomeWindow::showPlaylistDialog()
             .coverImagePath = dialog.getCoverImagePath(),
         };
 
-        playlist.id = playlistDAO.insertPlaylist(playlist);
+        playlist.id = playlistRepository.insertPlaylist(playlist);
         playlistGrid->addPlaylist(playlist);
     }
 }
@@ -172,7 +173,7 @@ void HomeWindow::importPlaylistFromFolder()
     }
 
     Playlist playlist{.name = playlistName, .coverImagePath = coverImagePath};
-    playlist.id = playlistDAO.insertPlaylist(playlist);
+    playlist.id = playlistRepository.insertPlaylist(playlist);
 
     for (const QString& filePath : audioFiles)
     {
@@ -182,7 +183,7 @@ void HomeWindow::importPlaylistFromFolder()
             .filePath = filePath,
         };
 
-        trackDAO.insertTrack(playlist.id, track);
+        trackRepository.insertTrack(playlist.id, track);
     }
 
     playlistGrid->addPlaylist(playlist);
@@ -191,12 +192,12 @@ void HomeWindow::importPlaylistFromFolder()
 
 void HomeWindow::searchPlaylists(const QString& query)
 {
-    updatePlaylistGrid(playlistDAO.searchPlaylists(query));
+    updatePlaylistGrid(playlistRepository.searchPlaylists(query));
 }
 
 void HomeWindow::onSortChanged(const QString& sortBy)
 {
-    QList<Playlist> playlists = playlistDAO.getAllPlaylists();
+    QList<Playlist> playlists = playlistRepository.getAllPlaylists();
 
     if (sortBy == tr("Sort by Name"))
     {

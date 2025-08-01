@@ -1,14 +1,13 @@
-// SettingsDAO.h
-#ifndef SETTINGSDAO_H
-#define SETTINGSDAO_H
+#ifndef SETTINGSREPOSITORY_H
+#define SETTINGSREPOSITORY_H
 
 #include "../database/DatabaseManager.h"
 #include <QString>
 
-class SettingsDAO
+class SettingsRepository
 {
   public:
-    SettingsDAO();
+    SettingsRepository();
 
     QString getSetting(const QString& key);
     bool setSetting(const QString& key, const QString& value);
@@ -17,4 +16,4 @@ class SettingsDAO
     DatabaseManager& db;
 };
 
-#endif // SETTINGSDAO_H
+#endif // SETTINGSREPOSITORY_H

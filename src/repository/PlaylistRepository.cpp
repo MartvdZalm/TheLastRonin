@@ -1,11 +1,11 @@
-#include "PlaylistDAO.h"
+#include "PlaylistRepository.h"
 #include <QDebug>
 #include <QSqlError>
 #include <QSqlQuery>
 
-PlaylistDAO::PlaylistDAO() : db(DatabaseManager::instance()) {}
+PlaylistRepository::PlaylistRepository() : db(DatabaseManager::instance()) {}
 
-int PlaylistDAO::insertPlaylist(const Playlist& playlist)
+int PlaylistRepository::insertPlaylist(const Playlist& playlist)
 {
     QSqlQuery query;
     query.prepare(R"(
@@ -26,7 +26,7 @@ int PlaylistDAO::insertPlaylist(const Playlist& playlist)
     return query.lastInsertId().toInt();
 }
 
-bool PlaylistDAO::updatePlaylist(const Playlist& playlist)
+bool PlaylistRepository::updatePlaylist(const Playlist& playlist)
 {
     QMap<QString, QVariant> bindings;
     bindings[":name"] = playlist.name;
@@ -46,7 +46,7 @@ bool PlaylistDAO::updatePlaylist(const Playlist& playlist)
     return db.executeQuery(queryStr, bindings);
 }
 
-bool PlaylistDAO::deletePlaylist(int playlistId)
+bool PlaylistRepository::deletePlaylist(int playlistId)
 {
     QMap<QString, QVariant> bindings;
     bindings[":id"] = playlistId;
@@ -59,7 +59,7 @@ bool PlaylistDAO::deletePlaylist(int playlistId)
     return db.executeQuery(queryStr, bindings);
 }
 
-QVector<Playlist> PlaylistDAO::getAllPlaylists()
+QVector<Playlist> PlaylistRepository::getAllPlaylists()
 {
     QVector<Playlist> playlists;
     QMap<int, Playlist> playlistMap;
@@ -106,7 +106,7 @@ QVector<Playlist> PlaylistDAO::getAllPlaylists()
     return playlistMap.values().toVector();
 }
 
-QVector<Playlist> PlaylistDAO::searchPlaylists(const QString& query)
+QVector<Playlist> PlaylistRepository::searchPlaylists(const QString& query)
 {
     QVector<Playlist> result;
     QMap<QString, QVariant> bindings;

@@ -279,7 +279,7 @@ void SettingsWindow::onApplyClicked()
 
 void SettingsWindow::loadSettings()
 {
-    QString language = settingsDAO.getSetting("language");
+    QString language = settingsRepository.getSetting("language");
     if (!language.isEmpty())
     {
         int index = languageCombo->findText(language);
@@ -302,7 +302,7 @@ void SettingsWindow::loadSettings()
 void SettingsWindow::saveSettings()
 {
     QString selectedLanguage = languageCombo->currentText();
-    settingsDAO.setSetting("language", selectedLanguage);
+    settingsRepository.setSetting("language", selectedLanguage);
     LanguageService::instance().loadLanguage(selectedLanguage);
 }
 

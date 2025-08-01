@@ -1,7 +1,7 @@
 #ifndef TRACKSERVICE_H
 #define TRACKSERVICE_H
 
-#include "../dao/TrackDAO.h"
+#include "../repository/TrackRepository.h"
 
 class TrackService
 {
@@ -13,7 +13,7 @@ class TrackService
     QVector<Track> getTracks(int playlistId);
 
   private:
-    TrackDAO trackDao;
+    TrackRepository trackRepository;
 };
 
 #endif // TRACKSERVICE_H

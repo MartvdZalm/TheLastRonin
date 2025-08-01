@@ -56,7 +56,7 @@ void PlaylistWindow::setupUI()
     optionsRow->addWidget(removePlaylistBtn);
     optionsRow->addStretch();
 
-    playlistData.tracks = trackDAO.getTracksForPlaylist(playlistData.id);
+    playlistData.tracks = trackRepository.getTracksForPlaylist(playlistData.id);
     trackList = new TrackList(playlistData.tracks, this);
 
     coverImageWidget = new CoverImageWidget(playlistData.coverImagePath, this);
@@ -81,7 +81,7 @@ void PlaylistWindow::setupConnections()
                 {
                     Track newTrack = dialog.getTrack();
 
-                    trackDAO.insertTrack(playlistData.id, newTrack);
+                    trackRepository.insertTrack(playlistData.id, newTrack);
 
                     trackList->addTrack(newTrack);
                     playlistData.tracks.append(newTrack);
@@ -103,13 +103,14 @@ void PlaylistWindow::setupConnections()
             [this]()
             {
                 QMessageBox::StandardButton reply;
-                reply = QMessageBox::question(this, tr("Confirm Deletion"),
-                                              tr("Are you sure you want to delete this playlist? This cannot be undone."),
-                                              QMessageBox::Yes | QMessageBox::No);
+                reply =
+                    QMessageBox::question(this, tr("Confirm Deletion"),
+                                          tr("Are you sure you want to delete this playlist? This cannot be undone."),
+                                          QMessageBox::Yes | QMessageBox::No);
 
                 if (reply == QMessageBox::Yes)
                 {
-                    playlistDAO.deletePlaylist(playlistData.id);
+                    playlistRepository.deletePlaylist(playlistData.id);
                     AppEvents::instance().notifyPlaylistChanged();
                 }
             });
@@ -156,7 +157,7 @@ std::optional<Playlist> PlaylistWindow::showEditPlaylistDialog()
             .coverImagePath = dialog.getCoverImagePath(),
         };
 
-        playlistDAO.updatePlaylist(playlist);
+        playlistRepository.updatePlaylist(playlist);
         return playlist;
     }
 

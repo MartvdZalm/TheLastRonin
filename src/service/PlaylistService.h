@@ -1,8 +1,8 @@
 #ifndef PLAYLISTSERVICE_H
 #define PLAYLISTSERVICE_H
 
-#include "../dao/PlaylistDAO.h"
 #include "../model/Playlist.h"
+#include "../repository/PlaylistRepository.h"
 
 class PlaylistService
 {
@@ -16,7 +16,7 @@ class PlaylistService
     QVector<Playlist> searchPlaylists(const QString& query);
 
   private:
-    PlaylistDAO playlistDAO;
+    PlaylistRepository playlistRepository;
 };
 
 #endif // PLAYLISTSERVICE_H

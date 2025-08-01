@@ -1,12 +1,12 @@
 #include <QApplication>
 
+#include "database/DatabaseManager.h"
+#include "repository/SettingsRepository.h"
+#include "service/LanguageService.h"
 #include "styles/AppStyle.h"
 #include "window/MainWindow.h"
-#include "database/DatabaseManager.h"
-#include "dao/SettingsDAO.h"
-#include "service/LanguageService.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     app.setStyleSheet(AppStyle::styleSheet());
@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    SettingsDAO settingsDAO;
-    QString savedLanguage = settingsDAO.getSetting("language");
+    SettingsRepository SettingsRepository;
+    QString savedLanguage = SettingsRepository.getSetting("language");
     if (!savedLanguage.isEmpty())
     {
         LanguageService::instance().loadLanguage(savedLanguage);

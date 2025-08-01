@@ -1,6 +1,6 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
-#include "../dao/SettingsDAO.h"
+#include "../repository/SettingsRepository.h"
 #include "BaseWindow.h"
 #include <QComboBox>
 #include <QFrame>
@@ -70,7 +70,7 @@ class SettingsWindow : public BaseWindow
     QWidget* advancedPage;
 
     QComboBox* languageCombo;
-    SettingsDAO settingsDAO;
+    SettingsRepository settingsRepository;
 };
 
 #endif // SETTINGSWINDOW_H

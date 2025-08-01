@@ -37,14 +37,14 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         window/BaseWindow.cpp
         window/HomeWindow.h
         window/HomeWindow.cpp
-        dao/PlaylistDAO.h
-        dao/PlaylistDAO.cpp
+        repository/PlaylistRepository.h
+        repository/PlaylistRepository.cpp
         service/PlaylistService.h
         service/PlaylistService.cpp
         model/Playlist.h
         model/Track.h
-        dao/TrackDAO.h
-        dao/TrackDAO.cpp
+        repository/TrackRepository.h
+        repository/TrackRepository.cpp
         service/TrackService.h
         service/TrackService.cpp
         styles/ComboBoxStyle.h
@@ -53,9 +53,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         events/AppEvents.cpp
 
 
-        dao/UserDAO.h
+        repository/UserRepository.h
         model/User.h
-        dao/UserDAO.cpp
+        repository/UserRepository.cpp
         window/MainWindow.h
         window/MainWindow.cpp
         components/shared/NavigationBar.h
@@ -72,12 +72,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         window/SettingsWindow.h
         styles/ListStyle.h
         styles/ListStyle.cpp
-        dao/SettingsDAO.cpp
-        dao/SettingsDAO.h
+        repository/SettingsRepository.cpp
+        repository/SettingsRepository.h
         service/LanguageService.h
         service/LanguageService.cpp
-
-
     )
 else()
     add_executable(TheLastRonin

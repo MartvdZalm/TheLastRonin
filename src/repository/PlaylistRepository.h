@@ -1,5 +1,5 @@
-#ifndef PLAYLISTDAO_H
-#define PLAYLISTDAO_H
+#ifndef PLAYLISTREPOSITORY_H
+#define PLAYLISTREPOSITORY_H
 
 #include "../database/DatabaseManager.h"
 #include "../model/Playlist.h"
@@ -8,10 +8,10 @@
 #include <QVariant>
 #include <QVector>
 
-class PlaylistDAO
+class PlaylistRepository
 {
   public:
-    PlaylistDAO();
+    PlaylistRepository();
 
     int insertPlaylist(const Playlist& playlist);
     bool updatePlaylist(const Playlist& playlist);
@@ -23,4 +23,4 @@ class PlaylistDAO
     DatabaseManager& db;
 };
 
-#endif // PLAYLISTDAO_H
+#endif // PLAYLISTREPOSITORY_H

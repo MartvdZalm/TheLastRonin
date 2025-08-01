@@ -1,11 +1,11 @@
-#include "SettingsDAO.h"
+#include "SettingsRepository.h"
 #include <QDebug>
 #include <QSqlError>
 #include <QSqlQuery>
 
-SettingsDAO::SettingsDAO() : db(DatabaseManager::instance()) {}
+SettingsRepository::SettingsRepository() : db(DatabaseManager::instance()) {}
 
-QString SettingsDAO::getSetting(const QString& key)
+QString SettingsRepository::getSetting(const QString& key)
 {
     QMap<QString, QVariant> bindings;
     bindings[":key"] = key;
@@ -26,7 +26,7 @@ QString SettingsDAO::getSetting(const QString& key)
     return QString();
 }
 
-bool SettingsDAO::setSetting(const QString& key, const QString& value)
+bool SettingsRepository::setSetting(const QString& key, const QString& value)
 {
     QMap<QString, QVariant> bindings;
     bindings[":key"] = key;

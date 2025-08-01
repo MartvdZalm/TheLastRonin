@@ -11,15 +11,15 @@ bool TrackService::addTrackToPlaylist(int playlistId, const Track& track)
         return false;
     }
 
-    return trackDao.insertTrack(playlistId, track);
+    return trackRepository.insertTrack(playlistId, track);
 }
 
 bool TrackService::deleteTrack(int trackId)
 {
-    return trackDao.deleteTrack(trackId);
+    return trackRepository.deleteTrack(trackId);
 }
 
 QVector<Track> TrackService::getTracks(int playlistId)
 {
-    return trackDao.getTracksForPlaylist(playlistId);
+    return trackRepository.getTracksForPlaylist(playlistId);
 }
