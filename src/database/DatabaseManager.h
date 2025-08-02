@@ -1,23 +1,46 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include <QObject>
 #include <QSqlDatabase>
-#include <QString>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QMap>
+#include <QVariant>
 
-class DatabaseManager
+class DatabaseManager : public QObject
 {
+    Q_OBJECT
+
   public:
-    DatabaseManager();
     static DatabaseManager& instance();
 
-    bool openDatabase();
-    void closeDatabase();
-    bool initSchema();
-    bool deleteUserData();
-    bool executeQuery(const QString& query, const QMap<QString, QVariant>& bindings = {});
+    bool open();
+    void close();
+    bool isOpen() const;
+    QString databasePath() const;
+
+    // Core query execution
+    QSqlQuery executeQuery(const QString& queryStr, const QMap<QString, QVariant>& bindings = {});
+    bool execute(const QString& queryStr, const QMap<QString, QVariant>& bindings = {});
+
+    // Transaction support
+    bool beginTransaction();
+    bool commitTransaction();
+    bool rollbackTransaction();
+
+    // Utility methods
+    bool tableExists(const QString& tableName);
+    QSqlDatabase& database() { return m_db; }
 
   private:
-    QSqlDatabase db;
+    explicit DatabaseManager(QObject* parent = nullptr);
+    ~DatabaseManager();
+    DatabaseManager(const DatabaseManager&) = delete;
+    DatabaseManager& operator=(const DatabaseManager&) = delete;
+
+    QSqlDatabase m_db;
+    QString m_databasePath;
 };
 
 #endif // DATABASEMANAGER_H

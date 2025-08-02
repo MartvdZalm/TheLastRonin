@@ -1,6 +1,7 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
-#include "../repository/SettingsRepository.h"
+
+#include "../repository/SettingRepository.h"
 #include "BaseWindow.h"
 #include <QComboBox>
 #include <QFrame>
@@ -70,7 +71,7 @@ class SettingsWindow : public BaseWindow
     QWidget* advancedPage;
 
     QComboBox* languageCombo;
-    SettingsRepository settingsRepository;
+    SettingRepository settingRepository;
 };
 
 #endif // SETTINGSWINDOW_H

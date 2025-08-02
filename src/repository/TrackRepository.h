@@ -3,18 +3,21 @@
 
 #include "../database/DatabaseManager.h"
 #include "../model/Track.h"
-#include <QVector>
+#include "Repository.h"
+#include <QObject>
 
-class TrackRepository
+class TrackRepository : public QObject
 {
-  public:
-    TrackRepository();
+    Q_OBJECT
 
-    bool insertTrack(int playlistId, const Track& track);
-    bool deleteTrack(int trackId);
-    QVector<Track> getTracksForPlaylist(int playlistId);
+  public:
+    explicit TrackRepository(QObject* parent = nullptr);
+
+    bool save(Track* track);
+    std::unique_ptr<Track> find(int id);
+    QList<std::unique_ptr<Track>> findAll();
 
   private:
-    DatabaseManager& db;
+    std::shared_ptr<Repository<Track>> baseRepository;
 };
 #endif // TRACKREPOSITORY_H

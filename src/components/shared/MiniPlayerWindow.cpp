@@ -49,7 +49,7 @@ void MiniPlayerWindow::setupUI()
     songLabel->setAlignment(Qt::AlignCenter);
     songLabel->setWordWrap(true);
     songLabel->setMinimumHeight(40);
-    songLabel->setText(track.title);
+    songLabel->setText(track->getTitle());
     songLabel->setStyleSheet("color: white;");
 
     QHBoxLayout* controlsLayout = new QHBoxLayout;
@@ -132,10 +132,10 @@ void MiniPlayerWindow::setPlayerData(QMediaPlayer* player, QAudioOutput* audioOu
     audioOutputRef = audioOutput;
 }
 
-void MiniPlayerWindow::updateTrackInfo(const Track& track)
+void MiniPlayerWindow::updateTrackInfo(std::unique_ptr<Track> track)
 {
-    this->track = track;
-    songLabel->setText(track.title);
+    this->track = std::move(track);
+    songLabel->setText(this->track->getTitle());
 }
 
 void MiniPlayerWindow::updateProgress(qint64 position, qint64 duration)

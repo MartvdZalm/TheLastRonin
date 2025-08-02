@@ -80,11 +80,12 @@ void AddTrackDialog::setupUI()
     layout->addWidget(buttons);
 }
 
-Track AddTrackDialog::getTrack() const
-{
-    return Track{
-        .title = titleInput->text(),
-        .filePath = selectedFilePath,
-        .artist = artistInput->text(),
-    };
-}
+// Track AddTrackDialog::getTrack() const
+// {
+
+//     // return Track{
+//     //     .title = titleInput->text(),
+//     //     .filePath = selectedFilePath,
+//     //     .artist = artistInput->text(),
+//     // };
+// }

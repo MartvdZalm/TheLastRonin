@@ -9,6 +9,7 @@
 #include "../model/Playlist.h"
 #include "../repository/PlaylistRepository.h"
 #include "../repository/TrackRepository.h"
+
 #include "BaseWindow.h"
 #include <QAudioOutput>
 #include <QLabel>
@@ -33,7 +34,7 @@ class PlaylistWindow : public BaseWindow
     void setupEvents() override;
 
   private:
-    Playlist playlistData;
+    const Playlist& playlist;
     QPushButton* addTrackBtn;
     QPushButton* editPlaylistBtn;
     QPushButton* removePlaylistBtn;
@@ -42,9 +43,6 @@ class PlaylistWindow : public BaseWindow
     PlaybackBar* playbackBarWidget;
     TrackList* trackList;
     int currentTrackIndex = 0;
-
-    TrackRepository trackRepository;
-    PlaylistRepository playlistRepository;
 
     std::optional<Playlist> showEditPlaylistDialog();
     void playTrackAtIndex(int index);

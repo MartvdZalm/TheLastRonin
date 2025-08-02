@@ -68,10 +68,10 @@ void AddPlaylistDialog::setupUI()
 
 void AddPlaylistDialog::populateFields(const Playlist& playlist)
 {
-    nameEdit->setText(playlist.name);
-    descriptionEdit->setText(playlist.description);
-    coverImagePath = playlist.coverImagePath;
-    imagePreview->setPixmap(QPixmap(coverImagePath).scaled(imagePreview->size(), Qt::KeepAspectRatio));
+    // nameEdit->setText(playlist.name);
+    // descriptionEdit->setText(playlist.description);
+    // coverImagePath = playlist.coverImagePath;
+    // imagePreview->setPixmap(QPixmap(coverImagePath).scaled(imagePreview->size(), Qt::KeepAspectRatio));
 }
 
 QString AddPlaylistDialog::getName() const

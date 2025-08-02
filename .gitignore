@@ -5,6 +5,7 @@ build-*/
 *.dll
 *.so
 *.dylib
+*.vs
 
 *.autosave
 *.pro.user

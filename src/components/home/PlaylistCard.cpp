@@ -20,11 +20,11 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(
     cover->setFixedSize(cardWidth, coverHeight);
     cover->setAlignment(Qt::AlignCenter);
 
-    QPixmap pixmap(playlist.coverImagePath);
+    QPixmap pixmap(playlist.getCoverImagePath());
     cover->setPixmap(pixmap.scaled(cover->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
 
-    QLabel* titleLabel = new QLabel(playlist.name, this);
-    titleLabel->setToolTip(playlist.name);
+    QLabel* titleLabel = new QLabel(playlist.getName(), this);
+    titleLabel->setToolTip(playlist.getName());
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setFixedHeight(titleHeight);
     titleLabel->setStyleSheet(R"(

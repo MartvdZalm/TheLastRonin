@@ -1,4 +1,5 @@
 #include "SettingsWindow.h"
+
 #include "../events/AppEvents.h"
 #include "../service/LanguageService.h"
 #include "../styles/ButtonStyle.h"
@@ -12,6 +13,7 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QSplitter>
+#include "../model/Setting.h"
 
 SettingsWindow::SettingsWindow(QWidget* parent) : BaseWindow(parent)
 {
@@ -279,10 +281,11 @@ void SettingsWindow::onApplyClicked()
 
 void SettingsWindow::loadSettings()
 {
-    QString language = settingsRepository.getSetting("language");
-    if (!language.isEmpty())
+    std::unique_ptr<Setting> settingModel = settingRepository.findByKey("language");
+    
+    if (settingModel != nullptr)
     {
-        int index = languageCombo->findText(language);
+        int index = languageCombo->findText(settingModel->getValue());
         if (index >= 0)
         {
             languageCombo->setCurrentIndex(index);
@@ -302,7 +305,7 @@ void SettingsWindow::loadSettings()
 void SettingsWindow::saveSettings()
 {
     QString selectedLanguage = languageCombo->currentText();
-    settingsRepository.setSetting("language", selectedLanguage);
+    settingRepository.updateValueByKey("language", selectedLanguage);
     LanguageService::instance().loadLanguage(selectedLanguage);
 }
 

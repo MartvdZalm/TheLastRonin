@@ -18,8 +18,8 @@ class PlaybackBar : public QWidget
     Q_OBJECT
 
   private:
-    Playlist playlist;
-    Track currentTrack;
+    const Playlist& playlist;
+    const Track& currentTrack;
     QMediaPlayer* player;
     QAudioOutput* audioOutput;
     QLabel* songLabel;

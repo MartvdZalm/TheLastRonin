@@ -4,13 +4,14 @@
 #include "../components/shared/NavigationBar.h"
 #include "../events/AppEvents.h"
 #include "../styles/ButtonStyle.h"
+#include "../database/ORM.h"
 #include "MainWindow.h"
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QPixmap>
 #include <QTimer>
 
-PlaylistWindow::PlaylistWindow(const Playlist& playlist, QWidget* parent) : BaseWindow(parent), playlistData(playlist)
+PlaylistWindow::PlaylistWindow(const Playlist& playlist, QWidget* parent) : BaseWindow(parent), playlist(playlist)
 {
     this->setupUI();
     this->setupConnections();
@@ -20,7 +21,7 @@ PlaylistWindow::~PlaylistWindow() {}
 
 void PlaylistWindow::setupUI()
 {
-    this->setWindowTitle(playlistData.name);
+    this->setWindowTitle(playlist.getName());
     this->showMaximized();
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -56,19 +57,19 @@ void PlaylistWindow::setupUI()
     optionsRow->addWidget(removePlaylistBtn);
     optionsRow->addStretch();
 
-    playlistData.tracks = trackRepository.getTracksForPlaylist(playlistData.id);
-    trackList = new TrackList(playlistData.tracks, this);
+   /* playlistData.tracks = trackRepository.getTracksForPlaylist(playlistData.id);
+    trackList = new TrackList(playlistData.tracks, this);*/
 
-    coverImageWidget = new CoverImageWidget(playlistData.coverImagePath, this);
-    detailsWidget = new PlaylistDetails(playlistData, this);
+    //coverImageWidget = new CoverImageWidget(playlistData.coverImagePath, this);
+    //detailsWidget = new PlaylistDetails(playlistData, this);
 
     mainLayout->addWidget(coverImageWidget);
     mainLayout->addWidget(detailsWidget);
     mainLayout->addLayout(optionsRow);
     mainLayout->addWidget(trackList, 1);
 
-    playbackBarWidget = PlaybackBar::instance();
-    playbackBarWidget->updatePlaylist(playlistData);
+    //playbackBarWidget = PlaybackBar::instance();
+    //playbackBarWidget->updatePlaylist(playlistData);
 }
 
 void PlaylistWindow::setupConnections()
@@ -79,12 +80,12 @@ void PlaylistWindow::setupConnections()
                 AddTrackDialog dialog(this);
                 if (dialog.exec() == QDialog::Accepted)
                 {
-                    Track newTrack = dialog.getTrack();
+                    //Track newTrack = dialog.getTrack();
 
-                    trackRepository.insertTrack(playlistData.id, newTrack);
+                    //trackRepository.insertTrack(playlistData.id, newTrack);
 
-                    trackList->addTrack(newTrack);
-                    playlistData.tracks.append(newTrack);
+                    //trackList->addTrack(newTrack);
+                    //playlistData.tracks.append(newTrack);
                 }
             });
 
@@ -110,7 +111,7 @@ void PlaylistWindow::setupConnections()
 
                 if (reply == QMessageBox::Yes)
                 {
-                    playlistRepository.deletePlaylist(playlistData.id);
+                    //playlistRepository.deletePlaylist(playlistData.id);
                     AppEvents::instance().notifyPlaylistChanged();
                 }
             });
@@ -125,11 +126,11 @@ void PlaylistWindow::setupConnections()
     connect(playbackBarWidget, &PlaybackBar::nextClicked, this,
             [this]()
             {
-                if (currentTrackIndex < playlistData.tracks.size() - 1)
-                {
-                    currentTrackIndex++;
-                    playTrackAtIndex(currentTrackIndex);
-                }
+                //if (currentTrackIndex < playlistData.tracks.size() - 1)
+                //{
+                //    currentTrackIndex++;
+                //    playTrackAtIndex(currentTrackIndex);
+                //}
             });
 
     connect(playbackBarWidget, &PlaybackBar::prevClicked, this,
@@ -147,52 +148,52 @@ void PlaylistWindow::setupEvents() {}
 
 std::optional<Playlist> PlaylistWindow::showEditPlaylistDialog()
 {
-    AddPlaylistDialog dialog(playlistData, this);
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        Playlist playlist{
-            .id = playlistData.id,
-            .name = dialog.getName(),
-            .description = dialog.getDescription(),
-            .coverImagePath = dialog.getCoverImagePath(),
-        };
+    //AddPlaylistDialog dialog(playlistData, this);
+    //if (dialog.exec() == QDialog::Accepted)
+    //{
+    //    Playlist playlist{
+    //        .id = playlistData.id,
+    //        .name = dialog.getName(),
+    //        .description = dialog.getDescription(),
+    //        .coverImagePath = dialog.getCoverImagePath(),
+    //    };
 
-        playlistRepository.updatePlaylist(playlist);
-        return playlist;
-    }
+    //    playlistRepository.updatePlaylist(playlist);
+    //    return playlist;
+    //}
 
     return std::nullopt;
 }
 
 void PlaylistWindow::playTrackAtIndex(int index)
 {
-    if (index >= 0 && index < playlistData.tracks.size())
-    {
-        currentTrackIndex = index;
+    //if (index >= 0 && index < playlistData.tracks.size())
+    //{
+    //    currentTrackIndex = index;
 
-        playbackBarWidget->playTrackAtIndex(index);
+    //    playbackBarWidget->playTrackAtIndex(index);
 
-        trackList->setCurrentRow(index);
-    }
+    //    trackList->setCurrentRow(index);
+    //}
 }
 
 void PlaylistWindow::refreshMetadata(const Playlist& updatedPlaylist)
 {
-    playlistData.name = updatedPlaylist.name;
-    playlistData.description = updatedPlaylist.description;
-    playlistData.coverImagePath = updatedPlaylist.coverImagePath;
+    //playlistData.name = updatedPlaylist.name;
+    //playlistData.description = updatedPlaylist.description;
+    //playlistData.coverImagePath = updatedPlaylist.coverImagePath;
 
-    setWindowTitle(playlistData.name);
+    //setWindowTitle(playlistData.name);
 
-    if (detailsWidget)
-    {
-        detailsWidget->updateDetails(playlistData);
-    }
+    //if (detailsWidget)
+    //{
+    //    detailsWidget->updateDetails(playlistData);
+    //}
 
-    if (coverImageWidget)
-    {
-        coverImageWidget->setImage(playlistData.coverImagePath);
-    }
+    //if (coverImageWidget)
+    //{
+    //    coverImageWidget->setImage(playlistData.coverImagePath);
+    //}
 }
 
 void PlaylistWindow::styleButton(QPushButton* button, const QString& iconPath)

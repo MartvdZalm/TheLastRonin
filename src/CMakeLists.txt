@@ -51,8 +51,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         styles/ComboBoxStyle.cpp
         events/AppEvents.h
         events/AppEvents.cpp
-
-
         repository/UserRepository.h
         model/User.h
         repository/UserRepository.cpp
@@ -72,10 +70,25 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         window/SettingsWindow.h
         styles/ListStyle.h
         styles/ListStyle.cpp
-        repository/SettingsRepository.cpp
-        repository/SettingsRepository.h
+        repository/SettingRepository.cpp
+        repository/SettingRepository.h
         service/LanguageService.h
         service/LanguageService.cpp
+        repository/Repository.h
+        repository/Repository.cpp
+        model/Model.h
+        model/Model.cpp
+        database/ORM.h
+        database/ORM.cpp
+        database/QueryBuilder.h
+        database/QueryBuilder.cpp
+        model/Track.cpp
+        model/Playlist.cpp
+        model/User.cpp
+        model/PlaylistTrack.h
+        model/PlaylistTrack.cpp
+        model/Setting.h
+        model/Setting.cpp
     )
 else()
     add_executable(TheLastRonin
