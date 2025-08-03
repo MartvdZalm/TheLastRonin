@@ -4,6 +4,7 @@
 #include "../model/Model.h"
 #include <QDateTime>
 #include <QString>
+#include "../database/ORM.h"
 
 class Playlist : public Model
 {
@@ -49,6 +50,8 @@ class Playlist : public Model
     void setUpdatedAt(const QDateTime& updatedAt);
 
     void deserialize(const QSqlRecord& record) override;
+    void fromVariantMap(const QVariantMap& map) override;
+    QVariantMap toVariantMap() const override;
 
     QString getTableName() const override
     {
@@ -79,5 +82,6 @@ class Playlist : public Model
     QDateTime createdAt;
     QDateTime updatedAt;
 };
+MODEL_REGISTRATION(Playlist);
 
 #endif // PLAYLIST_H

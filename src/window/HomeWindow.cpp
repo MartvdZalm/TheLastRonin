@@ -88,7 +88,7 @@ void HomeWindow::setupUI()
     mainLayout->addWidget(scrollArea);
     playlistGrid = new PlaylistGrid(playlistGridLayout, this);
 
-    updatePlaylistGrid(playlistRepository.getAllPlaylists());
+    // updatePlaylistGrid(playlistRepository.getAllPlaylists());
 }
 
 void HomeWindow::setupConnections()
@@ -104,7 +104,7 @@ void HomeWindow::setupConnections()
 
                 if (reply == QMessageBox::Yes)
                 {
-                    DatabaseManager::instance().deleteUserData();
+                    // DatabaseManager::instance().deleteUserData();
                 }
             });
 
@@ -120,8 +120,8 @@ void HomeWindow::setupConnections()
 
 void HomeWindow::setupEvents()
 {
-    connect(&AppEvents::instance(), &AppEvents::playlistChanged, this,
-            [this]() { updatePlaylistGrid(playlistRepository.getAllPlaylists()); });
+    // connect(&AppEvents::instance(), &AppEvents::playlistChanged, this,
+    //         [this]() { updatePlaylistGrid(playlistRepository.getAllPlaylists()); });
 }
 
 void HomeWindow::showPlaylistDialog()
@@ -129,14 +129,14 @@ void HomeWindow::showPlaylistDialog()
     AddPlaylistDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted)
     {
-        Playlist playlist{
-            .name = dialog.getName(),
-            .description = dialog.getDescription(),
-            .coverImagePath = dialog.getCoverImagePath(),
-        };
+        // Playlist playlist{
+        //     .name = dialog.getName(),
+        //     .description = dialog.getDescription(),
+        //     .coverImagePath = dialog.getCoverImagePath(),
+        // };
 
-        playlist.id = playlistRepository.insertPlaylist(playlist);
-        playlistGrid->addPlaylist(playlist);
+        // playlist.id = playlistRepository.insertPlaylist(playlist);
+        // playlistGrid->addPlaylist(playlist);
     }
 }
 
@@ -172,51 +172,51 @@ void HomeWindow::importPlaylistFromFolder()
         return;
     }
 
-    Playlist playlist{.name = playlistName, .coverImagePath = coverImagePath};
-    playlist.id = playlistRepository.insertPlaylist(playlist);
+    // Playlist playlist{.name = playlistName, .coverImagePath = coverImagePath};
+    // playlist.id = playlistRepository.insertPlaylist(playlist);
 
     for (const QString& filePath : audioFiles)
     {
-        QFileInfo fileInfo(filePath);
-        Track track{
-            .title = fileInfo.baseName(),
-            .filePath = filePath,
-        };
+        // QFileInfo fileInfo(filePath);
+        // Track track{
+        //     .title = fileInfo.baseName(),
+        //     .filePath = filePath,
+        // };
 
-        trackRepository.insertTrack(playlist.id, track);
+        // trackRepository.insertTrack(playlist.id, track);
     }
 
-    playlistGrid->addPlaylist(playlist);
+    // playlistGrid->addPlaylist(playlist);
     AppEvents::instance().notifyPlaylistChanged();
 }
 
 void HomeWindow::searchPlaylists(const QString& query)
 {
-    updatePlaylistGrid(playlistRepository.searchPlaylists(query));
+    // updatePlaylistGrid(playlistRepository.searchPlaylists(query));
 }
 
 void HomeWindow::onSortChanged(const QString& sortBy)
 {
-    QList<Playlist> playlists = playlistRepository.getAllPlaylists();
+    // QList<Playlist> playlists = playlistRepository.getAllPlaylists();
 
-    if (sortBy == tr("Sort by Name"))
-    {
-        std::sort(playlists.begin(), playlists.end(),
-                  [](const Playlist& a, const Playlist& b) { return a.name < b.name; });
-    }
-    else if (sortBy == tr("Sort by Creation Date"))
-    {
-        std::sort(playlists.begin(), playlists.end(),
-                  [](const Playlist& a, const Playlist& b) { return a.createdAt < b.createdAt; });
-    }
-    else if (sortBy == tr("Sort by Recently Played"))
-    {
-        // std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
-        //     return a.lastPlayed > b.lastPlayed;
-        // });
-    }
+    // if (sortBy == tr("Sort by Name"))
+    // {
+    //     std::sort(playlists.begin(), playlists.end(),
+    //               [](const Playlist& a, const Playlist& b) { return a.name < b.name; });
+    // }
+    // else if (sortBy == tr("Sort by Creation Date"))
+    // {
+    //     std::sort(playlists.begin(), playlists.end(),
+    //               [](const Playlist& a, const Playlist& b) { return a.createdAt < b.createdAt; });
+    // }
+    // else if (sortBy == tr("Sort by Recently Played"))
+    // {
+    //     // std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
+    //     //     return a.lastPlayed > b.lastPlayed;
+    //     // });
+    // }
 
-    updatePlaylistGrid(playlists);
+    // updatePlaylistGrid(playlists);
 }
 
 void HomeWindow::updatePlaylistGrid(const QList<Playlist>& playlists)

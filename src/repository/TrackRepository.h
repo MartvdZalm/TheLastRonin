@@ -15,7 +15,7 @@ class TrackRepository : public QObject
 
     bool save(Track* track);
     std::unique_ptr<Track> find(int id);
-    QList<std::unique_ptr<Track>> findAll();
+    std::vector<std::unique_ptr<Track>> findAll();
 
   private:
     std::shared_ptr<Repository<Track>> baseRepository;

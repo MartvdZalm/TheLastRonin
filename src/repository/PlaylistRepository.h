@@ -17,11 +17,10 @@ class PlaylistRepository : public QObject
 
     bool save(Playlist* playlist);
     std::unique_ptr<Playlist> find(int id);
-    QList<std::unique_ptr<Playlist>> findAll();
+    std::vector<std::unique_ptr<Playlist>> findAll();
 
   private:
     std::shared_ptr<Repository<Playlist>> baseRepository;
-    std::shared_ptr<Repository<Track>> trackRepository;
 };
 
 #endif // PLAYLISTREPOSITORY_H

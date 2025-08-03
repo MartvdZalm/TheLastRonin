@@ -9,8 +9,8 @@ class TrackService
     TrackService();
 
     bool addTrackToPlaylist(int playlistId, const Track& track);
-    bool deleteTrack(int trackId);
-    QVector<Track> getTracks(int playlistId);
+    // bool deleteTrack(int trackId);
+    // QVector<Track> getTracks(int playlistId);
 
   private:
     TrackRepository trackRepository;

@@ -3,7 +3,6 @@
 
 #include "../model/Model.h"
 #include "../repository/Repository.h"
-#include "DatabaseManager.h"
 #include <QMap>
 #include <QObject>
 #include <QStringList>
@@ -18,12 +17,13 @@ class ORM : public QObject
   public:
     static ORM& instance();
 
-    template <typename T> void registerModel()
+    template <typename T>
+    void registerModel()
     {
         static_assert(std::is_base_of_v<Model, T>, "T must inherit from Model");
 
         auto model = std::make_unique<T>();
-        QString tableName = model->tableName();
+        QString tableName = model->getTableName();
 
         ModelInfo info;
         info.tableName = tableName;
@@ -40,7 +40,8 @@ class ORM : public QObject
     QStringList getRegisteredTables() const;
     std::unique_ptr<Model> createModel(const QString& tableName);
 
-    template <typename T> std::shared_ptr<Repository<T>> getRepository()
+    template <typename T>
+    std::shared_ptr<Repository<T>> getRepository()
     {
         QString typeName = typeid(T).name();
         if (!m_repositories.contains(typeName))
@@ -68,12 +69,15 @@ class ORM : public QObject
 
     bool createTable(const QString& tableName, const QStringList& schema);
 
-    QMap<QString, ModelInfo> m_registeredModels;            // typeinfo name -> ModelInfo
-    QMap<QString, QString> m_tableToType;                   // table name -> typeinfo name
-    QMap<QString, std::shared_ptr<QObject>> m_repositories; // typeinfo name -> repository
+    QMap<QString, ModelInfo> m_registeredModels;
+    QMap<QString, QString> m_tableToType;
+    QMap<QString, std::shared_ptr<QObject>> m_repositories;
 };
 
-// Convenience macro for easy model registration
-#define REGISTER_MODEL(ModelClass) ORM::instance().registerModel<ModelClass>()
+#define MODEL_REGISTRATION(ModelClass) \
+    inline static const auto _ ## ModelClass ## _registrar = []() { \
+        ORM::instance().registerModel<ModelClass>(); \
+        return true; \
+}()
 
 #endif // ORM_H

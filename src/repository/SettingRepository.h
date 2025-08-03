@@ -15,7 +15,7 @@ class SettingRepository : public QObject
 
     bool save(Setting* setting);
     std::unique_ptr<Setting> find(int id);
-    QList<std::unique_ptr<Setting>> findAll();
+    std::vector<std::unique_ptr<Setting>> findAll();
     std::unique_ptr<Setting> findByKey(const QString& key);
     bool updateValueByKey(const QString& key, const QString& newValue);
 

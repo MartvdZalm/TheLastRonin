@@ -66,6 +66,24 @@ void Playlist::deserialize(const QSqlRecord& record)
     setUpdatedAt(record.value("updatedAt").toDateTime());
 }
 
+void Playlist::fromVariantMap(const QVariantMap& map)
+{
+    name = map["name"].toString();
+    description = map["description"].toString();
+    coverImagePath = map["coverImagePath"].toString();
+}
+
+QVariantMap Playlist::toVariantMap() const
+{
+    QVariantMap map;
+    map["name"] = name;
+    map["description"] = description;
+    map["coverImagePath"] = coverImagePath;
+
+    qDebug() << "Playlist toVariantMap():" << map;
+    return map;
+}
+
 QStringList Playlist::tableSchema() const
 {
     return {

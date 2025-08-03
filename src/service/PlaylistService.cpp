@@ -3,39 +3,39 @@
 
 PlaylistService::PlaylistService() {}
 
-bool PlaylistService::createPlaylist(const Playlist& playlist)
-{
-    if (playlist.name.isEmpty())
-    {
-        qDebug() << "Playlist name cannot be empty!";
-        return false;
-    }
+// bool PlaylistService::createPlaylist(const Playlist& playlist)
+// {
+//     if (playlist.name.isEmpty())
+//     {
+//         qDebug() << "Playlist name cannot be empty!";
+//         return false;
+//     }
 
-    return playlistRepository.insertPlaylist(playlist);
-}
+//     return playlistRepository.insertPlaylist(playlist);
+// }
 
-bool PlaylistService::updatePlaylist(const Playlist& playlist)
-{
-    if (playlist.name.isEmpty())
-    {
-        qDebug() << "Playlist name cannot be empty!";
-        return false;
-    }
+// bool PlaylistService::updatePlaylist(const Playlist& playlist)
+// {
+//     if (playlist.name.isEmpty())
+//     {
+//         qDebug() << "Playlist name cannot be empty!";
+//         return false;
+//     }
 
-    return playlistRepository.updatePlaylist(playlist);
-}
+//     return playlistRepository.updatePlaylist(playlist);
+// }
 
-bool PlaylistService::deletePlaylist(int playlistId)
-{
-    return playlistRepository.deletePlaylist(playlistId);
-}
+// bool PlaylistService::deletePlaylist(int playlistId)
+// {
+//     return playlistRepository.deletePlaylist(playlistId);
+// }
 
-QVector<Playlist> PlaylistService::getAllPlaylists()
-{
-    return playlistRepository.getAllPlaylists();
-}
+// QVector<Playlist> PlaylistService::getAllPlaylists()
+// {
+//     return playlistRepository.getAllPlaylists();
+// }
 
-QVector<Playlist> PlaylistService::searchPlaylists(const QString& query)
-{
-    return playlistRepository.searchPlaylists(query);
-}
+// QVector<Playlist> PlaylistService::searchPlaylists(const QString& query)
+// {
+//     return playlistRepository.searchPlaylists(query);
+// }

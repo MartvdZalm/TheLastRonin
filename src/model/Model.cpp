@@ -2,6 +2,7 @@
 #include <QDateTime>
 #include <QJsonDocument>
 #include <QMetaProperty>
+#include "../database/ORM.h"
 
 Model::Model(QObject* parent) : QObject(parent), m_id(-1) {}
 
@@ -46,16 +47,6 @@ void Model::fromVariantMap(const QVariantMap& map)
             prop.write(this, value);
         }
     }
-}
-
-QJsonObject Model::toJson() const
-{
-    return QJsonObject::fromVariantMap(toVariantMap());
-}
-
-void Model::fromJson(const QJsonObject& json)
-{
-    fromVariantMap(json.toVariantMap());
 }
 
 QStringList Model::propertyNames() const

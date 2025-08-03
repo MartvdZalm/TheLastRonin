@@ -12,70 +12,69 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         database/DatabaseManager.h
         database/DatabaseManager.cpp
-        components/dialog/AddPlaylistDialog.h
-        components/dialog/AddPlaylistDialog.cpp
-        components/home/PlaylistCard.h
-        components/home/PlaylistCard.cpp
-        window/PlaylistWindow.h
-        window/PlaylistWindow.cpp
-        styles/ButtonStyle.h
-        styles/ButtonStyle.cpp
-        styles/InputStyle.h
-        styles/InputStyle.cpp
-        components/shared/CoverImageWidget.h
-        components/shared/CoverImageWidget.cpp
-        components/playlist/PlaylistDetails.h
-        components/playlist/PlaylistDetails.cpp
-        components/playlist/TrackList.h
-        components/playlist/TrackList.cpp
-        components/dialog/AddTrackDialog.h
-        components/dialog/AddTrackDialog.cpp
-        resources.qrc
-        components/home/PlaylistGrid.h
-        components/home/PlaylistGrid.cpp
-        window/BaseWindow.h
-        window/BaseWindow.cpp
-        window/HomeWindow.h
-        window/HomeWindow.cpp
+        # components/dialog/AddPlaylistDialog.h
+        # components/dialog/AddPlaylistDialog.cpp
+        # components/home/PlaylistCard.h
+        # components/home/PlaylistCard.cpp
+        # window/PlaylistWindow.h
+        # window/PlaylistWindow.cpp
+        # styles/ButtonStyle.h
+        # styles/ButtonStyle.cpp
+        # styles/InputStyle.h
+        # styles/InputStyle.cpp
+        # components/shared/CoverImageWidget.h
+        # components/shared/CoverImageWidget.cpp
+        # components/playlist/PlaylistDetails.h
+        # components/playlist/PlaylistDetails.cpp
+        # components/playlist/TrackList.h
+        # components/playlist/TrackList.cpp
+        # components/dialog/AddTrackDialog.h
+        # components/dialog/AddTrackDialog.cpp
+        # resources.qrc
+        # components/home/PlaylistGrid.h
+        # components/home/PlaylistGrid.cpp
+        # window/BaseWindow.h
+        # window/BaseWindow.cpp
+        # window/HomeWindow.h
+        # window/HomeWindow.cpp
         repository/PlaylistRepository.h
         repository/PlaylistRepository.cpp
-        service/PlaylistService.h
-        service/PlaylistService.cpp
+        # service/PlaylistService.h
+        # service/PlaylistService.cpp
         model/Playlist.h
         model/Track.h
         repository/TrackRepository.h
         repository/TrackRepository.cpp
-        service/TrackService.h
-        service/TrackService.cpp
-        styles/ComboBoxStyle.h
-        styles/ComboBoxStyle.cpp
-        events/AppEvents.h
-        events/AppEvents.cpp
+        # service/TrackService.h
+        # service/TrackService.cpp
+        # styles/ComboBoxStyle.h
+        # styles/ComboBoxStyle.cpp
+        # events/AppEvents.h
+        # events/AppEvents.cpp
         repository/UserRepository.h
         model/User.h
         repository/UserRepository.cpp
-        window/MainWindow.h
-        window/MainWindow.cpp
-        components/shared/NavigationBar.h
-        components/shared/NavigationBar.cpp
-        components/shared/MiniPlayerWindow.h
-        components/shared/MiniPlayerWindow.cpp
-        components/shared/PlaybackBar.h
-        components/shared/PlaybackBar.cpp
-        styles/AppStyle.h
-        styles/AppStyle.cpp
-        styles/SliderStyle.h
-        styles/SliderStyle.cpp
-        window/SettingsWindow.cpp
-        window/SettingsWindow.h
-        styles/ListStyle.h
-        styles/ListStyle.cpp
+        # window/MainWindow.h
+        # window/MainWindow.cpp
+        # components/shared/NavigationBar.h
+        # components/shared/NavigationBar.cpp
+        # components/shared/MiniPlayerWindow.h
+        # components/shared/MiniPlayerWindow.cpp
+        # components/shared/PlaybackBar.h
+        # components/shared/PlaybackBar.cpp
+        # styles/AppStyle.h
+        # styles/AppStyle.cpp
+        # styles/SliderStyle.h
+        # styles/SliderStyle.cpp
+        # window/SettingsWindow.cpp
+        # window/SettingsWindow.h
+        # styles/ListStyle.h
+        # styles/ListStyle.cpp
         repository/SettingRepository.cpp
         repository/SettingRepository.h
-        service/LanguageService.h
-        service/LanguageService.cpp
+        # service/LanguageService.h
+        # service/LanguageService.cpp
         repository/Repository.h
-        repository/Repository.cpp
         model/Model.h
         model/Model.cpp
         database/ORM.h
@@ -85,8 +84,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         model/Track.cpp
         model/Playlist.cpp
         model/User.cpp
-        model/PlaylistTrack.h
-        model/PlaylistTrack.cpp
         model/Setting.h
         model/Setting.cpp
     )

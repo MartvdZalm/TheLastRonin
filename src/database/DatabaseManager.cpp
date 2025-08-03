@@ -70,18 +70,18 @@ QSqlQuery DatabaseManager::executeQuery(const QString& queryStr, const QMap<QStr
 
     if (!query.prepare(queryStr))
     {
-        qCritical() << "Failed to prepare query:" << query.lastError() << "\nSQL:" << queryStr;
+        qCritical() << "Failed to prepare query:" << query.lastError();
         return query;
     }
 
-    for (auto it = bindings.begin(); it != bindings.end(); ++it)
+    for (auto it = bindings.constBegin(); it != bindings.constEnd(); ++it)
     {
         query.bindValue(":" + it.key(), it.value());
     }
 
     if (!query.exec())
     {
-        qCritical() << "Query execution failed:" << query.lastError() << "\nSQL:" << queryStr;
+        qCritical() << "Query failed:" << query.lastError();
     }
 
     return query;
@@ -95,17 +95,32 @@ bool DatabaseManager::execute(const QString& queryStr, const QMap<QString, QVari
 
 bool DatabaseManager::beginTransaction()
 {
-    return m_db.transaction();
+    if (!m_db.transaction())
+    {
+        qCritical() << "Failed to begin transaction:" << m_db.lastError();
+        return false;
+    }
+    return true;
 }
 
 bool DatabaseManager::commitTransaction()
 {
-    return m_db.commit();
+    if (!m_db.commit())
+    {
+        qCritical() << "Failed to commit transaction:" << m_db.lastError();
+        return false;
+    }
+    return true;
 }
 
 bool DatabaseManager::rollbackTransaction()
 {
-    return m_db.rollback();
+    if (!m_db.rollback())
+    {
+        qCritical() << "Failed to rollback transaction:" << m_db.lastError();
+        return false;
+    }
+    return true;
 }
 
 bool DatabaseManager::tableExists(const QString& tableName)

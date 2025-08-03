@@ -62,6 +62,39 @@ void Track::setTrackNumber(int trackNumber)
     }
 }
 
+void Track::deserialize(const QSqlRecord& record)
+{
+    setId(record.value("id").toInt());
+    setTitle(record.value("title").toString());
+    setFilePath(record.value("filePath").toString());
+    setArtist(record.value("artist").toString());
+    setAlbum(record.value("album").toString());
+    setDuration(record.value("duration").toString());
+    setTrackNumber(record.value("trackNumber").toInt());
+}
+
+void Track::fromVariantMap(const QVariantMap& map)
+{
+    title = map["title"].toString();
+    filePath = map["filePath"].toString();
+    artist = map["artist"].toString();
+    album = map["album"].toString();
+    duration = map["duration"].toString();
+    trackNumber = map["trackNumber"].toInt();
+}
+
+QVariantMap Track::toVariantMap() const
+{
+    QVariantMap map;
+    map["title"] = title;
+    map["filePath"] = filePath;
+    map["artist"] = artist;
+    map["album"] = album;
+    map["duration"] = duration;
+    map["trackNumber"] = trackNumber;
+    return map;
+}
+
 QStringList Track::tableSchema() const
 {
     return {"id INTEGER PRIMARY KEY AUTOINCREMENT",

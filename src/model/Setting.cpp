@@ -55,6 +55,20 @@ void Setting::deserialize(const QSqlRecord& record)
     setUpdatedAt(record.value("updatedAt").toDateTime());
 }
 
+void Setting::fromVariantMap(const QVariantMap& map)
+{
+    key = map["key"].toString();
+    value = map["value"].toString();
+}
+
+QVariantMap Setting::toVariantMap() const
+{
+    QVariantMap map;
+    map["key"] = key;
+    map["value"] = value;
+    return map;
+}
+
 QStringList Setting::tableSchema() const
 {
     return {

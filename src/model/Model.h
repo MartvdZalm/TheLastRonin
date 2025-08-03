@@ -29,11 +29,8 @@ class Model : public QObject
     virtual void deserialize(const QSqlRecord& record) = 0;
     virtual QString getTableName() const = 0;
     virtual QStringList tableSchema() const = 0;
-
-    QVariantMap toVariantMap() const;
-    void fromVariantMap(const QVariantMap& map);
-    QJsonObject toJson() const;
-    void fromJson(const QJsonObject& json);
+    virtual void fromVariantMap(const QVariantMap& map) = 0;
+    virtual QVariantMap toVariantMap() const = 0;
 
     virtual bool isValid() const
     {

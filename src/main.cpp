@@ -1,40 +1,22 @@
 #include <QApplication>
-
-#include "database/DatabaseManager.h"
+#include <QIcon>
 #include "repository/SettingRepository.h"
-#include "service/LanguageService.h"
+#include "repository/PlaylistRepository.h"
+
+// #include "service/LanguageService.h"
 #include "styles/AppStyle.h"
-#include "window/MainWindow.h"
+// #include "window/MainWindow.h"
 #include "database/ORM.h"
 #include "model/Playlist.h"
 #include "model/Track.h"
 #include "model/Setting.h"
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
-    app.setStyleSheet(AppStyle::styleSheet());
+    // app.setStyleSheet(AppStyle::styleSheet());
     app.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
-
-    //DatabaseManager& db = DatabaseManager::instance();
-
-    //if (db.openDatabase())
-    //{
-    //    if (!db.initSchema())
-    //    {
-    //        qCritical() << "Failed to initialize database schema.";
-    //        return -1;
-    //    }
-    //}
-    //else
-    //{
-    //    qCritical() << "Failed to open the database. Exiting.";
-    //    return -1;
-    //}
-
-    REGISTER_MODEL(Playlist);
-    REGISTER_MODEL(Track);
-    REGISTER_MODEL(Setting);
 
     if (!ORM::instance().initialize())
     {
@@ -44,15 +26,50 @@ int main(int argc, char* argv[])
 
     SettingRepository settingRepository;
     std::unique_ptr<Setting> settingModel = settingRepository.findByKey("language");
+    std::cout << settingModel->getValue().toStdString() << std::endl;
 
-    if (settingModel != nullptr)
-    {
-        LanguageService::instance().loadLanguage(settingModel->getValue());
+    PlaylistRepository playlistRepository;
+    std::vector<std::unique_ptr<Playlist>> playlists = playlistRepository.findAll();
+
+    for (const auto& playlist : playlists) {
+        std::cout << playlist->getName().toStdString() << std::endl;
     }
 
-    MainWindow window;
-    window.setWindowTitle("TheLastRonin");
-    window.showMaximized();
+    //std::unique_ptr<Playlist> playlist = playlistRepository.find(4);
+
+    //std::cout << playlist->getName().toStdString() << std::endl;
+
+    //playlist->setName("Updated playlist name");
+
+    //playlistRepository.save(playlist.get());
+
+    //std::unique_ptr<Playlist> playlistnew = playlistRepository.find(4);
+
+    //std::cout << playlistnew->getName().toStdString() << std::endl;
+
+    /*auto playlist = std::make_unique<Playlist>();
+    playlist->setName("new Playlist");
+    playlist->setDescription("this is a new playlist made with the new code");
+
+    if (playlistRepository.save(playlist.get()))
+    {
+        qDebug() << "Playlist created with ID:" << playlist->id();
+    }
+    else
+    {
+        qDebug() << "Failed to create playlist";
+    }*/
+
+    // if (settingModel != nullptr)
+    // {
+    //     LanguageService::instance().loadLanguage(settingModel->getValue());
+    // }
+
+
+
+    // MainWindow window;
+    // window.setWindowTitle("TheLastRonin");
+    // window.showMaximized();
 
     return app.exec();
 }

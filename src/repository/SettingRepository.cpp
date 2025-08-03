@@ -2,6 +2,7 @@
 
 #include "../database/ORM.h"
 #include "../database/QueryBuilder.h"
+#include <iostream>
 
 SettingRepository::SettingRepository(QObject* parent) : QObject(parent)
 {
@@ -18,7 +19,7 @@ std::unique_ptr<Setting> SettingRepository::find(int id)
     return baseRepository->find(id);
 }
 
-QList<std::unique_ptr<Setting>> SettingRepository::findAll()
+std::vector<std::unique_ptr<Setting>> SettingRepository::findAll()
 {
     return baseRepository->findAll();
 }
@@ -34,6 +35,10 @@ std::unique_ptr<Setting> SettingRepository::findByKey(const QString& key)
 
     auto setting = std::make_unique<Setting>();
     setting->deserialize(record);
+
+
+    // std::cout << setting->getValue().toStdString() << std::endl;
+
     return setting;
 }
 

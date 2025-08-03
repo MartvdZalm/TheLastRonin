@@ -17,7 +17,7 @@ std::unique_ptr<Track> TrackRepository::find(int id)
     return baseRepository->find(id);
 }
 
-QList<std::unique_ptr<Track>> TrackRepository::findAll()
+std::vector<std::unique_ptr<Track>> TrackRepository::findAll()
 {
     return baseRepository->findAll();
 }

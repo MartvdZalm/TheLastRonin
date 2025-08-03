@@ -198,11 +198,11 @@ void PlaybackBar::setupConnections()
     connect(nextButton, &QPushButton::clicked, this,
             [=]()
             {
-                if (currentTrackIndex < playlist.tracks.size() - 1)
-                {
-                    currentTrackIndex++;
-                    playTrackAtIndex(currentTrackIndex);
-                }
+                // if (currentTrackIndex < playlist.tracks.size() - 1)
+                // {
+                //     currentTrackIndex++;
+                //     playTrackAtIndex(currentTrackIndex);
+                // }
                 onNextClicked();
             });
 
@@ -270,10 +270,10 @@ void PlaybackBar::toggleMiniPlayer()
         miniPlayer = new MiniPlayerWindow(nullptr);
         miniPlayer->setPlayerData(player, audioOutput);
 
-        if (currentTrackIndex >= 0 && currentTrackIndex < playlist.tracks.size())
-        {
-            miniPlayer->updateTrackInfo(playlist.tracks[currentTrackIndex]);
-        }
+        // if (currentTrackIndex >= 0 && currentTrackIndex < playlist.tracks.size())
+        // {
+        //     miniPlayer->updateTrackInfo(playlist.tracks[currentTrackIndex]);
+        // }
 
         miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
         miniPlayer->updateProgress(player->position(), player->duration());
@@ -344,10 +344,10 @@ void PlaybackBar::syncMiniPlayerControls()
 {
     if (miniPlayer && isMiniPlayerActive)
     {
-        if (currentTrackIndex >= 0 && currentTrackIndex < playlist.tracks.size())
-        {
-            miniPlayer->updateTrackInfo(playlist.tracks[currentTrackIndex]);
-        }
+        // if (currentTrackIndex >= 0 && currentTrackIndex < playlist.tracks.size())
+        // {
+        //     miniPlayer->updateTrackInfo(playlist.tracks[currentTrackIndex]);
+        // }
 
         miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
         miniPlayer->updateProgress(player->position(), player->duration());
@@ -372,40 +372,40 @@ void PlaybackBar::updateTimeLabel(qint64 position, qint64 duration, QLabel* labe
 
 void PlaybackBar::playNextTrack()
 {
-    if (currentTrackIndex < playlist.tracks.size() - 1)
-    {
-        playTrackAtIndex(currentTrackIndex + 1);
-    }
-    else
-    {
-        playTrackAtIndex(0);
-    }
+    // if (currentTrackIndex < playlist.tracks.size() - 1)
+    // {
+    //     playTrackAtIndex(currentTrackIndex + 1);
+    // }
+    // else
+    // {
+    //     playTrackAtIndex(0);
+    // }
 }
 
 void PlaybackBar::updatePlaylist(const Playlist& playlist)
 {
-    this->playlist = playlist;
+    // this->playlist = playlist;
 }
 
 void PlaybackBar::playTrackAtIndex(int index)
 {
-    if (index >= 0 && index < playlist.tracks.size())
-    {
-        currentTrackIndex = index;
-        this->currentTrack = playlist.tracks[index];
+    // if (index >= 0 && index < playlist.tracks.size())
+    // {
+    //     currentTrackIndex = index;
+    //     this->currentTrack = playlist.tracks[index];
 
-        songLabel->setText(this->currentTrack.title);
+    //     songLabel->setText(this->currentTrack.title);
 
-        player->setSource(QUrl::fromLocalFile(this->currentTrack.filePath));
-        player->play();
+    //     player->setSource(QUrl::fromLocalFile(this->currentTrack.filePath));
+    //     player->play();
 
-        QTimer::singleShot(100, this,
-                           [=]()
-                           {
-                               player->setSource(QUrl::fromLocalFile(this->currentTrack.filePath));
-                               player->play();
-                           });
-    }
+    //     QTimer::singleShot(100, this,
+    //                        [=]()
+    //                        {
+    //                            player->setSource(QUrl::fromLocalFile(this->currentTrack.filePath));
+    //                            player->play();
+    //                        });
+    // }
 
     this->syncMiniPlayerControls();
 }

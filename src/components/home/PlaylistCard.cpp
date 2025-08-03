@@ -8,7 +8,7 @@
 #include <QPixmap>
 #include <QVBoxLayout>
 
-PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(parent), playlistData(playlist)
+PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(parent), playlist(playlist)
 {
     const int cardWidth = 250;
     const int coverHeight = 200;
@@ -39,10 +39,12 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(
     titleLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
     QFontMetrics metrics(titleLabel->font());
-    QString elidedText = metrics.elidedText(playlist.name, Qt::ElideRight, titleLabel->width() - 2);
+    QString elidedText = metrics.elidedText(playlist.getName(), Qt::ElideRight, titleLabel->width() - 2);
     titleLabel->setText(elidedText);
 
-    previewLabel = new QLabel(tr("Tracks: ") + QString::number(playlist.tracks.size()), this);
+    // previewLabel = new QLabel(tr("Tracks: ") + QString::number(playlist.tracks.size()), this);
+    previewLabel = new QLabel(tr("Tracks: "), this);
+
     previewLabel->setAlignment(Qt::AlignCenter);
     previewLabel->setStyleSheet("background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px;");
     previewLabel->setVisible(false);
@@ -65,7 +67,7 @@ void PlaylistCard::mousePressEvent(QMouseEvent* event)
 {
     Q_UNUSED(event);
 
-    AppEvents::instance().notifyNavigateToPlaylist(playlistData);
+    AppEvents::instance().notifyNavigateToPlaylist(playlist);
 }
 
 bool PlaylistCard::eventFilter(QObject* watched, QEvent* event)

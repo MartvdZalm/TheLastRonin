@@ -3,6 +3,7 @@
 
 #include "Model.h"
 #include <QString>
+#include "../database/ORM.h"
 
 class Track : public Model
 {
@@ -54,6 +55,10 @@ class Track : public Model
     void setDuration(const QString& duration);
     void setTrackNumber(int trackNumber);
 
+    void deserialize(const QSqlRecord& record) override;
+    void fromVariantMap(const QVariantMap& map) override;
+    QVariantMap toVariantMap() const override;
+
     QString getTableName() const override
     {
         return "tracks";
@@ -80,5 +85,6 @@ class Track : public Model
     QString duration;
     int trackNumber;
 };
+MODEL_REGISTRATION(Track);
 
 #endif // TRACK_H
