@@ -19,7 +19,7 @@ class MiniPlayerWindow : public QWidget
 
   private:
     QLabel* songLabel;
-    std::unique_ptr<Track> track;
+    Track track;
 
     QPushButton* playPauseButton;
     QPushButton* nextButton;
@@ -44,7 +44,7 @@ class MiniPlayerWindow : public QWidget
     ~MiniPlayerWindow();
 
     void setPlayerData(QMediaPlayer* player, QAudioOutput* audioOutput);
-    void updateTrackInfo(std::unique_ptr<Track> track);
+    void updateTrackInfo(const Track& track);
     void updateProgress(qint64 position, qint64 duration);
     void updatePlayPauseButton(bool isPlaying);
     void updateVolumeSlider(int volume);

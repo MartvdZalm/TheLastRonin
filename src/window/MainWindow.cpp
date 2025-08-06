@@ -3,6 +3,7 @@
 #include "HomeWindow.h"
 #include "PlaylistWindow.h"
 #include "SettingsWindow.h"
+#include <iostream>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {

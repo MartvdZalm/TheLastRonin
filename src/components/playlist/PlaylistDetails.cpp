@@ -21,8 +21,7 @@ PlaylistDetails::PlaylistDetails(const Playlist& playlist, QWidget* parent) : QW
     nameLabel = new QLabel(playlist.getName(), this);
     nameLabel->setObjectName("nameLabel");
 
-    // tracksLabel = new QLabel("Tracks: " + QString::number(playlist.tracks.size()));
-    tracksLabel = new QLabel("Tracks: 1");
+    tracksLabel = new QLabel("Tracks: " + QString::number(playlist.getTracks().size()));
 
     tracksLabel->setObjectName("tracksLabel");
 
@@ -42,7 +41,5 @@ void PlaylistDetails::updateDetails(const Playlist& playlist)
 {
     nameLabel->setText(playlist.getName());
     descriptionLabel->setText(playlist.getDescription());
-    // tracksLabel->setText("Tracks: " + QString::number(playlist.tracks.size()));
-    tracksLabel->setText("Tracks: 1");
-
+    tracksLabel->setText("Tracks: " + QString::number(playlist.getTracks().size()));
 }

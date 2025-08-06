@@ -1,75 +1,35 @@
 #include <QApplication>
 #include <QIcon>
-#include "repository/SettingRepository.h"
-#include "repository/PlaylistRepository.h"
+#include <QStandardPaths>
+#include <QDir>
+#include <QSqlError>
+#include <qsqlquery.h>
 
-// #include "service/LanguageService.h"
+#include "database/DatabaseManager.h"
+#include "database/Container.h"
 #include "styles/AppStyle.h"
-// #include "window/MainWindow.h"
-#include "database/ORM.h"
-#include "model/Playlist.h"
-#include "model/Track.h"
-#include "model/Setting.h"
-#include <iostream>
+#include "window/MainWindow.h"
+#include "service/LanguageService.h"
 
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
-    // app.setStyleSheet(AppStyle::styleSheet());
+    app.setStyleSheet(AppStyle::styleSheet());
     app.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
 
-    if (!ORM::instance().initialize())
-    {
-        qCritical() << "Failed to initialize ORM";
+    if (!DatabaseManager::instance().initialize()) {
+        qFatal("Failed to initialize database");
         return -1;
     }
 
-    SettingRepository settingRepository;
-    std::unique_ptr<Setting> settingModel = settingRepository.findByKey("language");
-    std::cout << settingModel->getValue().toStdString() << std::endl;
+    Container::instance().initialize(DatabaseManager::instance().database());
 
-    PlaylistRepository playlistRepository;
-    std::vector<std::unique_ptr<Playlist>> playlists = playlistRepository.findAll();
+    QString language = Container::instance().getSettingRepository()->getValue("language", "English");
+    LanguageService::instance().loadLanguage(language);
 
-    for (const auto& playlist : playlists) {
-        std::cout << playlist->getName().toStdString() << std::endl;
-    }
-
-    //std::unique_ptr<Playlist> playlist = playlistRepository.find(4);
-
-    //std::cout << playlist->getName().toStdString() << std::endl;
-
-    //playlist->setName("Updated playlist name");
-
-    //playlistRepository.save(playlist.get());
-
-    //std::unique_ptr<Playlist> playlistnew = playlistRepository.find(4);
-
-    //std::cout << playlistnew->getName().toStdString() << std::endl;
-
-    /*auto playlist = std::make_unique<Playlist>();
-    playlist->setName("new Playlist");
-    playlist->setDescription("this is a new playlist made with the new code");
-
-    if (playlistRepository.save(playlist.get()))
-    {
-        qDebug() << "Playlist created with ID:" << playlist->id();
-    }
-    else
-    {
-        qDebug() << "Failed to create playlist";
-    }*/
-
-    // if (settingModel != nullptr)
-    // {
-    //     LanguageService::instance().loadLanguage(settingModel->getValue());
-    // }
-
-
-
-    // MainWindow window;
-    // window.setWindowTitle("TheLastRonin");
-    // window.showMaximized();
+    MainWindow window;
+    window.setWindowTitle("TheLastRonin");
+    window.showMaximized();
 
     return app.exec();
 }

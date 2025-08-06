@@ -1,23 +1,26 @@
 #ifndef TRACKREPOSITORY_H
 #define TRACKREPOSITORY_H
 
-#include "../database/DatabaseManager.h"
-#include "../model/Track.h"
-#include "Repository.h"
-#include <QObject>
+#include "ITrackRepository.h"
+#include <QSqlDatabase>
 
-class TrackRepository : public QObject
+class TrackRepository : public ITrackRepository
 {
-    Q_OBJECT
-
   public:
-    explicit TrackRepository(QObject* parent = nullptr);
+    explicit TrackRepository(QSqlDatabase& db);
 
-    bool save(Track* track);
-    std::unique_ptr<Track> find(int id);
-    std::vector<std::unique_ptr<Track>> findAll();
+    std::optional<Track> findById(int id) override;
+    QList<Track> findAll() override;
+    std::optional<Track> save(const Track& track) override;
+    bool deleteById(int id) override;
+    std::optional<Track> findByFilePath(const QString& filePath) override;
 
   private:
-    std::shared_ptr<Repository<Track>> baseRepository;
+    QSqlDatabase& database;
+
+    Track mapFromRecord(const QSqlQuery& query);
+    std::optional<Track> insert(const Track& track);
+    bool update(const Track& track);
 };
+
 #endif // TRACKREPOSITORY_H

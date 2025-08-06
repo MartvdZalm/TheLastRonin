@@ -3,50 +3,19 @@
 #include <QDir>
 #include <QFile>
 #include <QSqlError>
+#include <QSqlQuery>
 #include <QStandardPaths>
 
-DatabaseManager::DatabaseManager(QObject* parent) : QObject(parent)
-{
-    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QDir().mkpath(path);
-    m_databasePath = path + "/musicplayer.db";
-
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setDatabaseName(m_databasePath);
-}
-
-DatabaseManager::~DatabaseManager()
-{
-    close();
-}
+QMutex DatabaseManager::s_instanceMutex;
 
 DatabaseManager& DatabaseManager::instance()
 {
+    QMutexLocker locker(&s_instanceMutex);
     static DatabaseManager instance;
     return instance;
 }
 
-bool DatabaseManager::open()
-{
-    if (m_db.isOpen())
-        return true;
-
-    if (!m_db.open())
-    {
-        qCritical() << "Failed to open database:" << m_db.lastError();
-        return false;
-    }
-
-    // Enable foreign keys and optimize SQLite
-    QSqlQuery pragmaQuery(m_db);
-    pragmaQuery.exec("PRAGMA foreign_keys = ON");
-    pragmaQuery.exec("PRAGMA journal_mode = WAL");
-    pragmaQuery.exec("PRAGMA synchronous = NORMAL");
-
-    return true;
-}
-
-void DatabaseManager::close()
+DatabaseManager::~DatabaseManager()
 {
     if (m_db.isOpen())
     {
@@ -54,80 +23,145 @@ void DatabaseManager::close()
     }
 }
 
-bool DatabaseManager::isOpen() const
+bool DatabaseManager::initialize()
 {
-    return m_db.isOpen();
+    QMutexLocker locker(&m_mutex);
+
+    if (m_initialized)
+        return true;
+
+    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/musicplayer.db";
+    QDir().mkpath(QFileInfo(dbPath).absolutePath());
+
+    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_db.setDatabaseName(dbPath);
+
+    if (!m_db.open())
+    {
+        qCritical() << "Database error:" << m_db.lastError();
+        return false;
+    }
+
+    if (!applyPragmas())
+    {
+        qCritical() << "Failed to apply database optimizations";
+        return false;
+    }
+
+    if (!createTables())
+    {
+        qCritical() << "Failed to create database tables";
+        return false;
+    }
+
+    if (!verifyDatabase())
+    {
+        qCritical() << "Database verification failed";
+        return false;
+    }
+
+    m_initialized = true;
+    return true;
 }
 
-QString DatabaseManager::databasePath() const
+bool DatabaseManager::applyPragmas()
 {
-    return m_databasePath;
+    QSqlQuery query(m_db);
+    return query.exec("PRAGMA foreign_keys = ON") && query.exec("PRAGMA journal_mode = WAL") &&
+           query.exec("PRAGMA synchronous = NORMAL") && query.exec("PRAGMA temp_store = MEMORY");
 }
 
-QSqlQuery DatabaseManager::executeQuery(const QString& queryStr, const QMap<QString, QVariant>& bindings)
+bool DatabaseManager::createTables()
 {
     QSqlQuery query(m_db);
 
-    if (!query.prepare(queryStr))
+    if (!query.exec("BEGIN IMMEDIATE TRANSACTION"))
     {
-        qCritical() << "Failed to prepare query:" << query.lastError();
-        return query;
-    }
-
-    for (auto it = bindings.constBegin(); it != bindings.constEnd(); ++it)
-    {
-        query.bindValue(":" + it.key(), it.value());
-    }
-
-    if (!query.exec())
-    {
-        qCritical() << "Query failed:" << query.lastError();
-    }
-
-    return query;
-}
-
-bool DatabaseManager::execute(const QString& queryStr, const QMap<QString, QVariant>& bindings)
-{
-    QSqlQuery query = executeQuery(queryStr, bindings);
-    return query.isActive();
-}
-
-bool DatabaseManager::beginTransaction()
-{
-    if (!m_db.transaction())
-    {
-        qCritical() << "Failed to begin transaction:" << m_db.lastError();
+        qCritical() << "Failed to begin transaction:" << query.lastError();
         return false;
     }
+
+    const QStringList tables = {
+        R"(
+            CREATE TABLE IF NOT EXISTS playlists (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                description TEXT,
+                cover_image_path TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        )",
+        R"(
+            CREATE TABLE IF NOT EXISTS tracks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                file_path TEXT NOT NULL UNIQUE,
+                artist TEXT,
+                album TEXT,
+                duration TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        )",
+        R"(
+            CREATE TABLE IF NOT EXISTS playlists_tracks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                playlist_id INTEGER NOT NULL,
+                track_id INTEGER NOT NULL,
+                added_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        )",
+        R"(
+            CREATE TABLE IF NOT EXISTS settings (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                key TEXT NOT NULL UNIQUE,
+                value TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        )"};
+
+    for (const auto& table : tables)
+    {
+        if (!query.exec(table))
+        {
+            qCritical() << "Table creation failed:" << query.lastError();
+            query.exec("ROLLBACK");
+            return false;
+        }
+    }
+
+    if (!query.exec("COMMIT"))
+    {
+        qCritical() << "Commit failed:" << query.lastError();
+        return false;
+    }
+
     return true;
 }
 
-bool DatabaseManager::commitTransaction()
-{
-    if (!m_db.commit())
-    {
-        qCritical() << "Failed to commit transaction:" << m_db.lastError();
-        return false;
-    }
-    return true;
-}
-
-bool DatabaseManager::rollbackTransaction()
-{
-    if (!m_db.rollback())
-    {
-        qCritical() << "Failed to rollback transaction:" << m_db.lastError();
-        return false;
-    }
-    return true;
-}
-
-bool DatabaseManager::tableExists(const QString& tableName)
+bool DatabaseManager::verifyDatabase()
 {
     QSqlQuery query(m_db);
-    query.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=:tableName");
-    query.bindValue(":tableName", tableName);
+    return query.exec("PRAGMA quick_check");
+}
 
-    return query.exec() && query.next();
+bool DatabaseManager::execute(const QString& query, const QVariantMap& params)
+{
+    QMutexLocker locker(&m_mutex);
+    QSqlQuery q(m_db);
+
+    q.prepare(query);
+    for (auto it = params.constBegin(); it != params.constEnd(); ++it)
+    {
+        q.bindValue(":" + it.key(), it.value());
+    }
+
+    if (!q.exec())
+    {
+        qWarning() << "Query failed:" << query << "\nError:" << q.lastError();
+        return false;
+    }
+    return true;
 }

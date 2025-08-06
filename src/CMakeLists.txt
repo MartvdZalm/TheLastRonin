@@ -10,82 +10,90 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(TheLastRonin
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        resources.qrc
+
+        # Database Layer
+        database/Container.h
+        database/Container.cpp
         database/DatabaseManager.h
         database/DatabaseManager.cpp
-        # components/dialog/AddPlaylistDialog.h
-        # components/dialog/AddPlaylistDialog.cpp
-        # components/home/PlaylistCard.h
-        # components/home/PlaylistCard.cpp
-        # window/PlaylistWindow.h
-        # window/PlaylistWindow.cpp
-        # styles/ButtonStyle.h
-        # styles/ButtonStyle.cpp
-        # styles/InputStyle.h
-        # styles/InputStyle.cpp
-        # components/shared/CoverImageWidget.h
-        # components/shared/CoverImageWidget.cpp
-        # components/playlist/PlaylistDetails.h
-        # components/playlist/PlaylistDetails.cpp
-        # components/playlist/TrackList.h
-        # components/playlist/TrackList.cpp
-        # components/dialog/AddTrackDialog.h
-        # components/dialog/AddTrackDialog.cpp
-        # resources.qrc
-        # components/home/PlaylistGrid.h
-        # components/home/PlaylistGrid.cpp
-        # window/BaseWindow.h
-        # window/BaseWindow.cpp
-        # window/HomeWindow.h
-        # window/HomeWindow.cpp
+
+        # Models
+        model/Model.h
+        model/Playlist.h
+        model/Setting.h
+        model/Track.h
+
+        # Repositories
+        repository/IPlaylistRepository.h
+        repository/ISettingRepository.h
+        repository/ITrackRepository.h
         repository/PlaylistRepository.h
         repository/PlaylistRepository.cpp
-        # service/PlaylistService.h
-        # service/PlaylistService.cpp
-        model/Playlist.h
-        model/Track.h
+        repository/SettingRepository.h
+        repository/SettingRepository.cpp
         repository/TrackRepository.h
         repository/TrackRepository.cpp
-        # service/TrackService.h
-        # service/TrackService.cpp
-        # styles/ComboBoxStyle.h
-        # styles/ComboBoxStyle.cpp
-        # events/AppEvents.h
-        # events/AppEvents.cpp
-        repository/UserRepository.h
-        model/User.h
-        repository/UserRepository.cpp
-        # window/MainWindow.h
-        # window/MainWindow.cpp
-        # components/shared/NavigationBar.h
-        # components/shared/NavigationBar.cpp
-        # components/shared/MiniPlayerWindow.h
-        # components/shared/MiniPlayerWindow.cpp
-        # components/shared/PlaybackBar.h
-        # components/shared/PlaybackBar.cpp
-        # styles/AppStyle.h
-        # styles/AppStyle.cpp
-        # styles/SliderStyle.h
-        # styles/SliderStyle.cpp
-        # window/SettingsWindow.cpp
-        # window/SettingsWindow.h
-        # styles/ListStyle.h
-        # styles/ListStyle.cpp
-        repository/SettingRepository.cpp
-        repository/SettingRepository.h
-        # service/LanguageService.h
-        # service/LanguageService.cpp
-        repository/Repository.h
-        model/Model.h
-        model/Model.cpp
-        database/ORM.h
-        database/ORM.cpp
-        database/QueryBuilder.h
-        database/QueryBuilder.cpp
-        model/Track.cpp
-        model/Playlist.cpp
-        model/User.cpp
-        model/Setting.h
-        model/Setting.cpp
+
+        # Events
+        events/AppEvents.h
+        events/AppEvents.cpp
+
+        # Services
+        service/LanguageService.h
+        service/LanguageService.cpp
+
+        # Styles
+        styles/AppStyle.h
+        styles/AppStyle.cpp
+        styles/ButtonStyle.h
+        styles/ButtonStyle.cpp
+        styles/ComboBoxStyle.h
+        styles/ComboBoxStyle.cpp
+        styles/InputStyle.h
+        styles/InputStyle.cpp
+        styles/ListStyle.h
+        styles/ListStyle.cpp
+        styles/SliderStyle.h
+        styles/SliderStyle.cpp
+
+        # Shared Components
+        components/shared/CoverImageWidget.h
+        components/shared/CoverImageWidget.cpp
+        components/shared/MiniPlayerWindow.h
+        components/shared/MiniPlayerWindow.cpp
+        components/shared/NavigationBar.h
+        components/shared/NavigationBar.cpp
+        components/shared/PlaybackBar.h
+        components/shared/PlaybackBar.cpp
+
+        # Dialog Components
+        components/dialog/AddPlaylistDialog.h
+        components/dialog/AddPlaylistDialog.cpp
+        components/dialog/AddTrackDialog.h
+        components/dialog/AddTrackDialog.cpp
+
+        # Playlist Components
+        components/home/PlaylistCard.h
+        components/home/PlaylistCard.cpp
+        components/home/PlaylistGrid.h
+        components/home/PlaylistGrid.cpp
+        components/playlist/PlaylistDetails.h
+        components/playlist/PlaylistDetails.cpp
+        components/playlist/TrackList.h
+        components/playlist/TrackList.cpp
+
+        # Windows
+        window/BaseWindow.h
+        window/BaseWindow.cpp
+        window/HomeWindow.h
+        window/HomeWindow.cpp
+        window/MainWindow.h
+        window/MainWindow.cpp
+        window/PlaylistWindow.h
+        window/PlaylistWindow.cpp
+        window/SettingsWindow.h
+        window/SettingsWindow.cpp
     )
 else()
     add_executable(TheLastRonin

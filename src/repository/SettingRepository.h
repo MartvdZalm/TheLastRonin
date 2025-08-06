@@ -1,26 +1,31 @@
 #ifndef SETTINGREPOSITORY_H
 #define SETTINGREPOSITORY_H
 
-#include "../database/DatabaseManager.h"
-#include "../model/Setting.h"
-#include "Repository.h"
-#include <QObject>
+#include "ISettingRepository.h"
+#include <QSqlDatabase>
 
-class SettingRepository : public QObject
+class SettingRepository : public ISettingRepository
 {
-    Q_OBJECT
-
   public:
-    explicit SettingRepository(QObject* parent = nullptr);
+    explicit SettingRepository(QSqlDatabase& db);
 
-    bool save(Setting* setting);
-    std::unique_ptr<Setting> find(int id);
-    std::vector<std::unique_ptr<Setting>> findAll();
-    std::unique_ptr<Setting> findByKey(const QString& key);
-    bool updateValueByKey(const QString& key, const QString& newValue);
+    std::optional<Setting> findById(int id) override;
+    QList<Setting> findAll() override;
+    std::optional<Setting> save(const Setting& setting) override;
+    bool deleteById(int id) override;
+
+    std::optional<Setting> findByKey(const QString& key) override;
+    QString getValue(const QString& key, const QString& defaultValue = "") override;
+    std::optional<Setting> setValue(const QString& key, const QString& value) override;
+    bool deleteByKey(const QString& key) override;
+    QList<QString> getAllKeys() override;
 
   private:
-    std::shared_ptr<Repository<Setting>> baseRepository;
+    QSqlDatabase& database;
+
+    Setting mapFromRecord(const QSqlQuery& query);
+    std::optional<Setting> insert(const Setting& setting);
+    std::optional<Setting> update(const Setting& setting);
 };
 
 #endif // SETTINGREPOSITORY_H

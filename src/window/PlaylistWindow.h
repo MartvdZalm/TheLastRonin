@@ -34,7 +34,7 @@ class PlaylistWindow : public BaseWindow
     void setupEvents() override;
 
   private:
-    const Playlist& playlist;
+    Playlist playlist;
     QPushButton* addTrackBtn;
     QPushButton* editPlaylistBtn;
     QPushButton* removePlaylistBtn;

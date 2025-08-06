@@ -71,7 +71,6 @@ class SettingsWindow : public BaseWindow
     QWidget* advancedPage;
 
     QComboBox* languageCombo;
-    SettingRepository settingRepository;
 };
 
 #endif // SETTINGSWINDOW_H

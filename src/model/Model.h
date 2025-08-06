@@ -1,78 +1,47 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <QJsonObject>
-#include <QMetaObject>
-#include <QMetaProperty>
-#include <QObject>
-#include <QStringList>
-#include <QVariant>
-#include <QVariantMap>
-#include <QSqlRecord>
+#include <QDateTime>
 
-class Model : public QObject
+class Model
 {
-    Q_OBJECT
-    Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
-
   public:
-    explicit Model(QObject* parent = nullptr);
-    virtual ~Model() = default;
+    Model() = default;
 
-    int id() const
+    int getId() const
     {
-        return m_id;
+        return id;
     }
 
-    void setId(int id);
-
-    virtual void deserialize(const QSqlRecord& record) = 0;
-    virtual QString getTableName() const = 0;
-    virtual QStringList tableSchema() const = 0;
-    virtual void fromVariantMap(const QVariantMap& map) = 0;
-    virtual QVariantMap toVariantMap() const = 0;
-
-    virtual bool isValid() const
+    QDateTime getCreatedAt() const
     {
-        return true;
+        return createdAt;
     }
 
-    virtual QStringList validationErrors() const
+    QDateTime getUpdatedAt() const
     {
-        return {};
+        return updatedAt;
     }
 
-    QStringList propertyNames() const;
-    QVariant property(const QString& name) const;
-    bool setProperty(const QString& name, const QVariant& value);
-
-    virtual bool hasTimestamps() const
+    void setId(int id)
     {
-        return false;
+        this->id = id;
     }
 
-    virtual QString createdAtColumn() const
+    void setCreatedAt(const QDateTime& createdAt)
     {
-        return "created_at";
+        this->createdAt = createdAt;
     }
 
-    virtual QString updatedAtColumn() const
+    void setUpdatedAt(const QDateTime& updatedAt)
     {
-        return "updated_at";
+        this->updatedAt = updatedAt;
     }
-
-  signals:
-    void idChanged();
-    void modelChanged();
 
   protected:
-    void emitModelChanged()
-    {
-        emit modelChanged();
-    }
-
-  private:
-    int m_id;
+    int id = 0;
+    QDateTime createdAt;
+    QDateTime updatedAt;
 };
 
 #endif // MODEL_H

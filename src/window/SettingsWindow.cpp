@@ -14,6 +14,7 @@
 #include <QSpinBox>
 #include <QSplitter>
 #include "../model/Setting.h"
+#include "../database/Container.h"
 
 SettingsWindow::SettingsWindow(QWidget* parent) : BaseWindow(parent)
 {
@@ -281,9 +282,9 @@ void SettingsWindow::onApplyClicked()
 
 void SettingsWindow::loadSettings()
 {
-    std::unique_ptr<Setting> settingModel = settingRepository.findByKey("language");
+    std::optional<Setting> settingModel = Container::instance().getSettingRepository()->findByKey("language");
     
-    if (settingModel != nullptr)
+    if (settingModel)
     {
         int index = languageCombo->findText(settingModel->getValue());
         if (index >= 0)
@@ -305,7 +306,7 @@ void SettingsWindow::loadSettings()
 void SettingsWindow::saveSettings()
 {
     QString selectedLanguage = languageCombo->currentText();
-    settingRepository.updateValueByKey("language", selectedLanguage);
+    Container::instance().getSettingRepository()->setValue("language", selectedLanguage);
     LanguageService::instance().loadLanguage(selectedLanguage);
 }
 

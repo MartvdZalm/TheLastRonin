@@ -42,37 +42,37 @@
 <context>
     <name>AddTrackDialog</name>
     <message>
-        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="16"/>
+        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="17"/>
         <source>Add Track</source>
         <translation>曲を追加</translation>
     </message>
     <message>
-        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="26"/>
+        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="33"/>
         <source>Choose Audio File...</source>
         <translation>音声ファイルを選択...</translation>
     </message>
     <message>
-        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="30"/>
+        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="37"/>
         <source>Title:</source>
         <translation>タイトル：</translation>
     </message>
     <message>
-        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="32"/>
+        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="39"/>
         <source>Artist:</source>
         <translation>アーティスト：</translation>
     </message>
     <message>
-        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="34"/>
+        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="41"/>
         <source>File:</source>
         <translation>ファイル：</translation>
     </message>
     <message>
-        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="45"/>
+        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="52"/>
         <source>Choose Audio File</source>
         <translation>オーディオファイルを選択</translation>
     </message>
     <message>
-        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="46"/>
+        <location filename="../src/components/dialog/AddTrackDialog.cpp" line="53"/>
         <source>Audio Files (*.mp3 *.wav);;MP3 Files (*.mp3);;WAV Files (*.wav);;All Files (*)</source>
         <translation>オーディオファイル (*.mp3 *.wav);;MP3 ファイル (*.mp3);;WAV ファイル (*.wav);;すべてのファイル (*)</translation>
     </message>
@@ -80,70 +80,70 @@
 <context>
     <name>HomeWindow</name>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="49"/>
+        <location filename="../src/window/HomeWindow.cpp" line="52"/>
         <source>Search playlists...</source>
         <translation>プレイリストを検索...</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="56"/>
+        <location filename="../src/window/HomeWindow.cpp" line="59"/>
         <source>Delete Data</source>
         <translation>データを削除</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="60"/>
+        <location filename="../src/window/HomeWindow.cpp" line="63"/>
         <source>Add Playlist</source>
         <translation>プレイリストを追加</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="64"/>
+        <location filename="../src/window/HomeWindow.cpp" line="67"/>
         <source>Import Playlist</source>
         <translation>プレイリストをインポート</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="69"/>
+        <location filename="../src/window/HomeWindow.cpp" line="72"/>
         <source>Choose Filter</source>
         <translation>フィルターを選択</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="70"/>
-        <location filename="../src/window/HomeWindow.cpp" line="201"/>
+        <location filename="../src/window/HomeWindow.cpp" line="73"/>
+        <location filename="../src/window/HomeWindow.cpp" line="222"/>
         <source>Sort by Name</source>
         <translation>名前で並べ替え</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="71"/>
-        <location filename="../src/window/HomeWindow.cpp" line="206"/>
+        <location filename="../src/window/HomeWindow.cpp" line="74"/>
+        <location filename="../src/window/HomeWindow.cpp" line="227"/>
         <source>Sort by Creation Date</source>
         <translation>作成日で並べ替え</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="72"/>
-        <location filename="../src/window/HomeWindow.cpp" line="211"/>
+        <location filename="../src/window/HomeWindow.cpp" line="75"/>
+        <location filename="../src/window/HomeWindow.cpp" line="232"/>
         <source>Sort by Recently Played</source>
         <translation>最近再生された順で並べ替え</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="100"/>
+        <location filename="../src/window/HomeWindow.cpp" line="104"/>
         <source>Confirm Deletion</source>
         <translation>削除の確認</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="101"/>
+        <location filename="../src/window/HomeWindow.cpp" line="105"/>
         <source>Are you sure you want to delete all your data? This cannot be undone.</source>
         <translation>すべてのデータを削除してもよろしいですか？この操作は元に戻せません。</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="144"/>
+        <location filename="../src/window/HomeWindow.cpp" line="150"/>
         <source>Select Playlist Folder</source>
         <translation>プレイリストのフォルダを選択</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="170"/>
+        <location filename="../src/window/HomeWindow.cpp" line="176"/>
         <source>No Tracks Found</source>
         <translation>曲が見つかりませんでした</translation>
     </message>
     <message>
-        <location filename="../src/window/HomeWindow.cpp" line="170"/>
+        <location filename="../src/window/HomeWindow.cpp" line="176"/>
         <source>No audio files were found in the selected folder.</source>
         <translation>選択したフォルダーにオーディオ ファイルが見つかりません。</translation>
     </message>
@@ -165,37 +165,29 @@
     </message>
 </context>
 <context>
-    <name>PlaylistCard</name>
-    <message>
-        <location filename="../src/components/home/PlaylistCard.cpp" line="45"/>
-        <source>Tracks: </source>
-        <translation>トラック数：</translation>
-    </message>
-</context>
-<context>
     <name>PlaylistWindow</name>
     <message>
-        <location filename="../src/window/PlaylistWindow.cpp" line="43"/>
+        <location filename="../src/window/PlaylistWindow.cpp" line="46"/>
         <source>Add Track</source>
         <translation>トラックを追加</translation>
     </message>
     <message>
-        <location filename="../src/window/PlaylistWindow.cpp" line="46"/>
+        <location filename="../src/window/PlaylistWindow.cpp" line="49"/>
         <source>Edit Playlist</source>
         <translation>プレイリストを編集</translation>
     </message>
     <message>
-        <location filename="../src/window/PlaylistWindow.cpp" line="49"/>
+        <location filename="../src/window/PlaylistWindow.cpp" line="52"/>
         <source>Delete Playlist</source>
         <translation>プレイリストを削除</translation>
     </message>
     <message>
-        <location filename="../src/window/PlaylistWindow.cpp" line="106"/>
+        <location filename="../src/window/PlaylistWindow.cpp" line="112"/>
         <source>Confirm Deletion</source>
         <translation>削除の確認</translation>
     </message>
     <message>
-        <location filename="../src/window/PlaylistWindow.cpp" line="107"/>
+        <location filename="../src/window/PlaylistWindow.cpp" line="113"/>
         <source>Are you sure you want to delete this playlist? This cannot be undone.</source>
         <translation>このプレイリストを削除してもよろしいですか？この操作は元に戻せません。</translation>
     </message>
@@ -203,72 +195,72 @@
 <context>
     <name>SettingsWindow</name>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="18"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="311"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="21"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="315"/>
         <source>Settings</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="65"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="315"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="68"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="319"/>
         <source>General</source>
         <translation>一般</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="66"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="316"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="69"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="320"/>
         <source>Audio</source>
         <translation>オーディオ</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="67"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="317"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="70"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="321"/>
         <source>Library</source>
         <translation>ライブラリ</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="68"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="318"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="71"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="322"/>
         <source>Playback</source>
         <translation>再生</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="69"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="319"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="72"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="323"/>
         <source>Interface</source>
         <translation>インターフェース</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="70"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="320"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="73"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="324"/>
         <source>Hotkeys</source>
         <translation>ホットキー</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="71"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="321"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="74"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="325"/>
         <source>Advanced</source>
         <translation>詳細設定</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="124"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="325"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="127"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="329"/>
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="127"/>
-        <location filename="../src/window/SettingsWindow.cpp" line="327"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="130"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="331"/>
         <source>Apply</source>
         <translation>適用</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="143"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="146"/>
         <source>Language</source>
         <translation>言語</translation>
     </message>
     <message>
-        <location filename="../src/window/SettingsWindow.cpp" line="148"/>
+        <location filename="../src/window/SettingsWindow.cpp" line="151"/>
         <source>Language:</source>
         <translation>言語：</translation>
     </message>

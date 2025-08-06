@@ -1,26 +1,29 @@
 #ifndef PLAYLISTREPOSITORY_H
 #define PLAYLISTREPOSITORY_H
 
-#include "../database/QueryBuilder.h"
-#include "../repository/Repository.h"
-#include "../model/Playlist.h"
-#include "../model/Track.h"
-#include <QObject>
-#include <memory>
+#include "IPlaylistRepository.h"
+#include <QSqlDatabase>
 
-class PlaylistRepository : public QObject
+class PlaylistRepository : public IPlaylistRepository
 {
-    Q_OBJECT
-
   public:
-    explicit PlaylistRepository(QObject* parent = nullptr);
+    explicit PlaylistRepository(QSqlDatabase& db);
 
-    bool save(Playlist* playlist);
-    std::unique_ptr<Playlist> find(int id);
-    std::vector<std::unique_ptr<Playlist>> findAll();
+    std::optional<Playlist> findById(int id) override;
+    QList<Playlist> findAll() override;
+    std::optional<Playlist> save(const Playlist& playlist) override;
+    bool deleteById(int id) override;
+
+    bool addTrackToPlaylist(int playlistId, int trackId) override;
+    bool removeTrackFromPlaylist(int playlistId, int trackId) override;
+    QList<Track> getTracksForPlaylist(int playlistId) override;
 
   private:
-    std::shared_ptr<Repository<Playlist>> baseRepository;
+    QSqlDatabase& database;
+
+    Playlist mapFromRecord(const QSqlQuery& query);
+    std::optional<Playlist> insert(const Playlist& playlist);
+    bool update(const Playlist& playlist);
 };
 
 #endif // PLAYLISTREPOSITORY_H

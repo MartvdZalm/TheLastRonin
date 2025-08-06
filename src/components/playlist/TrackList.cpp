@@ -7,13 +7,13 @@
 
 TrackList::TrackList(const QVector<Track>& tracks, QWidget* parent) : QListWidget(parent)
 {
-    // for (int i = 0; i < tracks.size(); ++i)
-    // {
-    //     QListWidgetItem* qListWidgetItem = new QListWidgetItem(this);
-    //     qListWidgetItem->setSizeHint(QSize(0, 50));
-    //     // qListWidgetItem->setData(Qt::UserRole, QVariant::fromValue(tracks[i]));
-    //     this->setItemWidget(qListWidgetItem, createTrackItemWidget(tracks[i], i + 1));
-    // }
+    for (int i = 0; i < tracks.size(); ++i)
+    {
+        QListWidgetItem* qListWidgetItem = new QListWidgetItem(this);
+        qListWidgetItem->setSizeHint(QSize(0, 50));
+        qListWidgetItem->setData(Qt::UserRole, QVariant::fromValue(tracks[i]));
+        this->setItemWidget(qListWidgetItem, createTrackItemWidget(tracks[i], i + 1));
+    }
 
     this->setStyleSheet(R"(
         TrackList {
@@ -63,8 +63,8 @@ void TrackList::addTrack(const Track& track)
 {
     QListWidgetItem* qListWidgetItem = new QListWidgetItem(this);
     qListWidgetItem->setSizeHint(QSize(0, 50));
-    // qListWidgetItem->setData(Qt::UserRole, QVariant::fromValue(track));
-    setItemWidget(qListWidgetItem, createTrackItemWidget(track, count() + 1));
+    qListWidgetItem->setData(Qt::UserRole, QVariant::fromValue(track));
+    setItemWidget(qListWidgetItem, createTrackItemWidget(track, count()));
 }
 
 QWidget* TrackList::createTrackItemWidget(const Track& track, int index)

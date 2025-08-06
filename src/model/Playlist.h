@@ -1,22 +1,15 @@
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
 
-#include "../model/Model.h"
+#include "Model.h"
+#include "Track.h"
 #include <QDateTime>
 #include <QString>
-#include "../database/ORM.h"
 
 class Playlist : public Model
 {
-    Q_OBJECT
-    Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString description READ getDescription WRITE setDescription NOTIFY descriptionChanged)
-    Q_PROPERTY(QString coverImagePath READ getCoverImagePath WRITE setCoverImagePath NOTIFY coverImagePathChanged)
-    Q_PROPERTY(QDateTime createdAt READ getCreatedAt WRITE setCreatedAt NOTIFY createdAtChanged)
-    Q_PROPERTY(QDateTime updatedAt READ getUpdatedAt WRITE setUpdatedAt NOTIFY updatedAtChanged)
-
   public:
-    explicit Playlist(QObject* parent = nullptr);
+    Playlist() = default;
 
     QString getName() const
     {
@@ -33,55 +26,41 @@ class Playlist : public Model
         return coverImagePath;
     }
 
-    QDateTime getCreatedAt() const
+    QList<Track> getTracks() const
     {
-        return createdAt;
+        return tracks;
     }
 
-    QDateTime getUpdatedAt() const
+    void addTrack(Track track)
     {
-        return updatedAt;
+        tracks.append(track);
     }
 
-    void setName(const QString& name);
-    void setDescription(const QString& description);
-    void setCoverImagePath(const QString& coverImagePath);
-    void setCreatedAt(const QDateTime& createdAt);
-    void setUpdatedAt(const QDateTime& updatedAt);
-
-    void deserialize(const QSqlRecord& record) override;
-    void fromVariantMap(const QVariantMap& map) override;
-    QVariantMap toVariantMap() const override;
-
-    QString getTableName() const override
+    void setName(const QString& name)
     {
-        return "playlists";
+        this->name = name;
     }
 
-    QStringList tableSchema() const override;
-
-    bool hasTimestamps() const override
+    void setDescription(const QString& description)
     {
-        return true;
+        this->description = description;
     }
 
-    bool isValid() const override;
-    QStringList validationErrors() const override;
+    void setCoverImagePath(const QString& coverImagePath)
+    {
+        this->coverImagePath = coverImagePath;
+    }
 
-  signals:
-    void nameChanged();
-    void descriptionChanged();
-    void coverImagePathChanged();
-    void createdAtChanged();
-    void updatedAtChanged();
+    void setTracks(const QList<Track>& tracks)
+    {
+        this->tracks = tracks;
+    }
 
   private:
     QString name;
     QString description;
     QString coverImagePath;
-    QDateTime createdAt;
-    QDateTime updatedAt;
+    QList<Track> tracks;
 };
-MODEL_REGISTRATION(Playlist);
 
 #endif // PLAYLIST_H

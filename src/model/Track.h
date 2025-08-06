@@ -3,20 +3,11 @@
 
 #include "Model.h"
 #include <QString>
-#include "../database/ORM.h"
 
 class Track : public Model
 {
-    Q_OBJECT
-    Q_PROPERTY(QString title READ getTitle WRITE setTitle NOTIFY titleChanged)
-    Q_PROPERTY(QString filePath READ getFilePath WRITE setFilePath NOTIFY filePathChanged)
-    Q_PROPERTY(QString artist READ getArtist WRITE setArtist NOTIFY artistChanged)
-    Q_PROPERTY(QString album READ getAlbum WRITE setAlbum NOTIFY albumChanged)
-    Q_PROPERTY(QString duration READ getDuration WRITE setDuration NOTIFY durationChanged)
-    Q_PROPERTY(int trackNumber READ getTrackNumber WRITE setTrackNumber NOTIFY trackNumberChanged)
-
   public:
-    explicit Track(QObject* parent = nullptr);
+    Track() = default;
 
     QString getTitle() const
     {
@@ -43,39 +34,30 @@ class Track : public Model
         return duration;
     }
 
-    int getTrackNumber() const
+    void setTitle(const QString& title)
     {
-        return trackNumber;
+        this->title = title;
     }
 
-    void setTitle(const QString& title);
-    void setFilePath(const QString& filePath);
-    void setArtist(const QString& artist);
-    void setAlbum(const QString& album);
-    void setDuration(const QString& duration);
-    void setTrackNumber(int trackNumber);
-
-    void deserialize(const QSqlRecord& record) override;
-    void fromVariantMap(const QVariantMap& map) override;
-    QVariantMap toVariantMap() const override;
-
-    QString getTableName() const override
+    void setFilePath(const QString& filePath)
     {
-        return "tracks";
+        this->filePath = filePath;
     }
 
-    QStringList tableSchema() const override;
+    void setArtist(const QString& artist)
+    {
+        this->artist = artist;
+    }
 
-    bool isValid() const override;
-    QStringList validationErrors() const override;
+    void setAlbum(const QString& album)
+    {
+        this->album = album;
+    }
 
-  signals:
-    void titleChanged();
-    void filePathChanged();
-    void artistChanged();
-    void albumChanged();
-    void durationChanged();
-    void trackNumberChanged();
+    void setDuration(const QString& duration)
+    {
+        this->duration = duration;
+    }
 
   private:
     QString title;
@@ -83,8 +65,6 @@ class Track : public Model
     QString artist;
     QString album;
     QString duration;
-    int trackNumber;
 };
-MODEL_REGISTRATION(Track);
 
 #endif // TRACK_H
