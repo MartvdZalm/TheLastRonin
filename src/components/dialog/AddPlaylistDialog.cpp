@@ -68,10 +68,10 @@ void AddPlaylistDialog::setupUI()
 
 void AddPlaylistDialog::populateFields(const Playlist& playlist)
 {
-    nameEdit->setText(playlist.name);
-    descriptionEdit->setText(playlist.description);
-    coverImagePath = playlist.coverImagePath;
-    imagePreview->setPixmap(QPixmap(coverImagePath).scaled(imagePreview->size(), Qt::KeepAspectRatio));
+    // nameEdit->setText(playlist.name);
+    // descriptionEdit->setText(playlist.description);
+    // coverImagePath = playlist.coverImagePath;
+    // imagePreview->setPixmap(QPixmap(coverImagePath).scaled(imagePreview->size(), Qt::KeepAspectRatio));
 }
 
 QString AddPlaylistDialog::getName() const
@@ -91,7 +91,8 @@ QString AddPlaylistDialog::getCoverImagePath() const
 
 void AddPlaylistDialog::chooseCoverImage()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Choose Playlist Cover"), "", tr("Images (*.png *.jpg *.jpeg)"));
+    QString path =
+        QFileDialog::getOpenFileName(this, tr("Choose Playlist Cover"), "", tr("Images (*.png *.jpg *.jpeg)"));
     if (!path.isEmpty())
     {
         coverImagePath = path;

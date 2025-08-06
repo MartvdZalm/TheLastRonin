@@ -1,7 +1,12 @@
 #include <QApplication>
+#include <QDir>
+#include <QIcon>
+#include <QSqlError>
+#include <QStandardPaths>
+#include <qsqlquery.h>
 
+#include "database/Container.h"
 #include "database/DatabaseManager.h"
-#include "repository/SettingsRepository.h"
 #include "service/LanguageService.h"
 #include "styles/AppStyle.h"
 #include "window/MainWindow.h"
@@ -12,28 +17,16 @@ int main(int argc, char* argv[])
     app.setStyleSheet(AppStyle::styleSheet());
     app.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
 
-    DatabaseManager& db = DatabaseManager::instance();
-
-    if (db.openDatabase())
+    if (!DatabaseManager::instance().initialize())
     {
-        if (!db.initSchema())
-        {
-            qCritical() << "Failed to initialize database schema.";
-            return -1;
-        }
-    }
-    else
-    {
-        qCritical() << "Failed to open the database. Exiting.";
+        qFatal("Failed to initialize database");
         return -1;
     }
 
-    SettingsRepository SettingsRepository;
-    QString savedLanguage = SettingsRepository.getSetting("language");
-    if (!savedLanguage.isEmpty())
-    {
-        LanguageService::instance().loadLanguage(savedLanguage);
-    }
+    Container::instance().initialize(DatabaseManager::instance().database());
+
+    auto setting = Container::instance().getSettingRepository()->setValue("language", "English");
+    LanguageService::instance().loadLanguage(setting->getValue());
 
     MainWindow window;
     window.setWindowTitle("TheLastRonin");

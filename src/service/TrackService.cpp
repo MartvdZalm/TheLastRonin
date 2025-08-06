@@ -5,21 +5,22 @@ TrackService::TrackService() {}
 
 bool TrackService::addTrackToPlaylist(int playlistId, const Track& track)
 {
-    if (track.title.isEmpty() || track.filePath.isEmpty())
-    {
-        qDebug() << "Track title and file path are required.";
-        return false;
-    }
+    // if (track.title.isEmpty() || track.filePath.isEmpty())
+    // {
+    //     qDebug() << "Track title and file path are required.";
+    //     return false;
+    // }
 
-    return trackRepository.insertTrack(playlistId, track);
+    // return trackRepository.insertTrack(playlistId, track);
+    return true;
 }
 
-bool TrackService::deleteTrack(int trackId)
-{
-    return trackRepository.deleteTrack(trackId);
-}
+// bool TrackService::deleteTrack(int trackId)
+// {
+//     return trackRepository.deleteTrack(trackId);
+// }
 
-QVector<Track> TrackService::getTracks(int playlistId)
-{
-    return trackRepository.getTracksForPlaylist(playlistId);
-}
+// QVector<Track> TrackService::getTracks(int playlistId)
+// {
+//     return trackRepository.getTracksForPlaylist(playlistId);
+// }

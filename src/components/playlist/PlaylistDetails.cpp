@@ -18,15 +18,16 @@ PlaylistDetails::PlaylistDetails(const Playlist& playlist, QWidget* parent) : QW
         }
     )");
 
-    nameLabel = new QLabel(playlist.name, this);
+    nameLabel = new QLabel(playlist.getName(), this);
     nameLabel->setObjectName("nameLabel");
 
-    tracksLabel = new QLabel("Tracks: " + QString::number(playlist.tracks.size()));
+    tracksLabel = new QLabel("Tracks: " + QString::number(playlist.getTracks().size()));
+
     tracksLabel->setObjectName("tracksLabel");
 
     descriptionLabel = new QLabel(this);
-    descriptionLabel->setText(playlist.description);
-    descriptionLabel->setVisible(!playlist.description.isEmpty());
+    descriptionLabel->setText(playlist.getDescription());
+    descriptionLabel->setVisible(!playlist.getDescription().isEmpty());
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(nameLabel);
@@ -38,7 +39,7 @@ PlaylistDetails::PlaylistDetails(const Playlist& playlist, QWidget* parent) : QW
 
 void PlaylistDetails::updateDetails(const Playlist& playlist)
 {
-    nameLabel->setText(playlist.name);
-    descriptionLabel->setText(playlist.description);
-    tracksLabel->setText("Tracks: " + QString::number(playlist.tracks.size()));
+    nameLabel->setText(playlist.getName());
+    descriptionLabel->setText(playlist.getDescription());
+    tracksLabel->setText("Tracks: " + QString::number(playlist.getTracks().size()));
 }

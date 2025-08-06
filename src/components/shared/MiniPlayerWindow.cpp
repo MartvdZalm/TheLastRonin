@@ -1,12 +1,12 @@
 #include "MiniPlayerWindow.h"
 
+#include "../../styles/ButtonStyle.h"
+#include "../../styles/SliderStyle.h"
+#include "PlaybackBar.h"
 #include <QApplication>
 #include <QCloseEvent>
 #include <QFile>
 #include <QScreen>
-#include "PlaybackBar.h"
-#include "../../styles/ButtonStyle.h"
-#include "../../styles/SliderStyle.h"
 
 MiniPlayerWindow::MiniPlayerWindow(QWidget* parent)
     : QWidget(parent), playerRef(nullptr), audioOutputRef(nullptr), isDragging(false)
@@ -49,7 +49,7 @@ void MiniPlayerWindow::setupUI()
     songLabel->setAlignment(Qt::AlignCenter);
     songLabel->setWordWrap(true);
     songLabel->setMinimumHeight(40);
-    songLabel->setText(track.title);
+    songLabel->setText(track.getTitle());
     songLabel->setStyleSheet("color: white;");
 
     QHBoxLayout* controlsLayout = new QHBoxLayout;
@@ -135,7 +135,7 @@ void MiniPlayerWindow::setPlayerData(QMediaPlayer* player, QAudioOutput* audioOu
 void MiniPlayerWindow::updateTrackInfo(const Track& track)
 {
     this->track = track;
-    songLabel->setText(track.title);
+    songLabel->setText(track.getTitle());
 }
 
 void MiniPlayerWindow::updateProgress(qint64 position, qint64 duration)

@@ -1,23 +1,44 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include <QMutex>
+#include <QObject>
 #include <QSqlDatabase>
-#include <QString>
 
-class DatabaseManager
+class DatabaseManager : public QObject
 {
+    Q_OBJECT
+
   public:
-    DatabaseManager();
     static DatabaseManager& instance();
 
-    bool openDatabase();
-    void closeDatabase();
-    bool initSchema();
-    bool deleteUserData();
-    bool executeQuery(const QString& query, const QMap<QString, QVariant>& bindings = {});
+    bool initialize();
+    bool isInitialized() const
+    {
+        return m_initialized;
+    }
+    QSqlDatabase& database()
+    {
+        return m_db;
+    }
+
+    bool execute(const QString& query, const QVariantMap& params = QVariantMap());
+
+    DatabaseManager(const DatabaseManager&) = delete;
+    DatabaseManager& operator=(const DatabaseManager&) = delete;
 
   private:
-    QSqlDatabase db;
+    DatabaseManager() = default;
+    ~DatabaseManager();
+
+    bool createTables();
+    bool applyPragmas();
+    bool verifyDatabase();
+
+    QSqlDatabase m_db;
+    QMutex m_mutex;
+    bool m_initialized = false;
+    static QMutex s_instanceMutex;
 };
 
 #endif // DATABASEMANAGER_H

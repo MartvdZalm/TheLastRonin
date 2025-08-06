@@ -1,20 +1,26 @@
 #ifndef TRACKREPOSITORY_H
 #define TRACKREPOSITORY_H
 
-#include "../database/DatabaseManager.h"
-#include "../model/Track.h"
-#include <QVector>
+#include "ITrackRepository.h"
+#include <QSqlDatabase>
 
-class TrackRepository
+class TrackRepository : public ITrackRepository
 {
   public:
-    TrackRepository();
+    explicit TrackRepository(QSqlDatabase& db);
 
-    bool insertTrack(int playlistId, const Track& track);
-    bool deleteTrack(int trackId);
-    QVector<Track> getTracksForPlaylist(int playlistId);
+    std::optional<Track> findById(int id) override;
+    QList<Track> findAll() override;
+    std::optional<Track> save(const Track& track) override;
+    bool deleteById(int id) override;
+    std::optional<Track> findByFilePath(const QString& filePath) override;
 
   private:
-    DatabaseManager& db;
+    QSqlDatabase& database;
+
+    Track mapFromRecord(const QSqlQuery& query);
+    std::optional<Track> insert(const Track& track);
+    bool update(const Track& track);
 };
+
 #endif // TRACKREPOSITORY_H

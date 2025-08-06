@@ -2,8 +2,6 @@
 #define HOMEWINDOW_H
 
 #include "../components/home/PlaylistGrid.h"
-#include "../repository/PlaylistRepository.h"
-#include "../repository/TrackRepository.h"
 #include "BaseWindow.h"
 #include <QComboBox>
 #include <QGridLayout>
@@ -39,9 +37,6 @@ class HomeWindow : public BaseWindow
     QPushButton* deleteDataBtn = nullptr;
     QGridLayout* playlistGridLayout = nullptr;
     QComboBox* sortComboBox = nullptr;
-
-    PlaylistRepository playlistRepository;
-    TrackRepository trackRepository;
 };
 
 #endif // HOMEWINDOW_H

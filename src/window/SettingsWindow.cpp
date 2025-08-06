@@ -1,5 +1,8 @@
 #include "SettingsWindow.h"
+
+#include "../database/Container.h"
 #include "../events/AppEvents.h"
+#include "../model/Setting.h"
 #include "../service/LanguageService.h"
 #include "../styles/ButtonStyle.h"
 #include "../styles/ListStyle.h"
@@ -69,6 +72,7 @@ void SettingsWindow::setupSidebar()
     sidebar->addItem(tr("Interface"));
     sidebar->addItem(tr("Hotkeys"));
     sidebar->addItem(tr("Advanced"));
+    sidebar->addItem(tr("About"));
 
     sidebarLayout->addWidget(sidebar);
 
@@ -98,6 +102,7 @@ void SettingsWindow::setupContentArea()
     interfacePage = createInterfacePage();
     hotkeysPage = createHotkeysPage();
     advancedPage = createAdvancedPage();
+    aboutPage = createAboutPage();
 
     contentStack->addWidget(generalPage);
     contentStack->addWidget(audioPage);
@@ -106,6 +111,7 @@ void SettingsWindow::setupContentArea()
     contentStack->addWidget(interfacePage);
     contentStack->addWidget(hotkeysPage);
     contentStack->addWidget(advancedPage);
+    contentStack->addWidget(aboutPage);
 
     scrollArea->setWidget(contentStack);
     contentLayout->addWidget(scrollArea);
@@ -261,6 +267,19 @@ QWidget* SettingsWindow::createAdvancedPage()
     return page;
 }
 
+QWidget* SettingsWindow::createAboutPage()
+{
+    QWidget* page = new QWidget;
+    QVBoxLayout* layout = new QVBoxLayout(page);
+    layout->setContentsMargins(20, 20, 20, 20);
+
+    QLabel* placeholder = new QLabel("About..");
+    layout->addWidget(placeholder);
+    layout->addStretch();
+
+    return page;
+}
+
 void SettingsWindow::onSidebarItemChanged(int index)
 {
     contentStack->setCurrentIndex(index);
@@ -279,10 +298,11 @@ void SettingsWindow::onApplyClicked()
 
 void SettingsWindow::loadSettings()
 {
-    QString language = settingsRepository.getSetting("language");
-    if (!language.isEmpty())
+    std::optional<Setting> settingModel = Container::instance().getSettingRepository()->findByKey("language");
+
+    if (settingModel)
     {
-        int index = languageCombo->findText(language);
+        int index = languageCombo->findText(settingModel->getValue());
         if (index >= 0)
         {
             languageCombo->setCurrentIndex(index);
@@ -302,7 +322,7 @@ void SettingsWindow::loadSettings()
 void SettingsWindow::saveSettings()
 {
     QString selectedLanguage = languageCombo->currentText();
-    settingsRepository.setSetting("language", selectedLanguage);
+    Container::instance().getSettingRepository()->setValue("language", selectedLanguage);
     LanguageService::instance().loadLanguage(selectedLanguage);
 }
 
@@ -321,8 +341,6 @@ void SettingsWindow::retranslateUI()
         sidebar->item(6)->setText(tr("Advanced"));
     }
 
-    if (cancelButton)
-        cancelButton->setText(tr("Cancel"));
-    if (applyButton)
-        applyButton->setText(tr("Apply"));
+    if (cancelButton) cancelButton->setText(tr("Cancel"));
+    if (applyButton) applyButton->setText(tr("Apply"));
 }

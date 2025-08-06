@@ -1,146 +1,218 @@
 #include "PlaylistRepository.h"
-#include <QDebug>
+
+#include <QDateTime>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QVariant>
 
-PlaylistRepository::PlaylistRepository() : db(DatabaseManager::instance()) {}
+PlaylistRepository::PlaylistRepository(QSqlDatabase& db) : database(db) {}
 
-int PlaylistRepository::insertPlaylist(const Playlist& playlist)
+std::optional<Playlist> PlaylistRepository::findById(int id)
 {
-    QSqlQuery query;
-    query.prepare(R"(
-        INSERT INTO playlists (name, description, coverImagePath)
-        VALUES (:name, :description, :coverImagePath)
-    )");
-
-    query.bindValue(":name", playlist.name);
-    query.bindValue(":description", playlist.description);
-    query.bindValue(":coverImagePath", playlist.coverImagePath);
+    QSqlQuery query(database);
+    query.prepare("SELECT * FROM playlists WHERE id = :id");
+    query.bindValue(":id", id);
 
     if (!query.exec())
     {
-        qWarning() << "Failed to insert playlist:" << query.lastError().text();
-        return -1;
+        qCritical() << "Database error when finding playlist ID" << id << ":" << query.lastError().text();
+        return std::nullopt;
     }
 
-    return query.lastInsertId().toInt();
+    if (query.next())
+    {
+        auto playlist = mapFromRecord(query);
+        playlist.setTracks(getTracksForPlaylist(id));
+        qDebug() << "Successfully found playlist ID:" << id;
+        return playlist;
+    }
+
+    qDebug() << "Playlist not found with ID:" << id;
+    return std::nullopt;
 }
 
-bool PlaylistRepository::updatePlaylist(const Playlist& playlist)
+std::optional<Playlist> PlaylistRepository::save(const Playlist& playlist)
 {
-    QMap<QString, QVariant> bindings;
-    bindings[":name"] = playlist.name;
-    bindings[":description"] = playlist.description;
-    bindings[":coverImagePath"] = playlist.coverImagePath;
-    bindings[":id"] = playlist.id;
+    if (playlist.getId() > 0)
+    {
+        if (!update(playlist))
+        {
+            qCritical() << "Failed to update playlist ID" << playlist.getId();
+            return std::nullopt;
+        }
+        qDebug() << "Successfully updated playlist ID:" << playlist.getId();
+        return playlist;
+    }
 
-    const QString queryStr = R"(
-        UPDATE playlists
-        SET name = :name,
-            description = :description,
-            coverImagePath = :coverImagePath,
-            updatedAt = CURRENT_TIMESTAMP
-        WHERE id = :id
-    )";
-
-    return db.executeQuery(queryStr, bindings);
+    return insert(playlist);
 }
 
-bool PlaylistRepository::deletePlaylist(int playlistId)
+QList<Playlist> PlaylistRepository::findAll()
 {
-    QMap<QString, QVariant> bindings;
-    bindings[":id"] = playlistId;
+    QList<Playlist> results;
+    QSqlQuery query("SELECT * FROM playlists", database);
 
-    const QString queryStr = R"(
-        DELETE FROM playlists
-        WHERE id = :id
-    )";
-
-    return db.executeQuery(queryStr, bindings);
-}
-
-QVector<Playlist> PlaylistRepository::getAllPlaylists()
-{
-    QVector<Playlist> playlists;
-    QMap<int, Playlist> playlistMap;
-
-    QSqlQuery query(R"(
-        SELECT
-            p.id, p.name, p.description, p.coverImagePath, p.createdAt, p.updatedAt,
-            t.id, t.title, t.filePath, t.artist, t.album, t.duration, t.trackNumber
-        FROM playlists p
-        LEFT JOIN tracks t ON t.playlistId = p.id
-        ORDER BY p.id, t.trackNumber
-    )");
+    if (!query.exec())
+    {
+        qCritical() << "Database error when fetching all playlists:" << query.lastError().text();
+        return results;
+    }
 
     while (query.next())
     {
-        int playlistId = query.value(0).toInt();
-
-        if (!playlistMap.contains(playlistId))
-        {
-            Playlist playlist;
-            playlist.id = playlistId;
-            playlist.name = query.value(1).toString();
-            playlist.description = query.value(2).toString();
-            playlist.coverImagePath = query.value(3).toString();
-            playlist.createdAt = query.value(4).toDateTime();
-            playlist.updatedAt = query.value(5).toDateTime();
-            playlistMap[playlistId] = playlist;
-        }
-
-        if (!query.value(6).isNull())
-        {
-            Track track;
-            track.id = query.value(6).toInt();
-            track.title = query.value(7).toString();
-            track.filePath = query.value(8).toString();
-            track.artist = query.value(9).toString();
-            track.album = query.value(10).toString();
-            track.duration = query.value(11).toString();
-            track.trackNumber = query.value(12).toInt();
-            playlistMap[playlistId].tracks.append(track);
-        }
+        results.append(mapFromRecord(query));
     }
 
-    return playlistMap.values().toVector();
+    qDebug() << "Fetched" << results.size() << "playlists from database";
+    return results;
 }
 
-QVector<Playlist> PlaylistRepository::searchPlaylists(const QString& query)
+bool PlaylistRepository::deleteById(int id)
 {
-    QVector<Playlist> result;
-    QMap<QString, QVariant> bindings;
-    bindings[":query"] = "%" + query + "%";
+    QSqlQuery query(database);
+    query.prepare("DELETE FROM playlists WHERE id = :id");
+    query.bindValue(":id", id);
 
-    const QString queryStr = R"(
-        SELECT id, name, description, coverImagePath
-        FROM playlists
-        WHERE name LIKE :query
-    )";
-
-    QSqlQuery dbQuery;
-    dbQuery.prepare(queryStr);
-    for (auto it = bindings.begin(); it != bindings.end(); ++it)
+    if (!query.exec())
     {
-        dbQuery.bindValue(it.key(), it.value());
+        qCritical() << "Failed to delete playlist ID" << id << ":" << query.lastError().text();
+        return false;
     }
 
-    if (dbQuery.exec())
+    qDebug() << "Successfully deleted playlist ID:" << id;
+    return query.exec();
+}
+
+bool PlaylistRepository::addTrackToPlaylist(int playlistId, int trackId)
+{
+    QSqlQuery query(database);
+    query.prepare("INSERT INTO playlists_tracks (playlist_id, track_id) "
+                  "VALUES (:playlistId, :trackId)");
+
+    query.bindValue(":playlistId", playlistId);
+    query.bindValue(":trackId", trackId);
+
+    if (!query.exec())
     {
-        while (dbQuery.next())
-        {
-            Playlist p;
-            p.id = dbQuery.value(0).toInt();
-            p.name = dbQuery.value(1).toString();
-            p.description = dbQuery.value(2).toString();
-            p.coverImagePath = dbQuery.value(3).toString();
-            result.append(p);
-        }
-    }
-    else
-    {
-        qDebug() << "Failed to search playlists:" << dbQuery.lastError();
+        qCritical() << "Failed to add track ID" << trackId << "to playlist ID" << playlistId << ":"
+                    << query.lastError().text();
+        return false;
     }
 
-    return result;
+    qDebug() << "Successfully added track ID" << trackId << "to playlist ID" << playlistId;
+    return true;
+}
+
+bool PlaylistRepository::removeTrackFromPlaylist(int playlistId, int trackId)
+{
+    QSqlQuery query(database);
+    query.prepare("DELETE FROM playlists_tracks "
+                  "WHERE playlist_id = :playlistId AND track_id = :trackId");
+    query.bindValue(":playlistId", playlistId);
+    query.bindValue(":trackId", trackId);
+
+    if (!query.exec())
+    {
+        qCritical() << "Failed to remove track ID" << trackId << "from playlist ID" << playlistId << ":"
+                    << query.lastError().text();
+        return false;
+    }
+
+    if (query.numRowsAffected() > 0)
+    {
+        qDebug() << "Successfully removed track ID" << trackId << "from playlist ID" << playlistId;
+        return true;
+    }
+
+    return false;
+}
+
+QList<Track> PlaylistRepository::getTracksForPlaylist(int playlistId)
+{
+    QList<Track> tracks;
+    QSqlQuery query(database);
+    query.prepare("SELECT t.* FROM tracks t "
+                  "INNER JOIN playlists_tracks pt ON t.id = pt.track_id "
+                  "WHERE pt.playlist_id = :playlistId "
+                  "ORDER BY pt.added_at");
+    query.bindValue(":playlistId", playlistId);
+
+    if (!query.exec())
+    {
+        qCritical() << "Database error when fetching tracks for playlist ID" << playlistId << ":"
+                    << query.lastError().text();
+        return tracks;
+    }
+
+    while (query.next())
+    {
+        Track track;
+        track.setId(query.value("id").toInt());
+        track.setTitle(query.value("title").toString());
+        track.setFilePath(query.value("file_path").toString());
+        track.setArtist(query.value("artist").toString());
+        track.setAlbum(query.value("album").toString());
+        track.setDuration(query.value("duration").toString());
+        tracks.append(track);
+    }
+
+    qDebug() << "Fetched" << tracks.size() << "tracks for playlist ID:" << playlistId;
+    return tracks;
+}
+
+Playlist PlaylistRepository::mapFromRecord(const QSqlQuery& query)
+{
+    Playlist playlist;
+    playlist.setId(query.value("id").toInt());
+    playlist.setName(query.value("name").toString());
+    playlist.setDescription(query.value("description").toString());
+    playlist.setCoverImagePath(query.value("cover_image_path").toString());
+    playlist.setCreatedAt(query.value("created_at").toDateTime());
+    playlist.setUpdatedAt(query.value("updated_at").toDateTime());
+    return playlist;
+}
+
+std::optional<Playlist> PlaylistRepository::insert(const Playlist& playlist)
+{
+    QSqlQuery query(database);
+    query.prepare("INSERT INTO playlists (name, description, cover_image_path) "
+                  "VALUES (:name, :description, :cover_image_path)");
+
+    query.bindValue(":name", playlist.getName());
+    query.bindValue(":description", playlist.getDescription());
+    query.bindValue(":cover_image_path", playlist.getCoverImagePath());
+
+    if (!query.exec())
+    {
+        qCritical() << "Failed to insert playlist '" << playlist.getName() << "':" << query.lastError().text();
+        return std::nullopt;
+    }
+
+    auto id = query.lastInsertId().toInt();
+    qDebug() << "Successfully inserted new playlist ID:" << id;
+    return findById(id);
+}
+
+bool PlaylistRepository::update(const Playlist& playlist)
+{
+    QSqlQuery query(database);
+    query.prepare(
+        "UPDATE playlists "
+        "SET name = :name, description = :description, cover_image_path = :cover_image_path, updated_at = :updated_at "
+        "WHERE id = :id");
+
+    query.bindValue(":name", playlist.getName());
+    query.bindValue(":description", playlist.getDescription());
+    query.bindValue(":cover_image_path", playlist.getCoverImagePath());
+    query.bindValue(":updated_at", playlist.getUpdatedAt());
+    query.bindValue(":id", playlist.getId());
+
+    if (!query.exec())
+    {
+        qCritical() << "Failed to update playlist ID" << playlist.getId() << ":" << query.lastError().text();
+        return false;
+    }
+
+    qDebug() << "Successfully updated playlist ID:" << playlist.getId();
+    return true;
 }

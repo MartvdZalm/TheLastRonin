@@ -10,7 +10,7 @@ class PlaylistCard : public QWidget
     Q_OBJECT
 
   private:
-    Playlist playlistData;
+    Playlist playlist;
     QLabel* previewLabel;
 
   public:

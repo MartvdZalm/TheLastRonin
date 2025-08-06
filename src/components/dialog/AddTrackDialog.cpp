@@ -2,6 +2,7 @@
 
 #include "../../model/Track.h"
 #include "../../styles/ButtonStyle.h"
+#include "../../styles/InputStyle.h"
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -20,9 +21,15 @@ AddTrackDialog::AddTrackDialog(QWidget* parent) : QDialog(parent)
 void AddTrackDialog::setupUI()
 {
     titleInput = new QLineEdit(this);
+    titleInput->setStyleSheet(InputStyle::primary());
+
     artistInput = new QLineEdit(this);
+    artistInput->setStyleSheet(InputStyle::primary());
+
     filePathInput = new QLineEdit(this);
     filePathInput->setReadOnly(true);
+    filePathInput->setStyleSheet(InputStyle::primary());
+
     chooseFileButton = new QPushButton(tr("Choose Audio File..."), this);
     chooseFileButton->setStyleSheet(ButtonStyle::primary());
 
@@ -82,9 +89,9 @@ void AddTrackDialog::setupUI()
 
 Track AddTrackDialog::getTrack() const
 {
-    return Track{
-        .title = titleInput->text(),
-        .filePath = selectedFilePath,
-        .artist = artistInput->text(),
-    };
+    Track track;
+    track.setTitle(titleInput->text());
+    track.setFilePath(selectedFilePath);
+    track.setArtist(artistInput->text());
+    return track;
 }

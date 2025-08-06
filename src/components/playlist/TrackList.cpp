@@ -64,7 +64,7 @@ void TrackList::addTrack(const Track& track)
     QListWidgetItem* qListWidgetItem = new QListWidgetItem(this);
     qListWidgetItem->setSizeHint(QSize(0, 50));
     qListWidgetItem->setData(Qt::UserRole, QVariant::fromValue(track));
-    setItemWidget(qListWidgetItem, createTrackItemWidget(track, count() + 1));
+    setItemWidget(qListWidgetItem, createTrackItemWidget(track, count()));
 }
 
 QWidget* TrackList::createTrackItemWidget(const Track& track, int index)
@@ -93,11 +93,11 @@ QWidget* TrackList::createTrackItemWidget(const Track& track, int index)
         }
     )");
 
-    QString titleText = track.title;
+    QString titleText = track.getTitle();
     titleLabel->setText(titleText);
     titleLabel->setWordWrap(true);
 
-    QLabel* durationLabel = new QLabel(formatDuration(track.duration.toInt()), itemWidget);
+    QLabel* durationLabel = new QLabel(formatDuration(track.getDuration().toInt()), itemWidget);
     durationLabel->setStyleSheet(R"(
         QLabel {
             color: #888;

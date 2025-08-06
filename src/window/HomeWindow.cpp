@@ -1,7 +1,10 @@
 #include "HomeWindow.h"
+
 #include "../components/dialog/AddPlaylistDialog.h"
 #include "../components/shared/NavigationBar.h"
 #include "../components/shared/PlaybackBar.h"
+#include "../database/Container.h"
+#include "../database/DatabaseManager.h"
 #include "../events/AppEvents.h"
 #include "../styles/ButtonStyle.h"
 #include "../styles/ComboBoxStyle.h"
@@ -40,9 +43,6 @@ void HomeWindow::setupUI()
                 }
             });
     mainLayout->addWidget(navBar);
-
-    connect(navBar, &NavigationBar::settingsClicked, this,
-            [this]() { AppEvents::instance().notifyNavigateToSettings(); });
 
     QHBoxLayout* topBar = new QHBoxLayout;
     searchInput = new QLineEdit(this);
@@ -88,7 +88,7 @@ void HomeWindow::setupUI()
     mainLayout->addWidget(scrollArea);
     playlistGrid = new PlaylistGrid(playlistGridLayout, this);
 
-    updatePlaylistGrid(playlistRepository.getAllPlaylists());
+    updatePlaylistGrid(Container::instance().getPlaylistRepository()->findAll());
 }
 
 void HomeWindow::setupConnections()
@@ -104,7 +104,7 @@ void HomeWindow::setupConnections()
 
                 if (reply == QMessageBox::Yes)
                 {
-                    DatabaseManager::instance().deleteUserData();
+                    // DatabaseManager::instance().deleteData();
                 }
             });
 
@@ -121,7 +121,7 @@ void HomeWindow::setupConnections()
 void HomeWindow::setupEvents()
 {
     connect(&AppEvents::instance(), &AppEvents::playlistChanged, this,
-            [this]() { updatePlaylistGrid(playlistRepository.getAllPlaylists()); });
+            [this]() { updatePlaylistGrid(Container::instance().getPlaylistRepository()->findAll()); });
 }
 
 void HomeWindow::showPlaylistDialog()
@@ -129,13 +129,15 @@ void HomeWindow::showPlaylistDialog()
     AddPlaylistDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted)
     {
-        Playlist playlist{
-            .name = dialog.getName(),
-            .description = dialog.getDescription(),
-            .coverImagePath = dialog.getCoverImagePath(),
-        };
+        Playlist playlist;
+        playlist.setName(dialog.getName());
+        playlist.setDescription(dialog.getDescription());
+        playlist.setCoverImagePath(dialog.getCoverImagePath());
+        playlist.setCreatedAt(QDateTime::currentDateTime());
+        playlist.setUpdatedAt(QDateTime::currentDateTime());
 
-        playlist.id = playlistRepository.insertPlaylist(playlist);
+        Container::instance().getPlaylistRepository()->save(playlist);
+
         playlistGrid->addPlaylist(playlist);
     }
 }
@@ -172,42 +174,59 @@ void HomeWindow::importPlaylistFromFolder()
         return;
     }
 
-    Playlist playlist{.name = playlistName, .coverImagePath = coverImagePath};
-    playlist.id = playlistRepository.insertPlaylist(playlist);
+    Playlist playlist;
+    playlist.setName(playlistName);
+    playlist.setCoverImagePath(coverImagePath);
+    playlist.setCreatedAt(QDateTime::currentDateTime());
+    playlist.setUpdatedAt(QDateTime::currentDateTime());
+    auto savedPlaylist = Container::instance().getPlaylistRepository()->save(playlist);
+
+    if (!savedPlaylist)
+    {
+        qWarning() << "Failed to save playlist.";
+        return;
+    }
 
     for (const QString& filePath : audioFiles)
     {
         QFileInfo fileInfo(filePath);
-        Track track{
-            .title = fileInfo.baseName(),
-            .filePath = filePath,
-        };
 
-        trackRepository.insertTrack(playlist.id, track);
+        Track track;
+        track.setTitle(fileInfo.baseName());
+        track.setFilePath(filePath);
+        auto savedTrack = Container::instance().getTrackRepository()->save(track);
+
+        if (!savedTrack)
+        {
+            qWarning() << "Failed to save track:" << fileInfo.baseName();
+            continue;
+        }
+
+        Container::instance().getPlaylistRepository()->addTrackToPlaylist(savedPlaylist->getId(), savedTrack->getId());
     }
 
-    playlistGrid->addPlaylist(playlist);
+    playlistGrid->addPlaylist(savedPlaylist.value());
     AppEvents::instance().notifyPlaylistChanged();
 }
 
 void HomeWindow::searchPlaylists(const QString& query)
 {
-    updatePlaylistGrid(playlistRepository.searchPlaylists(query));
+    // updatePlaylistGrid(playlistRepository.searchPlaylists(query));
 }
 
 void HomeWindow::onSortChanged(const QString& sortBy)
 {
-    QList<Playlist> playlists = playlistRepository.getAllPlaylists();
+    QList<Playlist> playlists = Container::instance().getPlaylistRepository()->findAll();
 
     if (sortBy == tr("Sort by Name"))
     {
         std::sort(playlists.begin(), playlists.end(),
-                  [](const Playlist& a, const Playlist& b) { return a.name < b.name; });
+                  [](const Playlist& a, const Playlist& b) { return a.getName() < b.getName(); });
     }
     else if (sortBy == tr("Sort by Creation Date"))
     {
         std::sort(playlists.begin(), playlists.end(),
-                  [](const Playlist& a, const Playlist& b) { return a.createdAt < b.createdAt; });
+                  [](const Playlist& a, const Playlist& b) { return a.getCreatedAt() < b.getCreatedAt(); });
     }
     else if (sortBy == tr("Sort by Recently Played"))
     {

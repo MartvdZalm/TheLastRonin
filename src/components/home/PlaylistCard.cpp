@@ -7,9 +7,12 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QVBoxLayout>
+#include <iostream>
 
-PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(parent), playlistData(playlist)
+PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(parent)
 {
+    this->playlist = playlist;
+
     const int cardWidth = 250;
     const int coverHeight = 200;
     const int titleHeight = 40;
@@ -20,11 +23,11 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(
     cover->setFixedSize(cardWidth, coverHeight);
     cover->setAlignment(Qt::AlignCenter);
 
-    QPixmap pixmap(playlist.coverImagePath);
+    QPixmap pixmap(playlist.getCoverImagePath());
     cover->setPixmap(pixmap.scaled(cover->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
 
-    QLabel* titleLabel = new QLabel(playlist.name, this);
-    titleLabel->setToolTip(playlist.name);
+    QLabel* titleLabel = new QLabel(playlist.getName(), this);
+    titleLabel->setToolTip(playlist.getName());
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setFixedHeight(titleHeight);
     titleLabel->setStyleSheet(R"(
@@ -39,24 +42,24 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(
     titleLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
     QFontMetrics metrics(titleLabel->font());
-    QString elidedText = metrics.elidedText(playlist.name, Qt::ElideRight, titleLabel->width() - 2);
+    QString elidedText = metrics.elidedText(playlist.getName(), Qt::ElideRight, titleLabel->width() - 2);
     titleLabel->setText(elidedText);
 
-    previewLabel = new QLabel(tr("Tracks: ") + QString::number(playlist.tracks.size()), this);
-    previewLabel->setAlignment(Qt::AlignCenter);
-    previewLabel->setStyleSheet("background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px;");
-    previewLabel->setVisible(false);
+    // previewLabel = new QLabel(tr("Tracks: ") + QString::number(playlist.getTracks().size()), this);
+    // previewLabel->setAlignment(Qt::AlignCenter);
+    // previewLabel->setStyleSheet("background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px;");
+    // previewLabel->setVisible(false);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(cover);
     layout->addWidget(titleLabel);
-    layout->addWidget(previewLabel);
+    // layout->addWidget(previewLabel);
 
     layout->setAlignment(Qt::AlignTop);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
-    this->installEventFilter(this);
+    // this->installEventFilter(this);
 
     this->setCursor(Qt::PointingHandCursor);
 }
@@ -65,7 +68,7 @@ void PlaylistCard::mousePressEvent(QMouseEvent* event)
 {
     Q_UNUSED(event);
 
-    AppEvents::instance().notifyNavigateToPlaylist(playlistData);
+    AppEvents::instance().notifyNavigateToPlaylist(playlist);
 }
 
 bool PlaylistCard::eventFilter(QObject* watched, QEvent* event)

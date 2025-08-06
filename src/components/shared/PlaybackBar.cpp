@@ -198,7 +198,7 @@ void PlaybackBar::setupConnections()
     connect(nextButton, &QPushButton::clicked, this,
             [=]()
             {
-                if (currentTrackIndex < playlist.tracks.size() - 1)
+                if (currentTrackIndex < playlist.getTracks().size() - 1)
                 {
                     currentTrackIndex++;
                     playTrackAtIndex(currentTrackIndex);
@@ -270,9 +270,9 @@ void PlaybackBar::toggleMiniPlayer()
         miniPlayer = new MiniPlayerWindow(nullptr);
         miniPlayer->setPlayerData(player, audioOutput);
 
-        if (currentTrackIndex >= 0 && currentTrackIndex < playlist.tracks.size())
+        if (currentTrackIndex >= 0 && currentTrackIndex < playlist.getTracks().size())
         {
-            miniPlayer->updateTrackInfo(playlist.tracks[currentTrackIndex]);
+            miniPlayer->updateTrackInfo(playlist.getTracks()[currentTrackIndex]);
         }
 
         miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
@@ -344,9 +344,9 @@ void PlaybackBar::syncMiniPlayerControls()
 {
     if (miniPlayer && isMiniPlayerActive)
     {
-        if (currentTrackIndex >= 0 && currentTrackIndex < playlist.tracks.size())
+        if (currentTrackIndex >= 0 && currentTrackIndex < playlist.getTracks().size())
         {
-            miniPlayer->updateTrackInfo(playlist.tracks[currentTrackIndex]);
+            miniPlayer->updateTrackInfo(playlist.getTracks()[currentTrackIndex]);
         }
 
         miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
@@ -372,7 +372,7 @@ void PlaybackBar::updateTimeLabel(qint64 position, qint64 duration, QLabel* labe
 
 void PlaybackBar::playNextTrack()
 {
-    if (currentTrackIndex < playlist.tracks.size() - 1)
+    if (currentTrackIndex < playlist.getTracks().size() - 1)
     {
         playTrackAtIndex(currentTrackIndex + 1);
     }
@@ -389,20 +389,20 @@ void PlaybackBar::updatePlaylist(const Playlist& playlist)
 
 void PlaybackBar::playTrackAtIndex(int index)
 {
-    if (index >= 0 && index < playlist.tracks.size())
+    if (index >= 0 && index < playlist.getTracks().size())
     {
         currentTrackIndex = index;
-        this->currentTrack = playlist.tracks[index];
+        this->currentTrack = playlist.getTracks()[index];
 
-        songLabel->setText(this->currentTrack.title);
+        songLabel->setText(currentTrack.getTitle());
 
-        player->setSource(QUrl::fromLocalFile(this->currentTrack.filePath));
+        player->setSource(QUrl::fromLocalFile(currentTrack.getFilePath()));
         player->play();
 
         QTimer::singleShot(100, this,
                            [=]()
                            {
-                               player->setSource(QUrl::fromLocalFile(this->currentTrack.filePath));
+                               player->setSource(QUrl::fromLocalFile(currentTrack.getFilePath()));
                                player->play();
                            });
     }

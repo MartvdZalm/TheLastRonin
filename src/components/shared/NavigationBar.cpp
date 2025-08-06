@@ -1,6 +1,7 @@
 #include "NavigationBar.h"
 
 #include "../../styles/ButtonStyle.h"
+#include "../../events/AppEvents.h"
 #include <QIcon>
 
 NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
@@ -34,7 +35,7 @@ NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
 
     connect(backButton, &QPushButton::clicked, this, &NavigationBar::backClicked);
     connect(forwardButton, &QPushButton::clicked, this, &NavigationBar::forwardClicked);
-    connect(settingsButton, &QPushButton::clicked, this, &NavigationBar::settingsClicked);
+    connect(settingsButton, &QPushButton::clicked, this, [this]() { AppEvents::instance().navigateToSettings(); });
 }
 
 void NavigationBar::setBackEnabled(bool enabled)
