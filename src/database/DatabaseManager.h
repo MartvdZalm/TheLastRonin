@@ -1,9 +1,9 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include <QMutex>
 #include <QObject>
 #include <QSqlDatabase>
-#include <QMutex>
 
 class DatabaseManager : public QObject
 {
@@ -13,8 +13,14 @@ class DatabaseManager : public QObject
     static DatabaseManager& instance();
 
     bool initialize();
-    bool isInitialized() const { return m_initialized; }
-    QSqlDatabase& database() { return m_db; }
+    bool isInitialized() const
+    {
+        return m_initialized;
+    }
+    QSqlDatabase& database()
+    {
+        return m_db;
+    }
 
     bool execute(const QString& query, const QVariantMap& params = QVariantMap());
 

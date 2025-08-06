@@ -1,12 +1,12 @@
 #include "MiniPlayerWindow.h"
 
+#include "../../styles/ButtonStyle.h"
+#include "../../styles/SliderStyle.h"
+#include "PlaybackBar.h"
 #include <QApplication>
 #include <QCloseEvent>
 #include <QFile>
 #include <QScreen>
-#include "PlaybackBar.h"
-#include "../../styles/ButtonStyle.h"
-#include "../../styles/SliderStyle.h"
 
 MiniPlayerWindow::MiniPlayerWindow(QWidget* parent)
     : QWidget(parent), playerRef(nullptr), audioOutputRef(nullptr), isDragging(false)

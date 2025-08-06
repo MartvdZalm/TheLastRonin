@@ -1,10 +1,10 @@
 #include "HomeWindow.h"
 
-#include "../database/Container.h"
-#include "../database/DatabaseManager.h"
 #include "../components/dialog/AddPlaylistDialog.h"
 #include "../components/shared/NavigationBar.h"
 #include "../components/shared/PlaybackBar.h"
+#include "../database/Container.h"
+#include "../database/DatabaseManager.h"
 #include "../events/AppEvents.h"
 #include "../styles/ButtonStyle.h"
 #include "../styles/ComboBoxStyle.h"
@@ -43,9 +43,6 @@ void HomeWindow::setupUI()
                 }
             });
     mainLayout->addWidget(navBar);
-
-    connect(navBar, &NavigationBar::settingsClicked, this,
-            [this]() { AppEvents::instance().notifyNavigateToSettings(); });
 
     QHBoxLayout* topBar = new QHBoxLayout;
     searchInput = new QLineEdit(this);
@@ -184,7 +181,8 @@ void HomeWindow::importPlaylistFromFolder()
     playlist.setUpdatedAt(QDateTime::currentDateTime());
     auto savedPlaylist = Container::instance().getPlaylistRepository()->save(playlist);
 
-    if (!savedPlaylist) {
+    if (!savedPlaylist)
+    {
         qWarning() << "Failed to save playlist.";
         return;
     }
@@ -198,7 +196,8 @@ void HomeWindow::importPlaylistFromFolder()
         track.setFilePath(filePath);
         auto savedTrack = Container::instance().getTrackRepository()->save(track);
 
-        if (!savedTrack) {
+        if (!savedTrack)
+        {
             qWarning() << "Failed to save track:" << fileInfo.baseName();
             continue;
         }
@@ -231,9 +230,9 @@ void HomeWindow::onSortChanged(const QString& sortBy)
     }
     else if (sortBy == tr("Sort by Recently Played"))
     {
-      // std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
-      //     return a.lastPlayed > b.lastPlayed;
-      // });
+        // std::sort(playlists.begin(), playlists.end(), [](const Playlist& a, const Playlist& b) {
+        //     return a.lastPlayed > b.lastPlayed;
+        // });
     }
 
     updatePlaylistGrid(playlists);

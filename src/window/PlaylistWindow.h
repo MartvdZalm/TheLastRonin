@@ -20,7 +20,6 @@
 #include <QWidget>
 #include <optional>
 
-
 class PlaylistWindow : public BaseWindow
 {
     Q_OBJECT

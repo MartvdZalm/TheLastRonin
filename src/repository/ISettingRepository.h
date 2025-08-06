@@ -20,7 +20,6 @@ class ISettingRepository
     virtual QString getValue(const QString& key, const QString& defaultValue = "") = 0;
     virtual std::optional<Setting> setValue(const QString& key, const QString& value) = 0;
     virtual bool deleteByKey(const QString& key) = 0;
-    virtual QList<QString> getAllKeys() = 0;
 };
 
 #endif // ISETTINGREPOSITORY_H

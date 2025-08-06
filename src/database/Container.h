@@ -1,8 +1,8 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 
-#include "../repository/ISettingRepository.h"
 #include "../repository/IPlaylistRepository.h"
+#include "../repository/ISettingRepository.h"
 #include "../repository/ITrackRepository.h"
 #include <QSqlDatabase>
 #include <memory>

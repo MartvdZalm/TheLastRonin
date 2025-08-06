@@ -1,10 +1,9 @@
 #include "SettingRepository.h"
 
 #include <QDateTime>
+#include <QSqlError>
 #include <QSqlQuery>
 #include <QVariant>
-#include <iostream>
-#include <QSqlError>
 
 SettingRepository::SettingRepository(QSqlDatabase& db) : database(db) {}
 
@@ -43,7 +42,8 @@ std::optional<Setting> SettingRepository::findByKey(const QString& key)
         return std::nullopt;
     }
 
-    if (query.next()) {
+    if (query.next())
+    {
         auto setting = mapFromRecord(query);
         qDebug() << "Successfully found setting ID:" << setting.getId();
         return setting;
@@ -87,25 +87,19 @@ QList<Setting> SettingRepository::findAll()
     QList<Setting> results;
     QSqlQuery query("SELECT * FROM settings", database);
 
+    if (!query.exec())
+    {
+        qCritical() << "Database error when fetching all settings:" << query.lastError().text();
+        return results;
+    }
+
     while (query.next())
     {
         results.append(mapFromRecord(query));
     }
 
+    qDebug() << "Fetched" << results.size() << "settings from database";
     return results;
-}
-
-QList<QString> SettingRepository::getAllKeys()
-{
-    QList<QString> keys;
-    QSqlQuery query("SELECT key FROM settings", database);
-
-    while (query.next())
-    {
-        keys.append(query.value("key").toString());
-    }
-
-    return keys;
 }
 
 bool SettingRepository::deleteById(int id)
@@ -172,11 +166,6 @@ std::optional<Setting> SettingRepository::insert(const Setting& setting)
 
 std::optional<Setting> SettingRepository::update(const Setting& setting)
 {
-    qDebug() << setting.getKey();
-    qDebug() << setting.getValue();
-    qDebug() << setting.getUpdatedAt();
-    qDebug() << setting.getId();
-
     QSqlQuery query(database);
     query.prepare("UPDATE settings SET key = :key, value = :value, updated_at = :updated_at WHERE id = :id");
     query.bindValue(":key", setting.getKey());
@@ -190,7 +179,6 @@ std::optional<Setting> SettingRepository::update(const Setting& setting)
         return std::nullopt;
     }
 
-    auto id = query.lastInsertId().toInt();
-    qDebug() << "Successfully updated setting ID:" << id;
-    return findById(id);
+    qDebug() << "Successfully updated setting ID:" << setting.getId();
+    return setting;
 }

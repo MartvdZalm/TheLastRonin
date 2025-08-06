@@ -1,7 +1,7 @@
 #include "Container.h"
 
-#include "../repository/SettingRepository.h"
 #include "../repository/PlaylistRepository.h"
+#include "../repository/SettingRepository.h"
 #include "../repository/TrackRepository.h"
 
 Container& Container::instance()

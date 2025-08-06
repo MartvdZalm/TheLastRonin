@@ -18,7 +18,6 @@ class SettingRepository : public ISettingRepository
     QString getValue(const QString& key, const QString& defaultValue = "") override;
     std::optional<Setting> setValue(const QString& key, const QString& value) override;
     bool deleteByKey(const QString& key) override;
-    QList<QString> getAllKeys() override;
 
   private:
     QSqlDatabase& database;

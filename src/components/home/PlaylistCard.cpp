@@ -62,7 +62,6 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(
     // this->installEventFilter(this);
 
     this->setCursor(Qt::PointingHandCursor);
-
 }
 
 void PlaylistCard::mousePressEvent(QMouseEvent* event)

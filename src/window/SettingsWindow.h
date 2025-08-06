@@ -44,6 +44,7 @@ class SettingsWindow : public BaseWindow
     QWidget* createInterfacePage();
     QWidget* createHotkeysPage();
     QWidget* createAdvancedPage();
+    QWidget* createAboutPage();
 
     QHBoxLayout* mainLayout;
     QVBoxLayout* leftLayout;
@@ -69,6 +70,7 @@ class SettingsWindow : public BaseWindow
     QWidget* interfacePage;
     QWidget* hotkeysPage;
     QWidget* advancedPage;
+    QWidget* aboutPage;
 
     QComboBox* languageCombo;
 };

@@ -307,7 +307,7 @@ QSqlQuery QueryBuilder::insert(const QVariantMap& values)
                       .arg(columns.join(", "))
                       .arg(placeholders.join(", :"));
 
-    //qDebug() << "Executing SQL:" << sql << "with bindings:" << bindings;
+    // qDebug() << "Executing SQL:" << sql << "with bindings:" << bindings;
     return DatabaseManager::instance().executeQuery(sql, bindings);
 }
 
@@ -345,7 +345,7 @@ bool QueryBuilder::update(const QVariantMap& values)
                       .arg(setClauses.join(", "))
                       .arg(whereConditions.join(" AND "));
 
-    //qDebug() << "Executing update:" << sql << "with bindings:" << allBindings;
+    // qDebug() << "Executing update:" << sql << "with bindings:" << allBindings;
     QSqlQuery query = DatabaseManager::instance().executeQuery(sql, allBindings);
 
     return query.isActive() && query.numRowsAffected() > 0;

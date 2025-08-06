@@ -91,7 +91,8 @@ QString AddPlaylistDialog::getCoverImagePath() const
 
 void AddPlaylistDialog::chooseCoverImage()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Choose Playlist Cover"), "", tr("Images (*.png *.jpg *.jpeg)"));
+    QString path =
+        QFileDialog::getOpenFileName(this, tr("Choose Playlist Cover"), "", tr("Images (*.png *.jpg *.jpeg)"));
     if (!path.isEmpty())
     {
         coverImagePath = path;

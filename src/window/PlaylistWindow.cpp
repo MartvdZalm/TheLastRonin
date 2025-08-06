@@ -2,9 +2,9 @@
 #include "../components/dialog/AddPlaylistDialog.h"
 #include "../components/dialog/AddTrackDialog.h"
 #include "../components/shared/NavigationBar.h"
+#include "../database/Container.h"
 #include "../events/AppEvents.h"
 #include "../styles/ButtonStyle.h"
-#include "../database/Container.h"
 #include "MainWindow.h"
 #include <QListWidgetItem>
 #include <QMessageBox>
@@ -84,7 +84,8 @@ void PlaylistWindow::setupConnections()
                     Track newTrack = dialog.getTrack();
                     auto savedTrack = Container::instance().getTrackRepository()->save(newTrack).value();
 
-                    Container::instance().getPlaylistRepository()->addTrackToPlaylist(playlist.getId(), savedTrack.getId());
+                    Container::instance().getPlaylistRepository()->addTrackToPlaylist(playlist.getId(),
+                                                                                      savedTrack.getId());
 
                     trackList->addTrack(savedTrack);
                     playlist.addTrack(savedTrack);
@@ -132,8 +133,8 @@ void PlaylistWindow::setupConnections()
             {
                 if (currentTrackIndex < playlist.getTracks().size() - 1)
                 {
-                   currentTrackIndex++;
-                   playTrackAtIndex(currentTrackIndex);
+                    currentTrackIndex++;
+                    playTrackAtIndex(currentTrackIndex);
                 }
             });
 
@@ -152,15 +153,15 @@ void PlaylistWindow::setupEvents() {}
 
 std::optional<Playlist> PlaylistWindow::showEditPlaylistDialog()
 {
-    //AddPlaylistDialog dialog(playlistData, this);
-    //if (dialog.exec() == QDialog::Accepted)
+    // AddPlaylistDialog dialog(playlistData, this);
+    // if (dialog.exec() == QDialog::Accepted)
     //{
-    //    Playlist playlist{
-    //        .id = playlistData.id,
-    //        .name = dialog.getName(),
-    //        .description = dialog.getDescription(),
-    //        .coverImagePath = dialog.getCoverImagePath(),
-    //    };
+    //     Playlist playlist{
+    //         .id = playlistData.id,
+    //         .name = dialog.getName(),
+    //         .description = dialog.getDescription(),
+    //         .coverImagePath = dialog.getCoverImagePath(),
+    //     };
 
     //    playlistRepository.updatePlaylist(playlist);
     //    return playlist;
@@ -173,11 +174,11 @@ void PlaylistWindow::playTrackAtIndex(int index)
 {
     if (index >= 0 && index < playlist.getTracks().size())
     {
-       currentTrackIndex = index;
+        currentTrackIndex = index;
 
-       playbackBarWidget->playTrackAtIndex(index);
+        playbackBarWidget->playTrackAtIndex(index);
 
-       trackList->setCurrentRow(index);
+        trackList->setCurrentRow(index);
     }
 }
 
@@ -189,12 +190,12 @@ void PlaylistWindow::refreshMetadata(const Playlist& updatedPlaylist)
 
     if (detailsWidget)
     {
-       detailsWidget->updateDetails(playlist);
+        detailsWidget->updateDetails(playlist);
     }
 
     if (coverImageWidget)
     {
-       coverImageWidget->setImage(playlist.getCoverImagePath());
+        coverImageWidget->setImage(playlist.getCoverImagePath());
     }
 }
 
