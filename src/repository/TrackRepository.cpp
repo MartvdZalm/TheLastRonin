@@ -37,16 +37,10 @@ std::optional<Track> TrackRepository::save(const Track& track)
             qCritical() << "Failed to update track ID" << track.getId();
             return std::nullopt;
         }
-        return update(track) ? std::optional<Track>(track) : std::nullopt;
+        qDebug() << "Successfully updated track ID:" << track.getId();
+        return track;
     }
 
-    auto existingTrack = findByFilePath(track.getFilePath());
-    if (existingTrack)
-    {
-        qDebug() << "Track already exists with file path:" << track.getFilePath() << "(ID:" << existingTrack->getId()
-                 << ")";
-        return existingTrack;
-    }
     return insert(track);
 }
 
@@ -82,8 +76,12 @@ bool TrackRepository::deleteById(int id)
         return false;
     }
 
-    qDebug() << "Successfully deleted track ID:" << id;
-    return query.exec();
+    bool deleted = query.numRowsAffected() > 0;
+    if (deleted)
+    {
+        qDebug() << "Successfully deleted track ID:" << id;
+    }
+    return deleted;
 }
 
 std::optional<Track> TrackRepository::findByFilePath(const QString& filePath)
@@ -115,7 +113,7 @@ Track TrackRepository::mapFromRecord(const QSqlQuery& query)
     track.setFilePath(query.value("file_path").toString());
     track.setArtist(query.value("artist").toString());
     track.setAlbum(query.value("album").toString());
-    track.setDuration(query.value("duration").toString());
+    track.setDuration(query.value("duration").toInt());
     track.setCreatedAt(query.value("created_at").toDateTime());
     track.setUpdatedAt(query.value("updated_at").toDateTime());
     return track;
@@ -149,13 +147,12 @@ bool TrackRepository::update(const Track& track)
 {
     QSqlQuery query(database);
     query.prepare("UPDATE tracks SET title = :title, file_path = :file_path, artist = :artist, album = :album, "
-                  "duration = :duration, updated_at = :updated_at WHERE id = :id");
+                  "duration = :duration, updated_at = CURRENT_TIMESTAMP WHERE id = :id");
     query.bindValue(":title", track.getTitle());
     query.bindValue(":file_path", track.getFilePath());
     query.bindValue(":artist", track.getArtist());
     query.bindValue(":album", track.getAlbum());
     query.bindValue(":duration", track.getDuration());
-    query.bindValue(":updated_at", track.getUpdatedAt());
     query.bindValue(":id", track.getId());
 
     if (!query.exec())

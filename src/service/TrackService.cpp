@@ -1,26 +1,19 @@
 #include "TrackService.h"
-#include <QDebug>
 
-TrackService::TrackService() {}
+#include "../database/Container.h"
 
-bool TrackService::addTrackToPlaylist(int playlistId, const Track& track)
+std::optional<Track> TrackService::addTrack(Track& track)
 {
-    // if (track.title.isEmpty() || track.filePath.isEmpty())
-    // {
-    //     qDebug() << "Track title and file path are required.";
-    //     return false;
-    // }
+    auto existingTrack = Container::instance().getTrackRepository()->findByFilePath(track.getFilePath());
+    if (existingTrack)
+    {
+        qDebug() << "Track already exists with file path:" << track.getFilePath() << "(ID:" << existingTrack->getId()
+                 << ")";
+        return existingTrack;
+    }
 
-    // return trackRepository.insertTrack(playlistId, track);
-    return true;
+    auto duration = audioMetadataService.getDuration(track.getFilePath());
+    track.setDuration(duration.value_or(0));
+
+    return Container::instance().getTrackRepository()->save(track);
 }
-
-// bool TrackService::deleteTrack(int trackId)
-// {
-//     return trackRepository.deleteTrack(trackId);
-// }
-
-// QVector<Track> TrackService::getTracks(int playlistId)
-// {
-//     return trackRepository.getTracksForPlaylist(playlistId);
-// }

@@ -17,28 +17,6 @@ class MiniPlayerWindow : public QWidget
 {
     Q_OBJECT
 
-  private:
-    QLabel* songLabel;
-    Track track;
-
-    QPushButton* playPauseButton;
-    QPushButton* nextButton;
-    QPushButton* prevButton;
-    QPushButton* closeButton;
-    QSlider* progressSlider;
-    QSlider* volumeSlider;
-    QPushButton* volumeButton;
-
-    QMediaPlayer* playerRef;
-    QAudioOutput* audioOutputRef;
-
-    bool isDragging;
-    QPoint dragStartPosition;
-    QPoint windowStartPosition;
-
-    bool isMuted = false;
-    int storedVolume = 50;
-
   public:
     explicit MiniPlayerWindow(QWidget* parent = nullptr);
     ~MiniPlayerWindow();
@@ -74,6 +52,27 @@ class MiniPlayerWindow : public QWidget
   private:
     void setupUI();
     void setupConnections();
+
+    QLabel* songLabel;
+    Track track;
+
+    QPushButton* playPauseButton;
+    QPushButton* nextButton;
+    QPushButton* prevButton;
+    QPushButton* closeButton;
+    QSlider* progressSlider;
+    QSlider* volumeSlider;
+    QPushButton* volumeButton;
+
+    QMediaPlayer* playerRef;
+    QAudioOutput* audioOutputRef;
+
+    bool isDragging;
+    QPoint dragStartPosition;
+    QPoint windowStartPosition;
+
+    bool isMuted = false;
+    int storedVolume = 50;
 };
 
 #endif // MINIPLAYERWINDOW_H

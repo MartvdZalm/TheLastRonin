@@ -2,18 +2,16 @@
 #define TRACKSERVICE_H
 
 #include "../repository/TrackRepository.h"
+#include "AudioMetadataService.h"
+#include "../model/Track.h"
 
 class TrackService
 {
   public:
-    TrackService();
-
-    bool addTrackToPlaylist(int playlistId, const Track& track);
-    // bool deleteTrack(int trackId);
-    // QVector<Track> getTracks(int playlistId);
+    std::optional<Track> addTrack(Track& track);
 
   private:
-    TrackRepository trackRepository;
+    AudioMetadataService audioMetadataService;
 };
 
 #endif // TRACKSERVICE_H

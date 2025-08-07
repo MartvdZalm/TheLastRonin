@@ -99,7 +99,7 @@ bool DatabaseManager::createTables()
                 file_path TEXT NOT NULL UNIQUE,
                 artist TEXT,
                 album TEXT,
-                duration TEXT,
+                duration INTEGER,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )

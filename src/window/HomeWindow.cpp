@@ -194,7 +194,7 @@ void HomeWindow::importPlaylistFromFolder()
         Track track;
         track.setTitle(fileInfo.baseName());
         track.setFilePath(filePath);
-        auto savedTrack = Container::instance().getTrackRepository()->save(track);
+        auto savedTrack = trackService.addTrack(track);
 
         if (!savedTrack)
         {

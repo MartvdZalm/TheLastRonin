@@ -22,7 +22,6 @@ TrackList::TrackList(const QVector<Track>& tracks, QWidget* parent) : QListWidge
             border-radius: 6px;
             padding: 2px;
             outline: none;
-            font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
         TrackList::item {
@@ -32,25 +31,7 @@ TrackList::TrackList(const QVector<Track>& tracks, QWidget* parent) : QListWidge
 
         TrackList::item:selected {
             background-color: #4a90e2;
-            color: white;
             border-radius: 4px;
-        }
-
-        QScrollBar:vertical {
-            border: none;
-            background: #2d2d2d;
-            width: 8px;
-            margin: 0px;
-        }
-
-        QScrollBar::handle:vertical {
-            background: #5a5a5a;
-            min-height: 20px;
-            border-radius: 4px;
-        }
-
-        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-            height: 0px;
         }
     )");
 
@@ -77,44 +58,21 @@ QWidget* TrackList::createTrackItemWidget(const Track& track, int index)
     layout->setSpacing(15);
 
     QLabel* numberLabel = new QLabel(QString::number(index), itemWidget);
-    numberLabel->setStyleSheet(R"(
-        QLabel {
-            color: #888;
-            font-size: 12px;
-            min-width: 25px;
-        }
-    )");
-
-    QLabel* titleLabel = new QLabel(itemWidget);
-    titleLabel->setStyleSheet(R"(
-        QLabel {
-            color: #e0e0e0;
-            font-size: 14px;
-        }
-    )");
-
-    QString titleText = track.getTitle();
-    titleLabel->setText(titleText);
-    titleLabel->setWordWrap(true);
-
-    QLabel* durationLabel = new QLabel(formatDuration(track.getDuration().toInt()), itemWidget);
-    durationLabel->setStyleSheet(R"(
-        QLabel {
-            color: #888;
-            font-size: 12px;
-            min-width: 40px;
-            text-align: right;
-        }
-    )");
-
+    numberLabel->setStyleSheet("color: #888; font-size: 14px;");
     layout->addWidget(numberLabel);
+
+    QLabel* titleLabel = new QLabel(track.getTitle(), itemWidget);
+    titleLabel->setWordWrap(true);
     layout->addWidget(titleLabel, 1);
+
+    QLabel* durationLabel = new QLabel(formatDuration(track.getDuration()), itemWidget);
+    durationLabel->setStyleSheet("color: #888; font-size: 14px;");
     layout->addWidget(durationLabel);
 
     this->updateItemWidgetStyle(itemWidget, false);
+
     itemWidget->installEventFilter(this);
     itemWidget->setAttribute(Qt::WA_Hover);
-
     itemWidget->setLayout(layout);
 
     return itemWidget;
@@ -123,13 +81,8 @@ QWidget* TrackList::createTrackItemWidget(const Track& track, int index)
 void TrackList::updateItemWidgetStyle(QWidget* widget, bool hovered)
 {
     widget->setProperty("isHovered", hovered);
-    widget->setStyleSheet(QString(R"(
-        QWidget {
-            background-color: %1;
-            border-radius: 4px;
-        }
-    )")
-                              .arg(hovered ? "#383838" : "transparent"));
+    widget->setStyleSheet(
+        QString("background-color: %1; border-radius: 4px;").arg(hovered ? "#383838" : "transparent"));
     widget->style()->unpolish(widget);
     widget->style()->polish(widget);
 }
@@ -155,12 +108,11 @@ bool TrackList::eventFilter(QObject* obj, QEvent* event)
     return QListWidget::eventFilter(obj, event);
 }
 
-QString TrackList::formatDuration(qint64 milliseconds) const
+QString TrackList::formatDuration(qint64 seconds) const
 {
-    if (milliseconds <= 0)
+    if (seconds <= 0)
         return "--:--";
 
-    int seconds = milliseconds / 1000;
     int minutes = seconds / 60;
     seconds = seconds % 60;
 

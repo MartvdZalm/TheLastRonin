@@ -42,6 +42,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         # Services
         service/LanguageService.h
         service/LanguageService.cpp
+        service/AudioMetadataService.h
+        service/AudioMetadataService.cpp
+        service/TrackService.h
+        service/TrackService.cpp
 
         # Styles
         styles/AppStyle.h

@@ -2,6 +2,7 @@
 #define HOMEWINDOW_H
 
 #include "../components/home/PlaylistGrid.h"
+#include "../service/TrackService.h"
 #include "BaseWindow.h"
 #include <QComboBox>
 #include <QGridLayout>
@@ -37,6 +38,8 @@ class HomeWindow : public BaseWindow
     QPushButton* deleteDataBtn = nullptr;
     QGridLayout* playlistGridLayout = nullptr;
     QComboBox* sortComboBox = nullptr;
+
+    TrackService trackService;
 };
 
 #endif // HOMEWINDOW_H

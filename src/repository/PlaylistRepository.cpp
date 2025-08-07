@@ -79,8 +79,12 @@ bool PlaylistRepository::deleteById(int id)
         return false;
     }
 
-    qDebug() << "Successfully deleted playlist ID:" << id;
-    return query.exec();
+    bool deleted = query.numRowsAffected() > 0;
+    if (deleted)
+    {
+        qDebug() << "Successfully deleted playlist ID:" << id;
+    }
+    return deleted;
 }
 
 bool PlaylistRepository::addTrackToPlaylist(int playlistId, int trackId)
@@ -152,7 +156,7 @@ QList<Track> PlaylistRepository::getTracksForPlaylist(int playlistId)
         track.setFilePath(query.value("file_path").toString());
         track.setArtist(query.value("artist").toString());
         track.setAlbum(query.value("album").toString());
-        track.setDuration(query.value("duration").toString());
+        track.setDuration(query.value("duration").toInt());
         tracks.append(track);
     }
 

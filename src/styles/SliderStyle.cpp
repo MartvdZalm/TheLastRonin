@@ -4,7 +4,7 @@ QString SliderStyle::primary()
 {
     return R"(
         QSlider {
-            background-color: #2a2a2a;
+            background-color: transparent;
         }
 
         QSlider::groove:horizontal {

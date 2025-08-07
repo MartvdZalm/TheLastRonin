@@ -29,7 +29,7 @@ class Track : public Model
         return album;
     }
 
-    QString getDuration() const
+    int getDuration() const
     {
         return duration;
     }
@@ -54,7 +54,7 @@ class Track : public Model
         this->album = album;
     }
 
-    void setDuration(const QString& duration)
+    void setDuration(int duration)
     {
         this->duration = duration;
     }
@@ -64,7 +64,7 @@ class Track : public Model
     QString filePath;
     QString artist;
     QString album;
-    QString duration;
+    int duration;
 };
 
 #endif // TRACK_H
