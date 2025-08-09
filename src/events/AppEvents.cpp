@@ -25,3 +25,13 @@ void AppEvents::notifyNavigateToSettings()
 {
     emit navigateToSettings();
 }
+
+void AppEvents::notifyNavigateToLibrary()
+{
+    emit navigateToLibrary();
+}
+
+void AppEvents::notifyNavigateToYouTubeMusic()
+{
+    emit navigateToYouTubeMusic();
+}

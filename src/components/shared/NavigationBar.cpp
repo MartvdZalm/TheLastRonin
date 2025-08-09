@@ -1,7 +1,8 @@
 #include "NavigationBar.h"
 
-#include "../../styles/ButtonStyle.h"
 #include "../../events/AppEvents.h"
+#include "../../styles/ButtonStyle.h"
+#include "../../window/MainWindow.h"
 #include <QIcon>
 
 NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
@@ -16,6 +17,21 @@ NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
     forwardButton->setToolTip("Go forward");
     forwardButton->setFixedSize(40, 40);
 
+    homeButton = new QPushButton(QIcon(":/Images/Home"), "", this);
+    homeButton->setStyleSheet(ButtonStyle::primary());
+    homeButton->setToolTip("Home");
+    homeButton->setFixedSize(40, 40);
+
+    libraryButton = new QPushButton(QIcon(":/Images/Library"), "", this);
+    libraryButton->setStyleSheet(ButtonStyle::primary());
+    libraryButton->setToolTip("Library");
+    libraryButton->setFixedSize(40, 40);
+
+    youtubeMusicButton = new QPushButton(QIcon(":/Images/YouTube"), "", this);
+    youtubeMusicButton->setStyleSheet(ButtonStyle::primary());
+    youtubeMusicButton->setToolTip("YouTube Music");
+    youtubeMusicButton->setFixedSize(40, 40);
+
     settingsButton = new QPushButton(QIcon(":/Images/Settings"), "", this);
     settingsButton->setStyleSheet(ButtonStyle::primary());
     settingsButton->setToolTip("Settings");
@@ -25,6 +41,9 @@ NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
     layout->addWidget(backButton);
     layout->addWidget(forwardButton);
     layout->addStretch();
+    layout->addWidget(homeButton);
+    layout->addWidget(libraryButton);
+    layout->addWidget(youtubeMusicButton);
     layout->addWidget(settingsButton);
 
     layout->setContentsMargins(5, 5, 5, 5);
@@ -33,8 +52,31 @@ NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent)
 
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-    connect(backButton, &QPushButton::clicked, this, &NavigationBar::backClicked);
-    connect(forwardButton, &QPushButton::clicked, this, &NavigationBar::forwardClicked);
+    connect(backButton, &QPushButton::clicked, this,
+            [this]()
+            {
+                if (auto mainWindow = qobject_cast<MainWindow*>(window()))
+                {
+                    mainWindow->goBack();
+                }
+            });
+
+    connect(forwardButton, &QPushButton::clicked, this,
+            [this]()
+            {
+                if (auto mainWindow = qobject_cast<MainWindow*>(window()))
+                {
+                    mainWindow->goNext();
+                }
+            });
+
+    connect(homeButton, &QPushButton::clicked, this, [this]() { AppEvents::instance().navigateToHome(); });
+
+    connect(libraryButton, &QPushButton::clicked, this, [this]() { AppEvents::instance().navigateToLibrary(); });
+
+    connect(youtubeMusicButton, &QPushButton::clicked, this,
+            [this]() { AppEvents::instance().navigateToYouTubeMusic(); });
+
     connect(settingsButton, &QPushButton::clicked, this, [this]() { AppEvents::instance().navigateToSettings(); });
 }
 

@@ -3,7 +3,7 @@
 
 #include "../../model/Playlist.h"
 #include "../../model/Track.h"
-#include "../shared/MiniPlayerWindow.h"
+#include "../shared/MiniPlayer.h"
 #include <QAudioOutput>
 #include <QLabel>
 #include <QListWidget>
@@ -29,7 +29,7 @@ class PlaybackBar : public QWidget
     QPushButton* prevButton;
     QPushButton* nextButton;
 
-    MiniPlayerWindow* miniPlayer;
+    MiniPlayer* miniPlayer;
     QPushButton* miniPlayerToggleButton;
     bool isMiniPlayerActive;
 

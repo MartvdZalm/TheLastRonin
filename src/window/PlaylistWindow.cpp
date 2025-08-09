@@ -31,16 +31,6 @@ void PlaylistWindow::setupUI()
     mainLayout->setSpacing(15);
 
     NavigationBar* navBar = new NavigationBar(this);
-
-    connect(navBar, &NavigationBar::backClicked, this,
-            [this]()
-            {
-                if (auto mainWindow = qobject_cast<MainWindow*>(window()))
-                {
-                    mainWindow->goBack();
-                }
-            });
-
     mainLayout->addWidget(navBar);
 
     addTrackBtn = new QPushButton(tr("Add Track"));

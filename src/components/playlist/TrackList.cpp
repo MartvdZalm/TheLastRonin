@@ -4,8 +4,9 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
+#include <QVBoxLayout>
 
-TrackList::TrackList(const QVector<Track>& tracks, QWidget* parent) : QListWidget(parent)
+TrackList::TrackList(const QList<Track>& tracks, QWidget* parent) : QListWidget(parent)
 {
     for (int i = 0; i < tracks.size(); ++i)
     {
@@ -46,6 +47,18 @@ void TrackList::addTrack(const Track& track)
     qListWidgetItem->setSizeHint(QSize(0, 50));
     qListWidgetItem->setData(Qt::UserRole, QVariant::fromValue(track));
     setItemWidget(qListWidgetItem, createTrackItemWidget(track, count()));
+}
+
+void TrackList::updateTracks(const QList<Track>& tracks)
+{
+    clear();
+    for (int i = 0; i < tracks.size(); ++i)
+    {
+        QListWidgetItem* qListWidgetItem = new QListWidgetItem(this);
+        qListWidgetItem->setSizeHint(QSize(0, 60));
+        qListWidgetItem->setData(Qt::UserRole, QVariant::fromValue(tracks[i]));
+        this->setItemWidget(qListWidgetItem, createTrackItemWidget(tracks[i], i + 1));
+    }
 }
 
 QWidget* TrackList::createTrackItemWidget(const Track& track, int index)

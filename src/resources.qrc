@@ -14,5 +14,11 @@
         <file alias="PictureInPicture">assets/images/PictureInPicture.png</file>
         <file alias="PictureInPictureClose">assets/images/PictureInPictureClose.png</file>
         <file alias="Settings">assets/images/settings.png</file>
+        <file alias="Library">assets/images/library.png</file>
+        <file alias="Home">assets/images/home.png</file>
+        <file alias="YouTube">assets/images/youtube.png</file>
+        <file alias="ImageMode">assets/images/image-mode.png</file>
+        <file alias="MusicVideo">assets/images/music-video.png</file>
+        <file alias="MusicNote">assets/images/music-note.png</file>
     </qresource>
 </RCC>

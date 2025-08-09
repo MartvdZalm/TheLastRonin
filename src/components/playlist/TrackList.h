@@ -9,8 +9,9 @@ class TrackList : public QListWidget
     Q_OBJECT
 
   public:
-    explicit TrackList(const QVector<Track>& tracks, QWidget* parent = nullptr);
+    explicit TrackList(const QList<Track>& tracks, QWidget* parent = nullptr);
     void addTrack(const Track& track);
+    void updateTracks(const QList<Track>& tracks);
     QWidget* createTrackItemWidget(const Track& track, int index);
 
   private:

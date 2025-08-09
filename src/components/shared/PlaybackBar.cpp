@@ -267,7 +267,7 @@ void PlaybackBar::toggleMiniPlayer()
 {
     if (!isMiniPlayerActive)
     {
-        miniPlayer = new MiniPlayerWindow(nullptr);
+        miniPlayer = new MiniPlayer(nullptr);
         miniPlayer->setPlayerData(player, audioOutput);
 
         if (currentTrackIndex >= 0 && currentTrackIndex < playlist.getTracks().size())
@@ -279,13 +279,13 @@ void PlaybackBar::toggleMiniPlayer()
         miniPlayer->updateProgress(player->position(), player->duration());
         miniPlayer->updateVolumeSlider(volumeSlider->value());
 
-        connect(miniPlayer, &MiniPlayerWindow::playPauseClicked, this, [this]() { this->pausePlayButton->click(); });
+        connect(miniPlayer, &MiniPlayer::playPauseClicked, this, [this]() { this->pausePlayButton->click(); });
 
-        connect(miniPlayer, &MiniPlayerWindow::nextClicked, this, [this]() { this->nextButton->click(); });
+        connect(miniPlayer, &MiniPlayer::nextClicked, this, [this]() { this->nextButton->click(); });
 
-        connect(miniPlayer, &MiniPlayerWindow::prevClicked, this, [this]() { this->prevButton->click(); });
+        connect(miniPlayer, &MiniPlayer::prevClicked, this, [this]() { this->prevButton->click(); });
 
-        connect(miniPlayer, &MiniPlayerWindow::progressChanged, this,
+        connect(miniPlayer, &MiniPlayer::progressChanged, this,
                 [this](int position)
                 {
                     if (player->duration() > 0)
@@ -294,10 +294,9 @@ void PlaybackBar::toggleMiniPlayer()
                     }
                 });
 
-        connect(miniPlayer, &MiniPlayerWindow::volumeChanged, this,
-                [this](int volume) { volumeSlider->setValue(volume); });
+        connect(miniPlayer, &MiniPlayer::volumeChanged, this, [this](int volume) { volumeSlider->setValue(volume); });
 
-        connect(miniPlayer, &MiniPlayerWindow::miniPlayerClosed, this, &PlaybackBar::onMiniPlayerClosed);
+        connect(miniPlayer, &MiniPlayer::miniPlayerClosed, this, &PlaybackBar::onMiniPlayerClosed);
 
         miniPlayer->show();
         isMiniPlayerActive = true;

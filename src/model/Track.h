@@ -34,6 +34,11 @@ class Track : public Model
         return duration;
     }
 
+    QString getThumbnailUrl() const
+    {
+        return thumbnailUrl;
+    }
+
     void setTitle(const QString& title)
     {
         this->title = title;
@@ -59,12 +64,18 @@ class Track : public Model
         this->duration = duration;
     }
 
+    void setThumbnailUrl(const QString& thumbnailUrl)
+    {
+        this->thumbnailUrl = thumbnailUrl;
+    }
+
   private:
     QString title;
     QString filePath;
     QString artist;
     QString album;
     int duration;
+    QString thumbnailUrl;
 };
 
 #endif // TRACK_H

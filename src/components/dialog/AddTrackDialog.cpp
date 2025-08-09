@@ -50,7 +50,7 @@ void AddTrackDialog::setupUI()
             {
                 QString filePath = QFileDialog::getOpenFileName(
                     this, tr("Choose Audio File"), "",
-                    tr("Audio Files (*.mp3 *.wav);;MP3 Files (*.mp3);;WAV Files (*.wav);;All Files (*)"));
+                    tr("Audio Files (*.mp3 *.wav *.mp4 *.m4a);;MP3 Files (*.mp3);;WAV Files (*.wav);;MP4 Files (*.mp4 *.m4a);;All Files (*)"));
 
                 if (!filePath.isEmpty())
                 {

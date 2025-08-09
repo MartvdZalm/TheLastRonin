@@ -114,6 +114,7 @@ Track TrackRepository::mapFromRecord(const QSqlQuery& query)
     track.setArtist(query.value("artist").toString());
     track.setAlbum(query.value("album").toString());
     track.setDuration(query.value("duration").toInt());
+    track.setThumbnailUrl(query.value("thumbnail_url").toString());
     track.setCreatedAt(query.value("created_at").toDateTime());
     track.setUpdatedAt(query.value("updated_at").toDateTime());
     return track;
@@ -122,14 +123,15 @@ Track TrackRepository::mapFromRecord(const QSqlQuery& query)
 std::optional<Track> TrackRepository::insert(const Track& track)
 {
     QSqlQuery query(database);
-    query.prepare("INSERT INTO tracks (title, file_path, artist, album, duration) "
-                  "VALUES (:title, :file_path, :artist, :album, :duration)");
+    query.prepare("INSERT INTO tracks (title, file_path, artist, album, duration, thumbnail_url) "
+                  "VALUES (:title, :file_path, :artist, :album, :duration, :thumbnail_url)");
 
     query.bindValue(":title", track.getTitle());
     query.bindValue(":file_path", track.getFilePath());
     query.bindValue(":artist", track.getArtist());
     query.bindValue(":album", track.getAlbum());
     query.bindValue(":duration", track.getDuration());
+    query.bindValue(":thumbnail_url", track.getThumbnailUrl());
 
     if (!query.exec())
     {
@@ -147,12 +149,14 @@ bool TrackRepository::update(const Track& track)
 {
     QSqlQuery query(database);
     query.prepare("UPDATE tracks SET title = :title, file_path = :file_path, artist = :artist, album = :album, "
-                  "duration = :duration, updated_at = CURRENT_TIMESTAMP WHERE id = :id");
+                  "duration = :duration, thumbnail_url = :thumbnail_url, updated_at = "
+                  "CURRENT_TIMESTAMP WHERE id = :id");
     query.bindValue(":title", track.getTitle());
     query.bindValue(":file_path", track.getFilePath());
     query.bindValue(":artist", track.getArtist());
     query.bindValue(":album", track.getAlbum());
     query.bindValue(":duration", track.getDuration());
+    query.bindValue(":thumbnail_url", track.getThumbnailUrl());
     query.bindValue(":id", track.getId());
 
     if (!query.exec())

@@ -149,9 +149,9 @@
     </message>
 </context>
 <context>
-    <name>MiniPlayerWindow</name>
+    <name>MiniPlayer</name>
     <message>
-        <location filename="../src/components/shared/MiniPlayerWindow.cpp" line="48"/>
+        <location filename="../src/components/shared/MiniPlayer.cpp" line="48"/>
         <source>No song playing</source>
         <translation>Er wordt geen nummer afgespeeld</translation>
     </message>

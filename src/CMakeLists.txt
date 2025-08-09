@@ -46,6 +46,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         service/AudioMetadataService.cpp
         service/TrackService.h
         service/TrackService.cpp
+        service/YouTubeMusicService.h
+        service/YouTubeMusicService.cpp
 
         # Styles
         styles/AppStyle.h
@@ -64,8 +66,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         # Shared Components
         components/shared/CoverImageWidget.h
         components/shared/CoverImageWidget.cpp
-        components/shared/MiniPlayerWindow.h
-        components/shared/MiniPlayerWindow.cpp
+        components/shared/MiniPlayer.h
+        components/shared/MiniPlayer.cpp
         components/shared/NavigationBar.h
         components/shared/NavigationBar.cpp
         components/shared/PlaybackBar.h
@@ -92,12 +94,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         window/BaseWindow.cpp
         window/HomeWindow.h
         window/HomeWindow.cpp
+        window/LibraryWindow.h
+        window/LibraryWindow.cpp
         window/MainWindow.h
         window/MainWindow.cpp
         window/PlaylistWindow.h
         window/PlaylistWindow.cpp
         window/SettingsWindow.h
         window/SettingsWindow.cpp
+        window/YouTubeMusicWindow.h
+        window/YouTubeMusicWindow.cpp
     )
 else()
     add_executable(TheLastRonin
@@ -105,12 +111,13 @@ else()
     )
 endif()
 
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql Multimedia)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql Multimedia MultimediaWidgets)
 
 target_link_libraries(TheLastRonin PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Multimedia
+    Qt${QT_VERSION_MAJOR}::MultimediaWidgets
 )
 
 set_target_properties(TheLastRonin PROPERTIES

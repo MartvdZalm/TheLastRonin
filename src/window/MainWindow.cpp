@@ -1,8 +1,10 @@
 #include "MainWindow.h"
 #include "../events/AppEvents.h"
 #include "HomeWindow.h"
+#include "LibraryWindow.h"
 #include "PlaylistWindow.h"
 #include "SettingsWindow.h"
+#include "YouTubeMusicWindow.h"
 #include <iostream>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
@@ -33,6 +35,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     connect(&AppEvents::instance(), &AppEvents::navigateToHome, this, &MainWindow::showHomePage);
     connect(&AppEvents::instance(), &AppEvents::navigateToPlaylist, this, &MainWindow::showPlaylistPage);
     connect(&AppEvents::instance(), &AppEvents::navigateToSettings, this, &MainWindow::showSettingsPage);
+    connect(&AppEvents::instance(), &AppEvents::navigateToLibrary, this, &MainWindow::showLibraryPage);
+    connect(&AppEvents::instance(), &AppEvents::navigateToYouTubeMusic, this, &MainWindow::showYouTubeMusicPage);
 }
 
 MainWindow::~MainWindow() {}
@@ -71,6 +75,16 @@ void MainWindow::showSettingsPage()
     setPage(new SettingsWindow(this), false);
 }
 
+void MainWindow::showLibraryPage()
+{
+    setPage(new LibraryWindow(this), false);
+}
+
+void MainWindow::showYouTubeMusicPage()
+{
+    setPage(new YouTubeMusicWindow(this), false);
+}
+
 void MainWindow::goBack()
 {
     if (stackedWidget->count() > 1)
@@ -81,3 +95,5 @@ void MainWindow::goBack()
         oldPage->deleteLater();
     }
 }
+
+void MainWindow::goNext() {}
