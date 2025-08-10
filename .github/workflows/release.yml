@@ -12,16 +12,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aqtinstall==3.1.*
+
+      - name: Install Qt (MSVC 2019 64-bit)
+        run: |
+          aqt install-qt windows desktop 6.9.0 win64_msvc2019_64 --outputdir D:\a\TheLastRonin/Qt
+          aqt install-tool windows desktop tools_openssl_x64 --outputdir D:\a\TheLastRonin/Qt
+          aqt install-tool windows desktop tools_win64_mingw --outputdir D:\a\TheLastRonin/Qt
+
+      - name: Add Qt to PATH
+        run: |
+          echo "D:\a\TheLastRonin\Qt\6.9.0\msvc2019_64\bin" >> $GITHUB_PATH
+          echo "D:\a\TheLastRonin\Qt\Tools\OpenSSL\Win_x64\bin" >> $GITHUB_PATH
+
       - name: Add MSVC to PATH
         uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: "6.9.0"
-          target: "desktop"
-          arch: "win64_msvc2019_64"
-          modules: "qtmultimedia widgets core gui"
 
       - name: Configure and Build
         run: |
