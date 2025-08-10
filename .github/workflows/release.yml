@@ -28,7 +28,7 @@ jobs:
 
       - name: Install Qt
         run: |
-          aqt install-qt windows desktop 6.8.0 win64_msvc2022_64 --outputdir ${{ github.workspace }}/Qt
+          aqt install-qt windows desktop 6.8.0 win64_msvc2022_64 -m qtmultimedia --outputdir ${{ github.workspace }}/Qt
 
       - name: List available tools
         run: |
