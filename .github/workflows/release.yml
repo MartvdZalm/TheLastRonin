@@ -55,9 +55,17 @@ jobs:
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH="${{ github.workspace }}/Qt/6.8.0/msvc2022_64"
 
+      - name: Clean Build Directory
+        run: |
+          if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH="${{ github.workspace }}/Qt/6.8.0/msvc2022_64"
+
       - name: Build Project
         run: |
-          cmake --build build --config Release --parallel
+          cmake --build build --config Release
 
       - name: Verify Build Output
         run: |
