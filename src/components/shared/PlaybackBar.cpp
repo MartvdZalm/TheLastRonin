@@ -5,7 +5,7 @@
 #include <QTimer>
 
 PlaybackBar::PlaybackBar(QWidget* parent)
-    : storedVolume(50), isMuted(false), miniPlayer(nullptr), isMiniPlayerActive(false)
+    : storedVolume(50), isMuted(false), miniPlayer(nullptr), isMiniPlayerActive(false), repeatMode(RepeatMode::NoRepeat)
 {
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setObjectName("playbackBar");
@@ -63,10 +63,18 @@ void PlaybackBar::setupUI()
     nextButton->setIcon(QIcon(":/Images/Next"));
     nextButton->setStyleSheet(ButtonStyle::primary());
 
+    repeatButton = new QPushButton(this);
+    repeatButton->setIcon(QIcon(":/Images/Repeat"));
+    repeatButton->setStyleSheet(ButtonStyle::primary() +
+                                "QPushButton { background-color: #2a2a2a; } QPushButton:hover { background-color: "
+                                "#666; } QPushButton:pressed { background-color: #2a2a2a; color: #555; }");
+    repeatButton->setToolTip("No Repeat");
+
     controls->addStretch();
     controls->addWidget(prevButton);
     controls->addWidget(pausePlayButton);
     controls->addWidget(nextButton);
+    controls->addWidget(repeatButton);
     controls->addStretch();
 
     QHBoxLayout* centerRow = new QHBoxLayout();
@@ -133,6 +141,7 @@ void PlaybackBar::setupUI()
 void PlaybackBar::setupConnections()
 {
     connect(miniPlayerToggleButton, &QPushButton::clicked, this, &PlaybackBar::toggleMiniPlayer);
+    connect(repeatButton, &QPushButton::clicked, this, &PlaybackBar::onRepeatClicked);
 
     connect(player, &QMediaPlayer::positionChanged, this,
             [=](qint64 position)
@@ -263,6 +272,47 @@ void PlaybackBar::setupConnections()
     volumeSlider->setValue(storedVolume);
 }
 
+void PlaybackBar::onRepeatClicked()
+{
+    switch (repeatMode)
+    {
+    case RepeatMode::NoRepeat:
+        repeatMode = RepeatMode::RepeatAll;
+        break;
+    case RepeatMode::RepeatAll:
+        repeatMode = RepeatMode::RepeatOne;
+        break;
+    case RepeatMode::RepeatOne:
+        repeatMode = RepeatMode::NoRepeat;
+        break;
+    }
+    updateRepeatButton();
+}
+
+void PlaybackBar::updateRepeatButton()
+{
+    switch (repeatMode)
+    {
+    case RepeatMode::NoRepeat:
+        repeatButton->setIcon(QIcon(":/Images/Repeat"));
+        repeatButton->setToolTip("No Repeat");
+        repeatButton->setStyleSheet(ButtonStyle::primary() +
+                                    "QPushButton { background-color: #2a2a2a; } QPushButton:hover { background-color: "
+                                    "#666; } QPushButton:pressed { background-color: #2a2a2a; color: #555; }");
+        break;
+    case RepeatMode::RepeatAll:
+        repeatButton->setIcon(QIcon(":/Images/Repeat"));
+        repeatButton->setToolTip("Repeat All");
+        repeatButton->setStyleSheet(ButtonStyle::primary());
+        break;
+    case RepeatMode::RepeatOne:
+        repeatButton->setIcon(QIcon(":/Images/RepeatOne"));
+        repeatButton->setToolTip("Repeat One");
+        repeatButton->setStyleSheet(ButtonStyle::primary());
+        break;
+    }
+}
+
 void PlaybackBar::toggleMiniPlayer()
 {
     if (!isMiniPlayerActive)
@@ -371,11 +421,18 @@ void PlaybackBar::updateTimeLabel(qint64 position, qint64 duration, QLabel* labe
 
 void PlaybackBar::playNextTrack()
 {
+    if (repeatMode == RepeatMode::RepeatOne)
+    {
+        player->setPosition(0);
+        player->play();
+        return;
+    }
+
     if (currentTrackIndex < playlist.getTracks().size() - 1)
     {
         playTrackAtIndex(currentTrackIndex + 1);
     }
-    else
+    else if (repeatMode == RepeatMode::RepeatAll)
     {
         playTrackAtIndex(0);
     }

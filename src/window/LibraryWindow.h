@@ -8,6 +8,7 @@
 #include "../events/AppEvents.h"
 #include "../model/Track.h"
 #include "../repository/TrackRepository.h"
+#include "../service/TrackService.h"
 #include "../styles/ButtonStyle.h"
 #include "../styles/ComboBoxStyle.h"
 #include "../styles/InputStyle.h"
@@ -43,7 +44,6 @@ class LibraryWindow : public BaseWindow
     void onAddToPlaylistClicked();
     void onDeleteTrackClicked();
     void onImportTracksClicked();
-    void onRefreshLibraryClicked();
 
   private:
     void loadTracks();
@@ -53,18 +53,16 @@ class LibraryWindow : public BaseWindow
     QWidget* createTrackItemWidget(const Track& track, int index);
     QString formatDuration(int seconds) const;
     void updateStatusLabel();
-    void showStatistics();
     void setupTrackList();
     void setupFilters();
 
+    TrackService trackService;
     QLineEdit* searchInput;
     QComboBox* sortComboBox;
     QComboBox* filterComboBox;
     QPushButton* addToPlaylistBtn;
     QPushButton* deleteTrackBtn;
     QPushButton* importTracksBtn;
-    QPushButton* refreshLibraryBtn;
-    QPushButton* statisticsBtn;
     TrackList* trackList;
     QLabel* statusLabel;
     PlaybackBar* playbackBarWidget;

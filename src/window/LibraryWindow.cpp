@@ -78,14 +78,6 @@ void LibraryWindow::setupUI()
     deleteTrackBtn->setEnabled(false);
     actionLayout->addWidget(deleteTrackBtn);
 
-    refreshLibraryBtn = new QPushButton(tr("Refresh Library"), this);
-    refreshLibraryBtn->setStyleSheet(ButtonStyle::primary());
-    actionLayout->addWidget(refreshLibraryBtn);
-
-    statisticsBtn = new QPushButton(tr("Statistics"), this);
-    statisticsBtn->setStyleSheet(ButtonStyle::primary());
-    actionLayout->addWidget(statisticsBtn);
-
     actionLayout->addStretch();
     mainLayout->addLayout(actionLayout);
 
@@ -116,8 +108,6 @@ void LibraryWindow::setupConnections()
     connect(addToPlaylistBtn, &QPushButton::clicked, this, &LibraryWindow::onAddToPlaylistClicked);
     connect(deleteTrackBtn, &QPushButton::clicked, this, &LibraryWindow::onDeleteTrackClicked);
     connect(importTracksBtn, &QPushButton::clicked, this, &LibraryWindow::onImportTracksClicked);
-    connect(refreshLibraryBtn, &QPushButton::clicked, this, &LibraryWindow::onRefreshLibraryClicked);
-    connect(statisticsBtn, &QPushButton::clicked, this, &LibraryWindow::showStatistics);
 }
 
 void LibraryWindow::setupEvents()
@@ -319,8 +309,8 @@ void LibraryWindow::onImportTracksClicked()
         track.setFilePath(filePath);
         track.setCreatedAt(QDateTime::currentDateTime());
         track.setUpdatedAt(QDateTime::currentDateTime());
+        auto savedTrack = trackService.addTrack(track);
 
-        auto savedTrack = Container::instance().getTrackRepository()->save(track);
         if (savedTrack)
         {
             importedCount++;
@@ -333,39 +323,4 @@ void LibraryWindow::onImportTracksClicked()
         QMessageBox::information(this, tr("Import Complete"),
                                  tr("Successfully imported %1 track(s).").arg(importedCount));
     }
-}
-
-void LibraryWindow::onRefreshLibraryClicked()
-{
-    loadTracks();
-    QMessageBox::information(this, tr("Library Refreshed"), tr("Library has been refreshed."));
-}
-
-void LibraryWindow::showStatistics()
-{
-    int totalTracks = allTracks.size();
-    int totalDuration = 0;
-    QSet<QString> artists;
-    QSet<QString> albums;
-
-    for (const Track& track : allTracks)
-    {
-        totalDuration += track.getDuration();
-        if (!track.getArtist().isEmpty())
-            artists.insert(track.getArtist());
-        if (!track.getAlbum().isEmpty())
-            albums.insert(track.getAlbum());
-    }
-
-    QString stats = tr("Library Statistics:\n\n"
-                       "Total Tracks: %1\n"
-                       "Total Duration: %2\n"
-                       "Unique Artists: %3\n"
-                       "Unique Albums: %4")
-                        .arg(totalTracks)
-                        .arg(formatDuration(totalDuration))
-                        .arg(artists.size())
-                        .arg(albums.size());
-
-    QMessageBox::information(this, tr("Library Statistics"), stats);
 }

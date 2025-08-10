@@ -1,0 +1,153 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: "6.9.0"
+          target: "desktop"
+          arch: "win64_mingw"
+          tools: "tools_mingw90"
+
+      - name: Configure and Build
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
+          cmake --build build --config Release
+
+      - name: Deploy Qt Dependencies
+        run: |
+          mkdir deploy
+          copy build\TheLastRonin.exe deploy\
+          windeployqt.exe --release --no-translations --no-system-d3d-compiler deploy\TheLastRonin.exe
+
+      - name: Create Portable Package
+        run: |
+          mkdir TheLastRonin-Windows-Portable
+          xcopy deploy\* TheLastRonin-Windows-Portable\ /E /I
+
+          # Create README for portable version
+          echo The Last Ronin - Portable Version > TheLastRonin-Windows-Portable\README.txt
+          echo. >> TheLastRonin-Windows-Portable\README.txt
+          echo Simply run TheLastRonin.exe to start the application. >> TheLastRonin-Windows-Portable\README.txt
+          echo No installation required! >> TheLastRonin-Windows-Portable\README.txt
+
+          # Create zip package
+          powershell Compress-Archive -Path TheLastRonin-Windows-Portable -DestinationPath TheLastRonin-Windows-Portable.zip
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Create Windows Installer
+        run: |
+          # Build installer with Inno Setup
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" TheLastRonin.iss
+
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-releases
+          path: |
+            TheLastRonin-Windows-Portable.zip
+            TheLastRonin-Windows-Setup.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: "6.9.0"
+          target: "desktop"
+          arch: "clang_64"
+
+      - name: Configure and Build
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+
+      - name: Create App Bundle and DMG
+        run: |
+          # Create app bundle with Qt dependencies
+          macdeployqt build/TheLastRonin.app -dmg -always-overwrite
+          mv build/TheLastRonin.dmg TheLastRonin-macOS.dmg
+
+      - name: Create Portable App
+        run: |
+          mkdir TheLastRonin-macOS-Portable
+          cp -R build/TheLastRonin.app TheLastRonin-macOS-Portable/
+
+          # Create instructions
+          cat > TheLastRonin-macOS-Portable/README.txt << EOF
+              The Last Ronin - Portable Version for macOS
+
+              Installation:
+              1. Copy TheLastRonin.app to your Applications folder (or anywhere you like)
+              2. Double-click to run
+
+              No installation required!
+              EOF
+
+          # Create zip
+          zip -r TheLastRonin-macOS-Portable.zip TheLastRonin-macOS-Portable
+
+      - name: Upload macOS Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-releases
+          path: |
+            TheLastRonin-macOS.dmg
+            TheLastRonin-macOS-Portable.zip
+
+  create-release:
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            windows-releases/TheLastRonin-Windows-Setup.exe
+            windows-releases/TheLastRonin-Windows-Portable.zip
+            macos-releases/TheLastRonin-macOS.dmg
+            macos-releases/TheLastRonin-macOS-Portable.zip
+          body: |
+            ## The Last Ronin v${{ github.ref_name }}
+
+            ### Downloads:
+
+            **Windows:**
+            - `TheLastRonin-Windows-Setup.exe` - Professional installer (recommended)
+            - `TheLastRonin-Windows-Portable.zip` - Portable version (no installation)
+
+            **macOS:**
+            - `TheLastRonin-macOS.dmg` - Standard macOS installer
+            - `TheLastRonin-macOS-Portable.zip` - Portable app bundle
+
+            ### Installation Instructions:
+
+            **Windows:**
+            - Download and run `TheLastRonin-Windows-Setup.exe`
+            - Or extract `TheLastRonin-Windows-Portable.zip` and run the .exe directly
+
+            **macOS:**
+            - Download `TheLastRonin-macOS.dmg`, open it, and drag the app to Applications
+            - Or extract `TheLastRonin-macOS-Portable.zip` and copy the .app anywhere
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

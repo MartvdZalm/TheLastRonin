@@ -20,5 +20,7 @@
         <file alias="ImageMode">assets/images/image-mode.png</file>
         <file alias="MusicVideo">assets/images/music-video.png</file>
         <file alias="MusicNote">assets/images/music-note.png</file>
+        <file alias="Repeat">assets/images/repeat.png</file>
+        <file alias="RepeatOne">assets/images/repeat-one.png</file>
     </qresource>
 </RCC>
