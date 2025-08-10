@@ -1,9 +1,12 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include <QMap>
 #include <QMutex>
 #include <QObject>
 #include <QSqlDatabase>
+#include <QString>
+#include <QVariant>
 
 class DatabaseManager : public QObject
 {

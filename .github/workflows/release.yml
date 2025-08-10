@@ -6,74 +6,53 @@ on:
       - "v*"
   workflow_dispatch:
 
+env:
+  QT_VERSION: 6.7.3
+  CMAKE_VERSION: 3.16.3
+
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          python-version: "3.11"
+          fetch-depth: 0
 
-      - name: Install dependencies
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64
+          modules: qtmultimedia
+          cache: true
+
+      - name: Set up MSVC
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Configure CMake
         run: |
-          python -m pip install --upgrade pip
-          pip install aqtinstall==3.1.*
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
 
-      - name: Install Qt (MSVC 2019 64-bit)
+      - name: Build
         run: |
-          aqt install-qt windows desktop 6.9.0 win64_msvc2019_64 --outputdir D:\a\TheLastRonin/Qt
-          aqt install-tool windows desktop tools_openssl_x64 --outputdir D:\a\TheLastRonin/Qt
-          aqt install-tool windows desktop tools_win64_mingw --outputdir D:\a\TheLastRonin/Qt
-
-      - name: Add Qt to PATH
-        run: |
-          echo "D:\a\TheLastRonin\Qt\6.9.0\msvc2019_64\bin" >> $GITHUB_PATH
-          echo "D:\a\TheLastRonin\Qt\Tools\OpenSSL\Win_x64\bin" >> $GITHUB_PATH
-
-      - name: Add MSVC to PATH
-        uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Configure and Build
-        run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
           cmake --build build --config Release --parallel
 
-      - name: Verify Build
-        run: |
-          if not exist build\Release\TheLastRonin.exe (exit 1)
-
-      - name: Deploy Qt Dependencies
+      - name: Deploy Qt
         run: |
           mkdir deploy
-          copy build\Release\TheLastRonin.exe deploy\
-          windeployqt.exe --release --no-translations --no-system-d3d-compiler deploy\TheLastRonin.exe
+          copy build\src\Release\TheLastRonin.exe deploy\
+          windeployqt.exe --qmldir . --compiler-runtime deploy\TheLastRonin.exe
 
-      - name: Create Portable Package
+      - name: Create Windows Archive
         run: |
-          mkdir TheLastRonin-Windows-Portable
-          xcopy deploy\* TheLastRonin-Windows-Portable\ /E /I /Y
+          cd deploy
+          7z a ..\TheLastRonin-Windows-x64.zip *
 
-          echo The Last Ronin - Portable Version > TheLastRonin-Windows-Portable\README.txt
-          echo. >> TheLastRonin-Windows-Portable\README.txt
-          echo Simply run TheLastRonin.exe to start the application. >> TheLastRonin-Windows-Portable\README.txt
-          echo No installation required! >> TheLastRonin-Windows-Portable\README.txt
-
-          powershell Compress-Archive -Path TheLastRonin-Windows-Portable -DestinationPath TheLastRonin-Windows-Portable.zip
-
-      - name: Install Inno Setup
-        run: choco install innosetup -y
-
-      - name: Create Windows Installer
-        run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" TheLastRonin.iss
-
-      - name: Upload Artifacts
+      - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-releases
-          path: |
-            TheLastRonin-Windows-Portable.zip
-            TheLastRonin-Windows-Setup.exe
+          name: TheLastRonin-Windows-x64
+          path: TheLastRonin-Windows-x64.zip
