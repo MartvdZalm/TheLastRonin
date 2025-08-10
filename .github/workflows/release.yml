@@ -1,4 +1,5 @@
 name: Build and Release
+
 on:
   push:
     tags:
@@ -8,116 +9,40 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install aqtinstall
-        run: |
-          python -m pip install --upgrade pip
-          pip install aqtinstall==3.1.*
-
-      - name: List available Qt versions and architectures
-        run: |
-          aqt list-qt windows desktop
-          aqt list-qt windows desktop --arch 6.8.0
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Install Qt
-        run: |
-          aqt install-qt windows desktop 6.8.0 win64_msvc2022_64 -m qtmultimedia --outputdir ${{ github.workspace }}/Qt
-
-      - name: List available tools
-        run: |
-          aqt list-tool windows desktop
-
-      - name: Install Qt Tools (Optional - only if available)
-        run: |
-          # Try to install OpenSSL if available
-          aqt install-tool windows desktop tools_openssl_x64 --outputdir ${{ github.workspace }}/Qt || echo "OpenSSL tools not available"
-        continue-on-error: true
-
-      - name: Set Qt Environment Variables
-        run: |
-          echo "QT_ROOT=${{ github.workspace }}/Qt/6.8.0/msvc2022_64" >> $GITHUB_ENV
-          echo "Qt6_DIR=${{ github.workspace }}/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6" >> $GITHUB_ENV
-          echo "${{ github.workspace }}/Qt/6.8.0/msvc2022_64/bin" >> $GITHUB_PATH
-
-      - name: Set up MSVC
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: jurplel/install-qt-action@v3
         with:
-          arch: x64
-
-      - name: Clean previous build
-        run: |
-          if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
+          version: 6.9.0
+          modules: qtbase qttools
+          cache: true
 
       - name: Configure CMake
+        run: cmake -B build -S . -DCMAKE_PREFIX_PATH=$Env:Qt6_DIR
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Deploy Qt dependencies
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH="${{ github.workspace }}/Qt/6.8.0/msvc2022_64"
+          $qtBin = "${Env:Qt6_DIR}\bin"
+          $exePath = "build\src\Release\TheLastRonin.exe"
+          & "$qtBin\windeployqt.exe" --release $exePath
 
-      - name: Build Project
+      - name: Create archive
         run: |
-          cmake --build build --config Release --verbose
+          mkdir package
+          copy build\src\Release\TheLastRonin.exe package\
+          copy build\src\Release\*.dll package\
+          tar -czvf TheLastRonin-Windows.zip -C package .
 
-      - name: Verify Build Output
-        run: |
-          $exePath = "build/src/Release/TheLastRonin.exe"
-          if (!(Test-Path $exePath)) { 
-            Write-Error "Build failed - executable not found at $exePath"
-            Get-ChildItem -Path build -Recurse -Filter *.exe | ForEach-Object { Write-Output "Found executable: $($_.FullName)" }
-            exit 1
-          }
-          Write-Output "Build successful - executable found at $exePath"
-
-      - name: Create Deployment Directory
-        run: |
-          New-Item -ItemType Directory -Force -Path "deploy"
-          Copy-Item "build/src/Release/TheLastRonin.exe" -Destination "deploy/" -Force
-
-      - name: Deploy Qt Dependencies
-        run: |
-          & "${{ github.workspace }}/Qt/6.8.0/msvc2022_64/bin/windeployqt.exe" --release --no-translations --no-system-d3d-compiler "deploy/TheLastRonin.exe"
-
-      - name: Create Portable Package
-        run: |
-          New-Item -ItemType Directory -Force -Path "TheLastRonin-Windows-Portable"
-          Copy-Item "deploy/*" -Destination "TheLastRonin-Windows-Portable/" -Recurse -Force
-
-          @"
-          The Last Ronin - Portable Version
-
-          Simply run TheLastRonin.exe to start the application.
-          No installation required!
-          "@ | Out-File -FilePath "TheLastRonin-Windows-Portable/README.txt" -Encoding UTF8
-                    
-          Compress-Archive -Path "TheLastRonin-Windows-Portable" -DestinationPath "TheLastRonin-Windows-Portable.zip" -Force
-
-      - name: Install Inno Setup
-        run: |
-          choco install innosetup -y
-
-      - name: Create Windows Installer (if setup script exists)
-        run: |
-          if (Test-Path "TheLastRonin.iss") {
-            & "C:/Program Files (x86)/Inno Setup 6/ISCC.exe" "TheLastRonin.iss" /O"${{ github.workspace }}/output"
-            $setupPath = Get-ChildItem -Path "${{ github.workspace }}/output" -Filter *.exe | Select-Object -First 1
-            if ($setupPath) {
-              Copy-Item $setupPath.FullName -Destination "TheLastRonin-Windows-Setup.exe"
-            }
-          } else {
-            Write-Output "Inno Setup script not found, skipping installer creation"
-          }
-        continue-on-error: true
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
         with:
-          name: windows-releases
-          path: |
-            TheLastRonin-Windows-Portable.zip
-            TheLastRonin-Windows-Setup.exe
-          if-no-files-found: warn
+          files: TheLastRonin-Windows.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
