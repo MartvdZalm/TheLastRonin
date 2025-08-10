@@ -87,22 +87,7 @@ else()
 endif()
 
 
-if(WIN32)
-    add_custom_target(deploy_local
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/deploy
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TheLastRonin> ${CMAKE_BINARY_DIR}/deploy/
-        COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_BINARY_DIR}/deploy
-                ${Qt${QT_VERSION_MAJOR}_DIR}/../../../bin/windeployqt.exe --release $<TARGET_FILE_NAME:TheLastRonin>
-        DEPENDS TheLastRonin
-        COMMENT "Deploying application locally for testing"
-    )
-elseif(APPLE)
-    add_custom_target(deploy_local
-        COMMAND ${Qt${QT_VERSION_MAJOR}_DIR}/../../../bin/macdeployqt $<TARGET_BUNDLE_DIR:TheLastRonin>
-        DEPENDS TheLastRonin
-        COMMENT "Deploying application locally for testing"
-    )
-endif()
+
 
 # # Set the path to your Qt Installer Framework's binarycreator
 # if(WIN32)
@@ -131,4 +116,21 @@ endif()
 #     COMMENT "Building installer with Qt Installer Framework"
 # )
 
+
 # Local deployment targets (optional, for testing)
+# if(WIN32)
+#     add_custom_target(deploy_local
+#         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/deploy
+#         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TheLastRonin> ${CMAKE_BINARY_DIR}/deploy/
+#         COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_BINARY_DIR}/deploy
+#                 ${Qt${QT_VERSION_MAJOR}_DIR}/../../../bin/windeployqt.exe --release $<TARGET_FILE_NAME:TheLastRonin>
+#         DEPENDS TheLastRonin
+#         COMMENT "Deploying application locally for testing"
+#     )
+# elseif(APPLE)
+#     add_custom_target(deploy_local
+#         COMMAND ${Qt${QT_VERSION_MAJOR}_DIR}/../../../bin/macdeployqt $<TARGET_BUNDLE_DIR:TheLastRonin>
+#         DEPENDS TheLastRonin
+#         COMMENT "Deploying application locally for testing"
+#     )
+# endif()
