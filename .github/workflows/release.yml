@@ -51,11 +51,7 @@ jobs:
         with:
           arch: x64
 
-      - name: Configure CMake
-        run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH="${{ github.workspace }}/Qt/6.8.0/msvc2022_64"
-
-      - name: Clean Build Directory
+      - name: Clean previous build
         run: |
           if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
 
@@ -65,20 +61,22 @@ jobs:
 
       - name: Build Project
         run: |
-          cmake --build build --config Release
+          cmake --build build --config Release --verbose
 
       - name: Verify Build Output
         run: |
-          if (!(Test-Path "build/Release/TheLastRonin.exe")) { 
-            Write-Error "Build failed - executable not found"
+          $exePath = "build/src/Release/TheLastRonin.exe"
+          if (!(Test-Path $exePath)) { 
+            Write-Error "Build failed - executable not found at $exePath"
+            Get-ChildItem -Path build -Recurse -Filter *.exe | ForEach-Object { Write-Output "Found executable: $($_.FullName)" }
             exit 1
           }
-          Write-Output "Build successful - executable found"
+          Write-Output "Build successful - executable found at $exePath"
 
       - name: Create Deployment Directory
         run: |
           New-Item -ItemType Directory -Force -Path "deploy"
-          Copy-Item "build/Release/TheLastRonin.exe" -Destination "deploy/"
+          Copy-Item "build/src/Release/TheLastRonin.exe" -Destination "deploy/" -Force
 
       - name: Deploy Qt Dependencies
         run: |
@@ -105,7 +103,11 @@ jobs:
       - name: Create Windows Installer (if setup script exists)
         run: |
           if (Test-Path "TheLastRonin.iss") {
-            & "C:/Program Files (x86)/Inno Setup 6/ISCC.exe" "TheLastRonin.iss"
+            & "C:/Program Files (x86)/Inno Setup 6/ISCC.exe" "TheLastRonin.iss" /O"${{ github.workspace }}/output"
+            $setupPath = Get-ChildItem -Path "${{ github.workspace }}/output" -Filter *.exe | Select-Object -First 1
+            if ($setupPath) {
+              Copy-Item $setupPath.FullName -Destination "TheLastRonin-Windows-Setup.exe"
+            }
           } else {
             Write-Output "Inno Setup script not found, skipping installer creation"
           }
