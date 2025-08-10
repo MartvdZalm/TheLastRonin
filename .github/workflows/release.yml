@@ -6,43 +6,53 @@ on:
       - "v*"
   workflow_dispatch:
 
+env:
+  QT_VERSION: 6.7.3
+  CMAKE_VERSION: 3.16.3
+
 jobs:
   build-windows:
     runs-on: windows-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
-          version: 6.7.2
-          modules: qttools
+          version: ${{ env.QT_VERSION }}
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64
+          modules: qtmultimedia
           cache: true
 
+      - name: Set up MSVC
+        uses: microsoft/setup-msbuild@v2
+
       - name: Configure CMake
-        run: cmake -B build -S . -DCMAKE_PREFIX_PATH=$Env:Qt6_DIR
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
 
       - name: Build
-        run: cmake --build build --config Release
-
-      - name: Deploy Qt dependencies
         run: |
-          $qtBin = "${Env:Qt6_DIR}\bin"
-          $exePath = "build\src\Release\TheLastRonin.exe"
-          & "$qtBin\windeployqt.exe" --release $exePath
+          cmake --build build --config Release --parallel
 
-      - name: Create archive
+      - name: Deploy Qt
         run: |
-          mkdir package
-          copy build\src\Release\TheLastRonin.exe package\
-          copy build\src\Release\*.dll package\
-          tar -czvf TheLastRonin-Windows.zip -C package .
+          mkdir deploy
+          copy build\src\Release\TheLastRonin.exe deploy\
+          windeployqt.exe --qmldir . --compiler-runtime deploy\TheLastRonin.exe
 
-      - name: Upload Release Asset
-        uses: softprops/action-gh-release@v1
+      - name: Create Windows Archive
+        run: |
+          cd deploy
+          7z a ..\TheLastRonin-Windows-x64.zip *
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
         with:
-          files: TheLastRonin-Windows.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: TheLastRonin-Windows-x64
+          path: TheLastRonin-Windows-x64.zip
