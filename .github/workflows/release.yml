@@ -19,6 +19,7 @@ jobs:
           target: "desktop"
           arch: "win64_mingw"
           tools: "tools_mingw90"
+          modules: "qtmultimedia"
 
       - name: Configure and Build
         run: |
@@ -72,6 +73,7 @@ jobs:
           version: "6.9.0"
           target: "desktop"
           arch: "clang_64"
+          modules: "qtmultimedia"
 
       - name: Configure and Build
         run: |
