@@ -1,27 +1,27 @@
-#include "LanguageService.h"
+#include "LanguageManager.h"
 
 #include <QDebug>
 #include <QDir>
 
-LanguageService::LanguageService() : translator(nullptr), currentLanguage("English")
+LanguageManager::LanguageManager() : translator(nullptr), currentLanguage("English")
 {
     setupLanguageFiles();
 }
 
-LanguageService& LanguageService::instance()
+LanguageManager& LanguageManager::instance()
 {
-    static LanguageService instance;
+    static LanguageManager instance;
     return instance;
 }
 
-void LanguageService::setupLanguageFiles()
+void LanguageManager::setupLanguageFiles()
 {
     languageFiles["English"] = "";
     languageFiles["Dutch"] = ":/translations/app_nl.qm";
     languageFiles["Japanese"] = ":/translations/app_jp.qm";
 }
 
-void LanguageService::loadLanguage(const QString& language)
+void LanguageManager::loadLanguage(const QString& language)
 {
     if (currentLanguage == language)
         return;
@@ -51,12 +51,12 @@ void LanguageService::loadLanguage(const QString& language)
     emit languageChanged(language);
 }
 
-QString LanguageService::getCurrentLanguage() const
+QString LanguageManager::getCurrentLanguage() const
 {
     return currentLanguage;
 }
 
-QStringList LanguageService::getAvailableLanguages() const
+QStringList LanguageManager::getAvailableLanguages() const
 {
     return languageFiles.keys();
 }

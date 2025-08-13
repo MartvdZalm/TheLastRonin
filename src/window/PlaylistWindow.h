@@ -8,6 +8,7 @@
 #include "../model/Playlist.h"
 #include "../repository/PlaylistRepository.h"
 #include "../repository/TrackRepository.h"
+#include "../service/TrackService.h"
 
 #include "BaseWindow.h"
 #include <QAudioOutput>
@@ -41,6 +42,7 @@ class PlaylistWindow : public BaseWindow
     PlaybackBar* playbackBarWidget;
     TrackList* trackList;
     int currentTrackIndex = 0;
+    TrackService trackService;
 
     std::optional<Playlist> showEditPlaylistDialog();
     void playTrackAtIndex(int index);

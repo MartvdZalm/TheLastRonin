@@ -1,5 +1,6 @@
 #include "SettingRepository.h"
 
+#include "../core/Logger.h"
 #include <QDateTime>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -15,18 +16,18 @@ std::optional<Setting> SettingRepository::findById(int id)
 
     if (!query.exec())
     {
-        qCritical() << "Database error when finding setting ID" << id << ":" << query.lastError().text();
+        LOG_ERROR("Database error when finding setting ID " + QString::number(id) + " : " + query.lastError().text());
         return std::nullopt;
     }
 
     if (query.next())
     {
         auto setting = mapFromRecord(query);
-        qDebug() << "Successfully found setting ID:" << id;
+        LOG_INFO("Successfully found setting ID: " + id);
         return setting;
     }
 
-    qDebug() << "Setting not found with ID:" << id;
+    LOG_INFO("Setting not found with ID: " + id);
     return std::nullopt;
 }
 
@@ -38,18 +39,18 @@ std::optional<Setting> SettingRepository::findByKey(const QString& key)
 
     if (!query.exec())
     {
-        qCritical() << "Database error when finding setting with key" << key << ":" << query.lastError().text();
+        LOG_ERROR("Database error when finding setting with key " + key + " : " + query.lastError().text());
         return std::nullopt;
     }
 
     if (query.next())
     {
         auto setting = mapFromRecord(query);
-        qDebug() << "Successfully found setting ID:" << setting.getId();
+        LOG_INFO("Successfully found setting ID: " + setting.getId());
         return setting;
     }
 
-    qDebug() << "Setting not found with key:" << key;
+    LOG_INFO("Setting not found with key: " + key);
     return std::nullopt;
 }
 
@@ -89,7 +90,7 @@ QList<Setting> SettingRepository::findAll()
 
     if (!query.exec())
     {
-        qCritical() << "Database error when fetching all settings:" << query.lastError().text();
+        LOG_ERROR("Database error when fetching all settings: " + query.lastError().text());
         return results;
     }
 
@@ -98,7 +99,7 @@ QList<Setting> SettingRepository::findAll()
         results.append(mapFromRecord(query));
     }
 
-    qDebug() << "Fetched" << results.size() << "settings from database";
+    LOG_INFO("Fetched " + QString::number(results.size()) + "settings from database");
     return results;
 }
 
@@ -110,11 +111,11 @@ bool SettingRepository::deleteById(int id)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to delete setting ID" << id << ":" << query.lastError().text();
+        LOG_ERROR("Failed to delete setting ID " + QString::number(id) + " : " + query.lastError().text());
         return false;
     }
 
-    qDebug() << "Successfully deleted setting ID:" << id;
+    LOG_INFO("Successfully deleted setting ID: " + id);
     return query.exec();
 }
 
@@ -126,11 +127,11 @@ bool SettingRepository::deleteByKey(const QString& key)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to delete setting by key " << key << ":" << query.lastError().text();
+        LOG_ERROR("Failed to delete setting by key " + key + " : " + query.lastError().text());
         return false;
     }
 
-    qDebug() << "Successfully deleted setting key:" << key;
+    LOG_INFO("Successfully deleted setting key: " + key);
     return query.exec();
 }
 
@@ -155,12 +156,12 @@ std::optional<Setting> SettingRepository::insert(const Setting& setting)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to insert setting '" << setting.getKey() << "':" << query.lastError().text();
+        LOG_ERROR("Failed to insert setting '" + setting.getKey() + "' : " + query.lastError().text());
         return std::nullopt;
     }
 
     auto id = query.lastInsertId().toInt();
-    qDebug() << "Successfully inserted new setting ID:" << id;
+    LOG_INFO("Successfully inserted new setting ID: " + id);
     return findById(id);
 }
 
@@ -175,10 +176,10 @@ std::optional<Setting> SettingRepository::update(const Setting& setting)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to update setting ID" << setting.getId() << ":" << query.lastError().text();
+        LOG_ERROR("Failed to update setting ID " + QString::number(setting.getId()) + " : " + query.lastError().text());
         return std::nullopt;
     }
 
-    qDebug() << "Successfully updated setting ID:" << setting.getId();
+    LOG_INFO("Successfully updated setting ID: " + setting.getId());
     return setting;
 }

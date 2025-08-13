@@ -30,7 +30,7 @@ bool DatabaseManager::initialize()
     if (m_initialized)
         return true;
 
-    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/musicplayer.db";
+    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/TheLastRonin.db";
     QDir().mkpath(QFileInfo(dbPath).absolutePath());
 
     m_db = QSqlDatabase::addDatabase("QSQLITE");

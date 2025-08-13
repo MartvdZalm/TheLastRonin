@@ -5,9 +5,10 @@
 #include <QStandardPaths>
 #include <qsqlquery.h>
 
+#include "core/Logger.h"
 #include "database/Container.h"
 #include "database/DatabaseManager.h"
-#include "service/LanguageService.h"
+#include "manager/LanguageManager.h"
 #include "styles/AppStyle.h"
 #include "window/MainWindow.h"
 
@@ -16,6 +17,8 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     app.setStyleSheet(AppStyle::styleSheet());
     app.setWindowIcon(QIcon(":/Images/TheLastRoninIcon"));
+
+    Logger::initialize("TheLastRonin");
 
     if (!DatabaseManager::instance().initialize())
     {
@@ -26,7 +29,7 @@ int main(int argc, char* argv[])
     Container::instance().initialize(DatabaseManager::instance().database());
 
     auto setting = Container::instance().getSettingRepository()->setValue("language", "English");
-    LanguageService::instance().loadLanguage(setting->getValue());
+    LanguageManager::instance().loadLanguage(setting->getValue());
 
     MainWindow window;
     window.setWindowTitle("TheLastRonin");

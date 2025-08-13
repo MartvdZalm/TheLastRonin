@@ -1,5 +1,6 @@
 #include "PlaylistRepository.h"
 
+#include "../core/Logger.h"
 #include <QDateTime>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -15,7 +16,7 @@ std::optional<Playlist> PlaylistRepository::findById(int id)
 
     if (!query.exec())
     {
-        qCritical() << "Database error when finding playlist ID" << id << ":" << query.lastError().text();
+        LOG_ERROR("Database error when finding playlist ID " + QString::number(id) + " : " + query.lastError().text());
         return std::nullopt;
     }
 
@@ -23,11 +24,12 @@ std::optional<Playlist> PlaylistRepository::findById(int id)
     {
         auto playlist = mapFromRecord(query);
         playlist.setTracks(getTracksForPlaylist(id));
-        qDebug() << "Successfully found playlist ID:" << id;
+
+        LOG_INFO("Successfully found playlist ID: " + id);
         return playlist;
     }
 
-    qDebug() << "Playlist not found with ID:" << id;
+    LOG_INFO("Playlist not found with ID: " + id);
     return std::nullopt;
 }
 
@@ -54,7 +56,7 @@ QList<Playlist> PlaylistRepository::findAll()
 
     if (!query.exec())
     {
-        qCritical() << "Database error when fetching all playlists:" << query.lastError().text();
+        LOG_ERROR("Database error when fetching all playlists: " + query.lastError().text());
         return results;
     }
 
@@ -63,7 +65,7 @@ QList<Playlist> PlaylistRepository::findAll()
         results.append(mapFromRecord(query));
     }
 
-    qDebug() << "Fetched" << results.size() << "playlists from database";
+    LOG_INFO("Fetched " + QString::number(results.size()) + " playlists from database");
     return results;
 }
 
@@ -75,14 +77,14 @@ bool PlaylistRepository::deleteById(int id)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to delete playlist ID" << id << ":" << query.lastError().text();
+        LOG_ERROR("Failed to delete playlist ID " + QString::number(id) + " : " + query.lastError().text());
         return false;
     }
 
     bool deleted = query.numRowsAffected() > 0;
     if (deleted)
     {
-        qDebug() << "Successfully deleted playlist ID:" << id;
+        LOG_INFO("Successfully deleted playlist ID: " + QString::number(id));
     }
     return deleted;
 }
@@ -98,12 +100,13 @@ bool PlaylistRepository::addTrackToPlaylist(int playlistId, int trackId)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to add track ID" << trackId << "to playlist ID" << playlistId << ":"
-                    << query.lastError().text();
+        LOG_ERROR("Failed to add track ID" + QString::number(trackId) + "to playlist ID" + QString::number(playlistId) +
+                  " : " + query.lastError().text());
         return false;
     }
 
-    qDebug() << "Successfully added track ID" << trackId << "to playlist ID" << playlistId;
+    LOG_INFO("Successfully added track ID " + QString::number(trackId) + " to playlist ID " +
+             QString::number(playlistId));
     return true;
 }
 
@@ -117,14 +120,15 @@ bool PlaylistRepository::removeTrackFromPlaylist(int playlistId, int trackId)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to remove track ID" << trackId << "from playlist ID" << playlistId << ":"
-                    << query.lastError().text();
+        LOG_ERROR("Failed to remove track ID " + QString::number(trackId) + " from playlist ID " +
+                  QString::number(playlistId) + " : " + query.lastError().text());
         return false;
     }
 
     if (query.numRowsAffected() > 0)
     {
-        qDebug() << "Successfully removed track ID" << trackId << "from playlist ID" << playlistId;
+        LOG_INFO("Successfully removed track ID " + QString::number(trackId) + " from playlist ID " +
+                 QString::number(playlistId));
         return true;
     }
 
@@ -143,8 +147,8 @@ QList<Track> PlaylistRepository::getTracksForPlaylist(int playlistId)
 
     if (!query.exec())
     {
-        qCritical() << "Database error when fetching tracks for playlist ID" << playlistId << ":"
-                    << query.lastError().text();
+        LOG_ERROR("Database error when fetching tracks for playlist ID " + QString::number(playlistId) + " : " +
+                  query.lastError().text());
         return tracks;
     }
 
@@ -160,7 +164,7 @@ QList<Track> PlaylistRepository::getTracksForPlaylist(int playlistId)
         tracks.append(track);
     }
 
-    qDebug() << "Fetched" << tracks.size() << "tracks for playlist ID:" << playlistId;
+    LOG_INFO("Fetched " + QString::number(tracks.size()) + " tracks for playlist ID: " + QString::number(playlistId));
     return tracks;
 }
 
@@ -188,12 +192,12 @@ std::optional<Playlist> PlaylistRepository::insert(const Playlist& playlist)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to insert playlist '" << playlist.getName() << "':" << query.lastError().text();
+        LOG_ERROR("Failed to insert playlist '" + playlist.getName() + "' : " + query.lastError().text());
         return std::nullopt;
     }
 
     auto id = query.lastInsertId().toInt();
-    qDebug() << "Successfully inserted new playlist ID:" << id;
+    LOG_INFO("Successfully inserted new playlist ID: " + id);
     return findById(id);
 }
 
@@ -213,10 +217,11 @@ bool PlaylistRepository::update(const Playlist& playlist)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to update playlist ID" << playlist.getId() << ":" << query.lastError().text();
+        LOG_ERROR("Failed to update playlist ID " + QString::number(playlist.getId()) + " : " +
+                  query.lastError().text());
         return false;
     }
 
-    qDebug() << "Successfully updated playlist ID:" << playlist.getId();
+    LOG_INFO("Successfully updated playlist ID:" + playlist.getId());
     return true;
 }

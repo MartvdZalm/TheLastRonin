@@ -1,17 +1,17 @@
 #include "BaseWindow.h"
 
-#include "../service/LanguageService.h"
+#include "../manager/LanguageManager.h"
 
 BaseWindow::BaseWindow(QWidget* parent) : QWidget(parent)
 {
-    connectLanguageService();
+    connectLanguageManager();
 }
 
 BaseWindow::~BaseWindow() {}
 
-void BaseWindow::connectLanguageService()
+void BaseWindow::connectLanguageManager()
 {
-    connect(&LanguageService::instance(), &LanguageService::languageChanged, this, &BaseWindow::onLanguageChanged);
+    connect(&LanguageManager::instance(), &LanguageManager::languageChanged, this, &BaseWindow::onLanguageChanged);
 }
 
 void BaseWindow::onLanguageChanged(const QString& language)

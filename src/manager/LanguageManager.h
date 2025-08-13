@@ -1,5 +1,5 @@
-#ifndef LANGUAGESERVICE_H
-#define LANGUAGESERVICE_H
+#ifndef LANGUAGEMANAGER_H
+#define LANGUAGEMANAGER_H
 
 #include <QApplication>
 #include <QMap>
@@ -7,12 +7,12 @@
 #include <QString>
 #include <QTranslator>
 
-class LanguageService : public QObject
+class LanguageManager : public QObject
 {
     Q_OBJECT
 
   public:
-    static LanguageService& instance();
+    static LanguageManager& instance();
 
     void loadLanguage(const QString& language);
     QString getCurrentLanguage() const;
@@ -22,7 +22,7 @@ class LanguageService : public QObject
     void languageChanged(const QString& language);
 
   private:
-    LanguageService();
+    LanguageManager();
 
     QTranslator* translator;
     QString currentLanguage;
@@ -31,4 +31,4 @@ class LanguageService : public QObject
     void setupLanguageFiles();
 };
 
-#endif // LANGUAGESERVICE_H
+#endif // LANGUAGEMANAGER_H

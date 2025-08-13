@@ -37,14 +37,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         events/AppEvents.cpp
 
         # Services
-        service/LanguageService.h
-        service/LanguageService.cpp
         service/AudioMetadataService.h
         service/AudioMetadataService.cpp
         service/TrackService.h
         service/TrackService.cpp
         service/YouTubeMusicService.h
         service/YouTubeMusicService.cpp
+
+        # Manager
+        manager/LanguageManager.h
+        manager/LanguageManager.cpp
 
         # Styles
         styles/AppStyle.h
@@ -101,6 +103,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         window/SettingsWindow.cpp
         window/YouTubeMusicWindow.h
         window/YouTubeMusicWindow.cpp
+
+        # Core
+        core/Logger.cpp
+        core/Logger.h
     )
 else()
     add_executable(TheLastRonin

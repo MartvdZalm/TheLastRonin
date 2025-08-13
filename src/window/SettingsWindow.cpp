@@ -2,8 +2,8 @@
 
 #include "../database/Container.h"
 #include "../events/AppEvents.h"
+#include "../manager/LanguageManager.h"
 #include "../model/Setting.h"
-#include "../service/LanguageService.h"
 #include "../styles/ButtonStyle.h"
 #include "../styles/ListStyle.h"
 #include <QApplication>
@@ -150,7 +150,7 @@ QWidget* SettingsWindow::createGeneralPage()
     QFormLayout* languageLayout = new QFormLayout(languageGroup);
 
     languageCombo = new QComboBox;
-    languageCombo->addItems(LanguageService::instance().getAvailableLanguages());
+    languageCombo->addItems(LanguageManager::instance().getAvailableLanguages());
     languageLayout->addRow(tr("Language:"), languageCombo);
 
     layout->addWidget(languageGroup);
@@ -310,7 +310,7 @@ void SettingsWindow::loadSettings()
     }
     else
     {
-        QString currentLang = LanguageService::instance().getCurrentLanguage();
+        QString currentLang = LanguageManager::instance().getCurrentLanguage();
         int index = languageCombo->findText(currentLang);
         if (index >= 0)
         {
@@ -323,7 +323,7 @@ void SettingsWindow::saveSettings()
 {
     QString selectedLanguage = languageCombo->currentText();
     Container::instance().getSettingRepository()->setValue("language", selectedLanguage);
-    LanguageService::instance().loadLanguage(selectedLanguage);
+    LanguageManager::instance().loadLanguage(selectedLanguage);
 }
 
 void SettingsWindow::retranslateUI()
@@ -341,6 +341,8 @@ void SettingsWindow::retranslateUI()
         sidebar->item(6)->setText(tr("Advanced"));
     }
 
-    if (cancelButton) cancelButton->setText(tr("Cancel"));
-    if (applyButton) applyButton->setText(tr("Apply"));
+    if (cancelButton)
+        cancelButton->setText(tr("Cancel"));
+    if (applyButton)
+        applyButton->setText(tr("Apply"));
 }

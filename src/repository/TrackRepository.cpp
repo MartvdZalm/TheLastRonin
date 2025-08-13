@@ -1,5 +1,6 @@
 #include "TrackRepository.h"
 
+#include "../core/Logger.h"
 #include <QDateTime>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -15,7 +16,7 @@ std::optional<Track> TrackRepository::findById(int id)
 
     if (!query.exec())
     {
-        qCritical() << "Database error when finding track by ID" << id << ":" << query.lastError().text();
+        LOG_ERROR("Database error when finding track by ID " + QString::number(id) + " : " + query.lastError().text());
         return std::nullopt;
     }
 
@@ -24,7 +25,7 @@ std::optional<Track> TrackRepository::findById(int id)
         return mapFromRecord(query);
     }
 
-    qDebug() << "Track not found with ID:" << id;
+    LOG_INFO("Track not found with ID: " + id);
     return std::nullopt;
 }
 
@@ -34,10 +35,11 @@ std::optional<Track> TrackRepository::save(const Track& track)
     {
         if (!update(track))
         {
-            qCritical() << "Failed to update track ID" << track.getId();
+            LOG_ERROR("Failed to update track ID " + track.getId());
             return std::nullopt;
         }
-        qDebug() << "Successfully updated track ID:" << track.getId();
+
+        LOG_INFO("Successfully updated track ID: " + track.getId());
         return track;
     }
 
@@ -51,7 +53,7 @@ QList<Track> TrackRepository::findAll()
 
     if (!query.exec())
     {
-        qCritical() << "Database error when fetching all tracks:" << query.lastError().text();
+        LOG_ERROR("Database error when fetching all tracks: " + query.lastError().text());
         return results;
     }
 
@@ -60,7 +62,7 @@ QList<Track> TrackRepository::findAll()
         results.push_back(mapFromRecord(query));
     }
 
-    qDebug() << "Fetched" << results.size() << "tracks from database";
+    LOG_INFO("Fetched " + QString::number(results.size()) + " tracks from database");
     return results;
 }
 
@@ -72,14 +74,14 @@ bool TrackRepository::deleteById(int id)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to delete track ID" << id << ":" << query.lastError().text();
+        LOG_ERROR("Failed to delete track ID " + QString::number(id) + " : " + query.lastError().text());
         return false;
     }
 
     bool deleted = query.numRowsAffected() > 0;
     if (deleted)
     {
-        qDebug() << "Successfully deleted track ID:" << id;
+        LOG_INFO("Successfully deleted track ID: " + id);
     }
     return deleted;
 }
@@ -92,7 +94,7 @@ std::optional<Track> TrackRepository::findByFilePath(const QString& filePath)
 
     if (!query.exec())
     {
-        qCritical() << "Database error when finding track by path" << filePath << ":" << query.lastError().text();
+        LOG_ERROR("Database error when finding track by path " + filePath + " : " + query.lastError().text());
         return std::nullopt;
     }
 
@@ -101,7 +103,7 @@ std::optional<Track> TrackRepository::findByFilePath(const QString& filePath)
         return mapFromRecord(query);
     }
 
-    qDebug() << "Track not found with file path:" << filePath;
+    LOG_INFO("Track not found with file path: " + filePath);
     return std::nullopt;
 }
 
@@ -135,13 +137,13 @@ std::optional<Track> TrackRepository::insert(const Track& track)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to insert track '" << track.getTitle() << "' (path:" << track.getFilePath()
-                    << "):" << query.lastError().text();
+        LOG_ERROR("Failed to insert track '" + track.getTitle() + "' (path:" + track.getFilePath() +
+                  "): " + query.lastError().text());
         return std::nullopt;
     }
 
     auto id = query.lastInsertId().toInt();
-    qDebug() << "Successfully inserted new track ID:" << id;
+    LOG_INFO("Successfully inserted new track ID: " + id);
     return findById(id);
 }
 
@@ -161,10 +163,10 @@ bool TrackRepository::update(const Track& track)
 
     if (!query.exec())
     {
-        qCritical() << "Failed to update track ID" << track.getId() << ":" << query.lastError().text();
+        LOG_ERROR("Failed to update track ID " + QString::number(track.getId()) + " : " + query.lastError().text());
         return false;
     }
 
-    qDebug() << "Successfully updated track ID:" << track.getId();
+    LOG_INFO("Successfully updated track ID: " + track.getId());
     return true;
 }

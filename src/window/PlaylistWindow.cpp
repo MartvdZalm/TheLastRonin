@@ -72,13 +72,13 @@ void PlaylistWindow::setupConnections()
                 if (dialog.exec() == QDialog::Accepted)
                 {
                     Track newTrack = dialog.getTrack();
-                    auto savedTrack = Container::instance().getTrackRepository()->save(newTrack).value();
+                    auto savedTrack = trackService.addTrack(newTrack);
 
                     Container::instance().getPlaylistRepository()->addTrackToPlaylist(playlist.getId(),
-                                                                                      savedTrack.getId());
+                                                                                      savedTrack->getId());
 
-                    trackList->addTrack(savedTrack);
-                    playlist.addTrack(savedTrack);
+                    trackList->addTrack(savedTrack.value());
+                    playlist.addTrack(savedTrack.value());
 
                     playbackBarWidget->updatePlaylist(playlist);
                 }

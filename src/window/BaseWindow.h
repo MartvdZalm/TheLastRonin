@@ -21,7 +21,7 @@ class BaseWindow : public QWidget
     void onLanguageChanged(const QString& language);
 
   private:
-    void connectLanguageService();
+    void connectLanguageManager();
 };
 
 #endif // BASEWINDOW_H
