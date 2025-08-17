@@ -14,11 +14,10 @@ class TrackRepository : public ITrackRepository
     std::optional<Track> save(const Track& track) override;
     bool deleteById(int id) override;
     std::optional<Track> findByFilePath(const QString& filePath) override;
+    Track mapFromRecord(const QSqlQuery& query) override;
 
   private:
     QSqlDatabase& database;
-
-    Track mapFromRecord(const QSqlQuery& query);
     std::optional<Track> insert(const Track& track);
     bool update(const Track& track);
 };

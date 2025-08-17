@@ -1,12 +1,16 @@
 #include "TrackList.h"
 
+#include "../../constants/Colors.h"
 #include <QEvent>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QListWidget>
+#include <QToolButton>
 #include <QVBoxLayout>
 
-TrackList::TrackList(const QList<Track>& tracks, QWidget* parent) : QListWidget(parent)
+TrackList::TrackList(const QList<Track>& tracks, QWidget* parent, bool showMenu)
+    : QListWidget(parent), showMenu(showMenu)
 {
     for (int i = 0; i < tracks.size(); ++i)
     {
@@ -82,6 +86,64 @@ QWidget* TrackList::createTrackItemWidget(const Track& track, int index)
     durationLabel->setStyleSheet("color: #888; font-size: 14px;");
     layout->addWidget(durationLabel);
 
+    if (showMenu)
+    {
+        QToolButton* menuButton = new QToolButton(itemWidget);
+        menuButton->setIcon(QIcon(":/Images/MenuDots"));
+        menuButton->setStyleSheet("QToolButton::menu-indicator { image: none; }");
+        menuButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+
+        QMenu* menu = new QMenu(menuButton);
+        menu->setAttribute(Qt::WA_TranslucentBackground);
+        menu->setAttribute(Qt::WA_OpaquePaintEvent);
+        menu->setWindowFlags(menu->windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+        menu->setWindowFlags(menu->windowFlags() | Qt::Popup | Qt::Tool);
+        menu->setStyleSheet(QString(R"(
+            QMenu {
+                background-color: %1;
+                border-radius: 8px;
+                width: 200px;
+                border: none
+            }
+            QMenu::item {
+                padding: 8px 16px;
+                background: transparent;
+                width: 168px;
+                border-radius: 8px;
+            }
+            QMenu::item:selected {
+                background-color: #383838;
+            }
+        )")
+                                .arg(Colors::DarkGray));
+        menu->addAction("Play Next", [track]() { qDebug() << "Play next:" << track.getTitle(); });
+        menu->addAction("Download", [track]() { qDebug() << "Download:" << track.getTitle(); });
+        menu->addAction("Add to Playlist", [track]() { qDebug() << "Add to playlist:" << track.getTitle(); });
+
+        connect(menu, &QMenu::aboutToShow, this,
+                [this, menu]()
+                {
+                    if (currentMenu && currentMenu != menu)
+                    {
+                        currentMenu->close();
+                    }
+                    currentMenu = menu;
+                });
+
+        connect(menu, &QMenu::aboutToHide, this,
+                [this, menu]()
+                {
+                    if (currentMenu == menu)
+                    {
+                        currentMenu = nullptr;
+                    }
+                });
+
+        menuButton->setMenu(menu);
+        menuButton->setPopupMode(QToolButton::InstantPopup);
+        layout->addWidget(menuButton);
+    }
+
     this->updateItemWidgetStyle(itemWidget, false);
 
     itemWidget->installEventFilter(this);
@@ -118,6 +180,12 @@ bool TrackList::eventFilter(QObject* obj, QEvent* event)
             this->updateItemWidgetStyle(widget, false);
         }
     }
+
+    if (obj == currentMenu && event->type() == QEvent::Hide)
+    {
+        currentMenu = nullptr;
+    }
+
     return QListWidget::eventFilter(obj, event);
 }
 

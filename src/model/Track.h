@@ -3,6 +3,7 @@
 
 #include "Model.h"
 #include <QString>
+#include <QJsonObject>
 
 class Track : public Model
 {
@@ -67,6 +68,18 @@ class Track : public Model
     void setThumbnailUrl(const QString& thumbnailUrl)
     {
         this->thumbnailUrl = thumbnailUrl;
+    }
+
+    QJsonObject serialize() const
+    {
+        QJsonObject obj;
+        obj["title"] = title;
+        obj["filePath"] = filePath;
+        obj["artist"] = artist;
+        obj["album"] = album;
+        obj["duration"] = duration;
+        obj["thumbnailUrl"] = thumbnailUrl;
+        return obj;
     }
 
   private:

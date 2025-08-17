@@ -45,21 +45,13 @@ PlaylistCard::PlaylistCard(const Playlist& playlist, QWidget* parent) : QWidget(
     QString elidedText = metrics.elidedText(playlist.getName(), Qt::ElideRight, titleLabel->width() - 2);
     titleLabel->setText(elidedText);
 
-    // previewLabel = new QLabel(tr("Tracks: ") + QString::number(playlist.getTracks().size()), this);
-    // previewLabel->setAlignment(Qt::AlignCenter);
-    // previewLabel->setStyleSheet("background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px;");
-    // previewLabel->setVisible(false);
-
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(cover);
     layout->addWidget(titleLabel);
-    // layout->addWidget(previewLabel);
 
     layout->setAlignment(Qt::AlignTop);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-
-    // this->installEventFilter(this);
 
     this->setCursor(Qt::PointingHandCursor);
 }
@@ -69,23 +61,4 @@ void PlaylistCard::mousePressEvent(QMouseEvent* event)
     Q_UNUSED(event);
 
     AppEvents::instance().notifyNavigateToPlaylist(playlist);
-}
-
-bool PlaylistCard::eventFilter(QObject* watched, QEvent* event)
-{
-    if (watched == this)
-    {
-        QLabel* cover = qobject_cast<QLabel*>(watched);
-
-        if (event->type() == QEvent::Enter)
-        {
-            previewLabel->setVisible(true);
-        }
-        else if (event->type() == QEvent::Leave)
-        {
-            previewLabel->setVisible(false);
-        }
-    }
-
-    return QWidget::eventFilter(watched, event);
 }

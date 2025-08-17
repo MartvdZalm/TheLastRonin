@@ -185,6 +185,7 @@ void HomeWindow::importPlaylistFromFolder()
         Track track;
         track.setTitle(fileInfo.baseName());
         track.setFilePath(filePath);
+        track.setThumbnailUrl(coverImagePath);
         auto savedTrack = trackService.addTrack(track);
 
         if (!savedTrack)

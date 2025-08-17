@@ -82,8 +82,6 @@ void MiniPlayer::setupUI()
             font-size: 24px;
         }
     )");
-    thumbnailLabel->setText("♪");
-    thumbnailLabel->setScaledContents(true);
 
     videoWidget = new QVideoWidget(mediaDisplayWidget);
     videoWidget->setStyleSheet("border-radius: 8px; background-color: #222;");
@@ -154,6 +152,8 @@ void MiniPlayer::setupUI()
 
     rootLayout->addWidget(contentWidget);
 
+    // qDebug() << track.serialize();
+
     updateDisplayMode();
 }
 
@@ -184,21 +184,22 @@ void MiniPlayer::updateTrackInfo(const Track& track)
     this->track = track;
     songLabel->setText(track.getTitle());
 
+    qDebug() << track.serialize();
+
     if (!track.getThumbnailUrl().isEmpty())
     {
-        loadThumbnail(track.getThumbnailUrl());
+        QPixmap pixmap(track.getThumbnailUrl());
+        thumbnailLabel->setPixmap(pixmap.scaled(thumbnailLabel->size(), Qt::IgnoreAspectRatio));
     }
     else
     {
         QPixmap musicNoteIcon(":/Images/MusicNote");
 
-        if (!musicNoteIcon.isNull()) {
+        if (!musicNoteIcon.isNull())
+        {
             qreal scaleFactor = 0.5;
-            QPixmap scaledIcon = musicNoteIcon.scaled(
-                musicNoteIcon.size() * scaleFactor,
-                Qt::KeepAspectRatio,
-                Qt::SmoothTransformation
-                );
+            QPixmap scaledIcon = musicNoteIcon.scaled(musicNoteIcon.size() * scaleFactor, Qt::IgnoreAspectRatio,
+                                                      Qt::SmoothTransformation);
 
             QPixmap centeredPixmap(thumbnailLabel->size());
             centeredPixmap.fill(Qt::transparent);
@@ -217,47 +218,6 @@ void MiniPlayer::updateTrackInfo(const Track& track)
         thumbnailLabel->setAlignment(Qt::AlignCenter);
         thumbnailLabel->setText("");
     }
-}
-
-void MiniPlayer::loadThumbnail(const QString& thumbnailUrl)
-{
-    if (thumbnailUrl.isEmpty())
-        return;
-
-    QNetworkRequest request(thumbnailUrl);
-    QNetworkReply* reply = networkManager->get(request);
-
-    connect(reply, &QNetworkReply::finished, this,
-            [this, reply]()
-            {
-                if (reply->error() == QNetworkReply::NoError)
-                {
-                    QByteArray imageData = reply->readAll();
-                    QPixmap pixmap;
-
-                    if (pixmap.loadFromData(imageData))
-                    {
-                        QSize thumbnailSize = thumbnailLabel->size();
-                        QPixmap roundedPixmap(thumbnailSize);
-                        roundedPixmap.fill(Qt::transparent);
-
-                        QPainter painter(&roundedPixmap);
-                        painter.setRenderHint(QPainter::Antialiasing);
-
-                        QPainterPath path;
-                        path.addRoundedRect(0, 0, thumbnailSize.width(), thumbnailSize.height(), 8, 8);
-                        painter.setClipPath(path);
-
-                        QPixmap scaledPixmap =
-                            pixmap.scaled(thumbnailSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
-                        painter.drawPixmap(0, 0, scaledPixmap);
-
-                        thumbnailLabel->setPixmap(roundedPixmap);
-                        thumbnailLabel->setText("");
-                    }
-                }
-                reply->deleteLater();
-            });
 }
 
 void MiniPlayer::setVideoMode(bool enabled)

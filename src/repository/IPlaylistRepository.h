@@ -3,6 +3,7 @@
 
 #include "../model/Playlist.h"
 #include "../model/Track.h"
+#include <QSqlQuery>
 #include <QString>
 #include <optional>
 #include <vector>
@@ -20,6 +21,7 @@ class IPlaylistRepository
     virtual bool addTrackToPlaylist(int playlistId, int trackId) = 0;
     virtual bool removeTrackFromPlaylist(int playlistId, int trackId) = 0;
     virtual QList<Track> getTracksForPlaylist(int playlistId) = 0;
+    virtual Playlist mapFromRecord(const QSqlQuery& query) = 0;
 };
 
 #endif // IPLAYLISTREPOSITORY_H

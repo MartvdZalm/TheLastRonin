@@ -1,8 +1,10 @@
 #include "YouTubeMusicWindow.h"
 
 #include "../components/dialog/AddTrackDialog.h"
+#include "../core/Logger.h"
 #include "../database/Container.h"
 #include "../events/AppEvents.h"
+#include "../manager/ProcessManager.h"
 #include "../styles/ButtonStyle.h"
 #include "../styles/ComboBoxStyle.h"
 #include "../styles/InputStyle.h"
@@ -18,6 +20,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QPointer>
 #include <QProcess>
 #include <QStandardPaths>
 #include <QTimer>
@@ -26,7 +29,7 @@
 YouTubeMusicWindow::YouTubeMusicWindow(QWidget* parent) : BaseWindow(parent)
 {
     setWindowTitle(tr("YouTube Music"));
-    networkManager = new QNetworkAccessManager(this);
+    // networkManager = new QNetworkAccessManager(this);
     setupUI();
     setupConnections();
     setupEvents();
@@ -105,7 +108,7 @@ void YouTubeMusicWindow::setupConnections()
     connect(addToPlaylistBtn, &QPushButton::clicked, this, &YouTubeMusicWindow::onAddToPlaylistClicked);
     connect(downloadTrackBtn, &QPushButton::clicked, this, &YouTubeMusicWindow::onDownloadTrackClicked);
 
-    connect(networkManager, &QNetworkAccessManager::finished, this, &YouTubeMusicWindow::onSearchFinished);
+    // connect(networkManager, &QNetworkAccessManager::finished, this, &YouTubeMusicWindow::onSearchFinished);
 }
 
 void YouTubeMusicWindow::setupEvents()
@@ -122,97 +125,45 @@ void YouTubeMusicWindow::onSearchClicked()
     QString query = searchInput->text().trimmed();
     if (query.isEmpty())
     {
-        showError(tr("Please enter a search term"));
         return;
     }
 
-    statusLabel->setText(tr("Searching..."));
-    searchYouTubeMusic(query);
-}
+    if (QStandardPaths::findExecutable("yt-dlp").isEmpty())
+    {
+        LOG_ERROR("yt-dlp missing please follow the instructions in the readme on how to install.");
+        return;
+    }
 
-void YouTubeMusicWindow::searchYouTubeMusic(const QString& query)
-{
-    QProcess* checkProcess = new QProcess(this);
-
-    connect(checkProcess, &QProcess::readyReadStandardOutput, this,
-            [checkProcess]() { QByteArray output = checkProcess->readAllStandardOutput(); });
-
-    connect(checkProcess, &QProcess::readyReadStandardError, this,
-            [checkProcess]() { QByteArray error = checkProcess->readAllStandardError(); });
-
-    checkProcess->start("yt-dlp", QStringList() << "--version");
-
-    connect(checkProcess, &QProcess::finished, this,
-            [this, query, checkProcess](int exitCode)
-            {
-                checkProcess->deleteLater();
-
-                if (exitCode != 0)
-                {
-                    qDebug() << "yt-dlp not found";
-                    return;
-                }
-
-                performSearch(query);
-            });
-
-    connect(checkProcess, &QProcess::errorOccurred, this,
-            [this, query, checkProcess](QProcess::ProcessError error)
-            {
-                qDebug() << "Check process error:" << error;
-                checkProcess->deleteLater();
-            });
-
-    QTimer* checkTimeout = new QTimer(this);
-    checkTimeout->setSingleShot(true);
-    connect(checkTimeout, &QTimer::timeout, this,
-            [this, query, checkProcess, checkTimeout]()
-            {
-                qDebug() << "Check process timed out";
-                if (checkProcess->state() == QProcess::Running)
-                {
-                    checkProcess->terminate();
-                    checkProcess->waitForFinished(1000);
-                }
-                checkTimeout->deleteLater();
-            });
-    checkTimeout->start(3000);
-
-    connect(checkProcess, &QProcess::finished, this,
-            [checkTimeout](int exitCode)
-            {
-                Q_UNUSED(exitCode)
-                if (checkTimeout)
-                {
-                    checkTimeout->stop();
-                    checkTimeout->deleteLater();
-                }
-            });
+    performSearch(query);
 }
 
 void YouTubeMusicWindow::performSearch(const QString& query)
 {
-    qDebug() << "Performing real search for:" << query;
+    statusLabel->setText(tr("Searching..."));
 
-    QProcess* process = new QProcess(this);
     QStringList arguments;
     arguments << "--dump-json"
               << "--no-playlist"
-              << "--max-downloads" << "20"
+              << "--max-downloads" << "15"
               << "--extractor-args" << "youtube:skip=dash"
               << "--no-warnings"
               << "--quiet"
               << "ytsearch20:" + query;
 
-    qDebug() << "yt-dlp arguments:" << arguments;
+    LOG_INFO("yt-dlp arguments: " + arguments.join(", "));
+
+    QProcess* process = ProcessManager::instance().createProcess("yt-dlp", arguments);
 
     QString* accumulatedOutput = new QString();
+    QPointer<YouTubeMusicWindow> safeThis = this;
 
     connect(process, &QProcess::readyReadStandardOutput, this,
-            [this, process, accumulatedOutput]()
+            [safeThis, process, accumulatedOutput]()
             {
-                QByteArray newOutput = process->readAllStandardOutput();
-                QString outputStr = QString::fromUtf8(newOutput);
+                if (!safeThis)
+                    return;
+
+                QString outputStr = QString::fromUtf8(process->readAllStandardOutput());
                 accumulatedOutput->append(outputStr);
 
                 QStringList lines = accumulatedOutput->split('\n');
@@ -225,118 +176,55 @@ void YouTubeMusicWindow::performSearch(const QString& query)
                     if (line.trimmed().isEmpty())
                         continue;
 
-                    processJsonLine(line.trimmed());
+                    safeThis->processJsonLine(line.trimmed());
                 }
 
-                if (!searchResults.isEmpty())
+                if (!safeThis->searchResults.isEmpty())
                 {
-                    statusLabel->setText(tr("Found %1 results so far...").arg(searchResults.size()));
-                }
-            });
-
-    connect(process, &QProcess::readyReadStandardError, this,
-            [process]()
-            {
-                QByteArray error = process->readAllStandardError();
-                QString errorStr = QString::fromUtf8(error);
-                if (!errorStr.contains("WARNING") && !errorStr.trimmed().isEmpty())
-                {
-                    qDebug() << "Search stderr (non-warning):" << errorStr;
+                    safeThis->statusLabel->setText(
+                        tr("Found %1 results so far...").arg(safeThis->searchResults.size()));
                 }
             });
 
     connect(process, &QProcess::finished, this,
-            [this, process, accumulatedOutput](int exitCode)
+            [safeThis, process, accumulatedOutput](int exitCode)
             {
-                qDebug() << "Search process finished with exit code:" << exitCode;
+                if (!safeThis)
+                {
+                    delete accumulatedOutput;
+                    return;
+                }
+
+                LOG_INFO("Search process finished with exit code: " + exitCode);
 
                 if (!accumulatedOutput->trimmed().isEmpty())
                 {
-                    processJsonLine(accumulatedOutput->trimmed());
+                    safeThis->processJsonLine(accumulatedOutput->trimmed());
                 }
 
                 delete accumulatedOutput;
 
-                updateTrackList(searchResults);
-                if (searchResults.isEmpty())
+                safeThis->updateTrackList(safeThis->searchResults);
+                if (safeThis->searchResults.isEmpty())
                 {
                     if (exitCode == 0)
                     {
-                        statusLabel->setText(tr("No results found. Try a different search term."));
+                        safeThis->statusLabel->setText(tr("No results found. Try a different search term."));
                     }
                     else
                     {
-                        statusLabel->setText(tr("Search failed. Please try again."));
+                        safeThis->statusLabel->setText(tr("Search failed. Please try again."));
                     }
                 }
                 else
                 {
-                    statusLabel->setText(tr("Found %1 results").arg(searchResults.size()));
+                    safeThis->statusLabel->setText(tr("Found %1 results").arg(safeThis->searchResults.size()));
                 }
-
-                process->deleteLater();
             });
-
-    connect(process, &QProcess::errorOccurred, this,
-            [this, process, accumulatedOutput](QProcess::ProcessError error)
-            {
-                QString errorMsg = tr("Process error: %1").arg(error);
-                qDebug() << "Process error:" << errorMsg;
-                showError(errorMsg);
-                delete accumulatedOutput;
-                process->deleteLater();
-            });
-
-    QTimer* timeoutTimer = new QTimer(this);
-    timeoutTimer->setSingleShot(true);
-    connect(timeoutTimer, &QTimer::timeout, this,
-            [this, process, timeoutTimer, accumulatedOutput]()
-            {
-                qDebug() << "Search process timed out after 90 seconds";
-
-                if (!searchResults.isEmpty())
-                {
-                    qDebug() << "Have" << searchResults.size() << "results, stopping gracefully";
-                    if (process->state() == QProcess::Running)
-                    {
-                        process->terminate();
-                        process->waitForFinished(3000);
-                    }
-                    statusLabel->setText(tr("Search completed with %1 results (timed out)").arg(searchResults.size()));
-                }
-                else
-                {
-                    if (process->state() == QProcess::Running)
-                    {
-                        process->terminate();
-                        process->waitForFinished(5000);
-                        if (process->state() == QProcess::Running)
-                        {
-                            process->kill();
-                        }
-                    }
-                    showError(tr("Search timed out with no results. Try a simpler search term."));
-                }
-
-                delete accumulatedOutput;
-                timeoutTimer->deleteLater();
-            });
-    timeoutTimer->start(90000);
 
     searchResults.clear();
 
-    process->start("yt-dlp", arguments);
-
-    connect(process, &QProcess::finished, this,
-            [timeoutTimer](int exitCode)
-            {
-                Q_UNUSED(exitCode)
-                if (timeoutTimer)
-                {
-                    timeoutTimer->stop();
-                    timeoutTimer->deleteLater();
-                }
-            });
+    process->start();
 }
 
 void YouTubeMusicWindow::processJsonLine(const QString& line)
@@ -349,24 +237,26 @@ void YouTubeMusicWindow::processJsonLine(const QString& line)
 
     if (parseError.error == QJsonParseError::NoError && doc.isObject())
     {
-        QJsonObject obj = doc.object();
+        QJsonObject jsonObject = doc.object();
 
         Track track;
-        track.setTitle(obj["title"].toString());
+        track.setTitle(jsonObject["title"].toString());
 
-        QString artist = obj["uploader"].toString();
+        QString artist = jsonObject["uploader"].toString();
+
         if (artist.isEmpty())
-            artist = obj["channel"].toString();
+            artist = jsonObject["channel"].toString();
+
         track.setArtist(artist);
 
-        track.setDuration(obj["duration"].toInt());
-        track.setFilePath(obj["webpage_url"].toString());
+        track.setDuration(jsonObject["duration"].toInt());
+        track.setFilePath(jsonObject["webpage_url"].toString());
 
         QString thumbnailUrl;
 
-        if (obj.contains("thumbnail"))
+        if (jsonObject.contains("thumbnail"))
         {
-            thumbnailUrl = obj["thumbnail"].toString();
+            thumbnailUrl = jsonObject["thumbnail"].toString();
         }
 
         track.setThumbnailUrl(thumbnailUrl);
@@ -374,93 +264,13 @@ void YouTubeMusicWindow::processJsonLine(const QString& line)
         if (!track.getTitle().isEmpty() && !track.getFilePath().isEmpty())
         {
             searchResults.append(track);
-            qDebug() << "Added track:" << track.getTitle() << "by" << track.getArtist();
-
             updateTrackList(searchResults);
         }
     }
     else
     {
-        qDebug() << "JSON parse error:" << parseError.errorString() << "for line:" << line.left(100);
+        LOG_ERROR("JSON parse error: " + parseError.errorString() + " for line: " + line.left(100));
     }
-}
-
-void YouTubeMusicWindow::handleSearchFinished(QProcess* process, int exitCode)
-{
-    QByteArray output = process->readAllStandardOutput();
-    QByteArray errorOutput = process->readAllStandardError();
-
-    if (exitCode == 0)
-    {
-        if (output.isEmpty())
-        {
-            statusLabel->setText(tr("No output from search. Check yt-dlp installation."));
-            process->deleteLater();
-            return;
-        }
-
-        QStringList lines = QString::fromUtf8(output).split('\n', Qt::SkipEmptyParts);
-        qDebug() << "Found" << lines.size() << "lines of output";
-
-        searchResults.clear();
-        int validTracks = 0;
-
-        for (int i = 0; i < lines.size(); ++i)
-        {
-            const QString& line = lines[i];
-            if (line.trimmed().isEmpty())
-                continue;
-
-            QJsonParseError parseError;
-            QJsonDocument doc = QJsonDocument::fromJson(line.toUtf8(), &parseError);
-            if (parseError.error == QJsonParseError::NoError && doc.isObject())
-            {
-                QJsonObject obj = doc.object();
-
-                Track track;
-                track.setTitle(obj["title"].toString());
-                track.setArtist(obj["uploader"].toString().isEmpty() ? obj["channel"].toString()
-                                                                     : obj["uploader"].toString());
-                track.setDuration(obj["duration"].toInt());
-                track.setFilePath(obj["webpage_url"].toString());
-
-                if (!track.getTitle().isEmpty())
-                {
-                    searchResults.append(track);
-                    validTracks++;
-                    qDebug() << "Added track:" << track.getTitle() << "by" << track.getArtist();
-                }
-            }
-            else
-            {
-                qDebug() << "JSON parse error:" << parseError.errorString() << "for line:" << line.left(100);
-            }
-        }
-
-        qDebug() << "Total valid tracks found:" << validTracks;
-        updateTrackList(searchResults);
-
-        if (searchResults.isEmpty())
-        {
-            statusLabel->setText(tr("No valid results found. Try a different search term."));
-        }
-        else
-        {
-            statusLabel->setText(tr("Found %1 results").arg(searchResults.size()));
-        }
-    }
-    else
-    {
-        QString errorMsg = tr("Search failed (exit code: %1)").arg(exitCode);
-        if (!errorOutput.isEmpty())
-        {
-            errorMsg += "\n\nError details:\n" + QString::fromUtf8(errorOutput);
-        }
-        qDebug() << "Search failed:" << errorMsg;
-        showError(errorMsg);
-    }
-
-    process->deleteLater();
 }
 
 void YouTubeMusicWindow::updateTrackList(const QList<Track>& tracks)
@@ -557,102 +367,32 @@ void YouTubeMusicWindow::onDownloadTrackClicked()
 
     statusLabel->setText(tr("Downloading %1...").arg(track.getTitle()));
 
-    QProcess* process = new QProcess(this);
     QStringList arguments = ytDlpArgs;
     arguments << "--no-post-overwrites"
               << "--no-warnings"
               << "-o" << fileName;
     arguments << track.getFilePath();
 
+    QProcess* process = ProcessManager::instance().createProcess("yt-dlp", arguments);
+    QPointer<YouTubeMusicWindow> safeThis = this;
+
     connect(process, &QProcess::finished, this,
-            [this, process, track, fileName](int exitCode)
+            [safeThis, process, track, fileName](int exitCode)
             {
+                if (!safeThis)
+                    return;
+
                 if (exitCode == 0)
                 {
-                    QMessageBox::information(this, tr("Download Complete"),
+                    QMessageBox::information(nullptr, tr("Download Complete"),
                                              tr("Successfully downloaded '%1'").arg(track.getTitle()));
-                    statusLabel->setText(tr("Download complete"));
+                    safeThis->statusLabel->setText(tr("Download complete"));
                 }
                 else
                 {
-                    QByteArray errorOutput = process->readAllStandardError();
-                    QString errorMsg = tr("Download failed. Make sure yt-dlp is installed.");
-
-                    QString errorStr = QString::fromUtf8(errorOutput);
-                    if (errorStr.contains("ffmpeg not found") || errorStr.contains("ffprobe not found"))
-                    {
-                        errorMsg = tr("Download completed but ffmpeg is not installed for post-processing.\n\n"
-                                      "The file was downloaded but may not be in the requested format.\n\n"
-                                      "To get proper format conversion, please install ffmpeg:\n\n"
-                                      "Windows: Download from https://ffmpeg.org/download.html\n"
-                                      "macOS: brew install ffmpeg\n"
-                                      "Linux: sudo apt install ffmpeg");
-                    }
-                    else if (!errorOutput.isEmpty())
-                    {
-                        errorMsg += "\n\nError details:\n" + QString::fromUtf8(errorOutput);
-                    }
-                    showError(errorMsg);
+                    LOG_ERROR("Download failed. Make sure yt-dlp is installed.");
                 }
-
-                process->deleteLater();
             });
 
-    connect(process, &QProcess::errorOccurred, this,
-            [this, process](QProcess::ProcessError error)
-            {
-                QString errorMsg;
-                switch (error)
-                {
-                case QProcess::FailedToStart:
-                    errorMsg = tr("Failed to start download. Make sure yt-dlp is installed.");
-                    break;
-                case QProcess::Crashed:
-                    errorMsg = tr("Download process crashed.");
-                    break;
-                case QProcess::Timedout:
-                    errorMsg = tr("Download timed out.");
-                    break;
-                default:
-                    errorMsg = tr("Download failed with unknown error.");
-                    break;
-                }
-                showError(errorMsg);
-                process->deleteLater();
-            });
-
-    process->start("yt-dlp", arguments);
-}
-
-void YouTubeMusicWindow::onSearchFinished(QNetworkReply* reply)
-{
-    reply->deleteLater();
-
-    if (reply->error() != QNetworkReply::NoError)
-    {
-        showError(tr("Network error: %1").arg(reply->errorString()));
-        return;
-    }
-
-    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-    if (doc.isNull())
-    {
-        showError(tr("Invalid JSON response"));
-        return;
-    }
-
-    parseSearchResults(doc);
-}
-
-void YouTubeMusicWindow::parseSearchResults(const QJsonDocument& json) {}
-
-void YouTubeMusicWindow::showError(const QString& message)
-{
-    statusLabel->setText(message);
-    QMessageBox::warning(this, tr("Error"), message);
-}
-
-void YouTubeMusicWindow::onSearchTextChanged(const QString& text)
-{
-    currentSearchText = text;
+    process->start();
 }

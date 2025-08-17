@@ -1,6 +1,7 @@
 #include "PlaylistRepository.h"
 
 #include "../core/Logger.h"
+#include "../database/Container.h"
 #include <QDateTime>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -154,14 +155,7 @@ QList<Track> PlaylistRepository::getTracksForPlaylist(int playlistId)
 
     while (query.next())
     {
-        Track track;
-        track.setId(query.value("id").toInt());
-        track.setTitle(query.value("title").toString());
-        track.setFilePath(query.value("file_path").toString());
-        track.setArtist(query.value("artist").toString());
-        track.setAlbum(query.value("album").toString());
-        track.setDuration(query.value("duration").toInt());
-        tracks.append(track);
+        tracks.append(Container::instance().getTrackRepository()->mapFromRecord(query));
     }
 
     LOG_INFO("Fetched " + QString::number(tracks.size()) + " tracks for playlist ID: " + QString::number(playlistId));

@@ -57,7 +57,6 @@ class MiniPlayer : public QWidget
   private:
     void setupUI();
     void setupConnections();
-    void loadThumbnail(const QString& thumbnailUrl);
     void updateDisplayMode();
 
     QLabel* songLabel;

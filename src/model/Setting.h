@@ -3,6 +3,7 @@
 
 #include "Model.h"
 #include <QString>
+#include <QJsonObject>
 
 class Setting : public Model
 {
@@ -27,6 +28,14 @@ class Setting : public Model
     void setValue(const QString& value)
     {
         this->value = value;
+    }
+
+    QJsonObject serialize() const
+    {
+        QJsonObject obj;
+        obj["key"] = key;
+        obj["value"] = value;
+        return obj;
     }
 
   private:

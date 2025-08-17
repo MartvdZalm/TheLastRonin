@@ -1,8 +1,10 @@
 #include "ListStyle.h"
 
+#include "../constants/Colors.h"
+
 QString ListStyle::primary()
 {
-    return R"(
+    return QString(R"(
         QListWidget {
             background: transparent;
             outline: none;
@@ -14,12 +16,14 @@ QString ListStyle::primary()
         }
 
         QListWidget::item:selected {
-            background-color: #4a90e2;
+            background-color: %1;
             color: white;
         }
 
         QListWidget::item:hover {
-            background-color: #005a8e;
+            background-color: %2;
         }
-    )";
+    )")
+        .arg(Colors::LightBlue)
+        .arg(Colors::MediumBlue);
 }

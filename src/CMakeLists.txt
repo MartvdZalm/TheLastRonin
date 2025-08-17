@@ -15,6 +15,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         database/DatabaseManager.h
         database/DatabaseManager.cpp
 
+        # Constants
+        constants/Colors.h
+
+        # Core
+        core/Logger.cpp
+        core/Logger.h
+
         # Models
         model/Model.h
         model/Playlist.h
@@ -47,7 +54,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         # Manager
         manager/LanguageManager.h
         manager/LanguageManager.cpp
-
+        manager/ProcessManager.h
+        manager/ProcessManager.cpp
+        
         # Styles
         styles/AppStyle.h
         styles/AppStyle.cpp
@@ -71,6 +80,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         components/shared/NavigationBar.cpp
         components/shared/PlaybackBar.h
         components/shared/PlaybackBar.cpp
+        components/shared/TrackList.h
+        components/shared/TrackList.cpp
 
         # Dialog Components
         components/dialog/AddPlaylistDialog.h
@@ -85,8 +96,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         components/home/PlaylistGrid.cpp
         components/playlist/PlaylistDetails.h
         components/playlist/PlaylistDetails.cpp
-        components/playlist/TrackList.h
-        components/playlist/TrackList.cpp
 
         # Windows
         window/BaseWindow.h
@@ -103,10 +112,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         window/SettingsWindow.cpp
         window/YouTubeMusicWindow.h
         window/YouTubeMusicWindow.cpp
-
-        # Core
-        core/Logger.cpp
-        core/Logger.h
     )
 else()
     add_executable(TheLastRonin

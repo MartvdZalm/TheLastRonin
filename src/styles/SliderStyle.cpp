@@ -1,8 +1,10 @@
 #include "SliderStyle.h"
 
+#include "../constants/Colors.h"
+
 QString SliderStyle::primary()
 {
-    return R"(
+    return QString(R"(
         QSlider {
             background-color: transparent;
         }
@@ -13,15 +15,17 @@ QString SliderStyle::primary()
             border-radius: 2px;
         }
         QSlider::handle:horizontal {
-            background: #4a90e2;
+            background: %1;
             width: 10px;
             height: 10px;
             margin: -3px 0;
             border-radius: 5px;
         }
         QSlider::sub-page:horizontal {
-            background: #4a90e2;
+            background: %2;
             border-radius: 2px;
         }
-    )";
+    )")
+        .arg(Colors::LightBlue)
+        .arg(Colors::LightBlue);
 }

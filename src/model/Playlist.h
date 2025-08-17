@@ -5,6 +5,8 @@
 #include "Track.h"
 #include <QDateTime>
 #include <QString>
+#include <QJsonObject>
+#include <QJsonArray>
 
 class Playlist : public Model
 {
@@ -54,6 +56,24 @@ class Playlist : public Model
     void setTracks(const QList<Track>& tracks)
     {
         this->tracks = tracks;
+    }
+
+    QJsonObject serialize()
+    {
+        QJsonObject playlistJson;
+
+        playlistJson["name"] = name;
+        playlistJson["description"] = description;
+        playlistJson["coverImagePath"] = coverImagePath;
+
+        QJsonArray tracksArray;
+        for (const Track& track : tracks)
+        {
+            tracksArray.append(track.serialize());
+        }
+        playlistJson["tracks"] = tracksArray;
+
+        return playlistJson;
     }
 
   private:

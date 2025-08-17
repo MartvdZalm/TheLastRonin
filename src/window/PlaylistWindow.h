@@ -2,9 +2,9 @@
 #define PLAYLISTWINDOW_H
 
 #include "../components/playlist/PlaylistDetails.h"
-#include "../components/playlist/TrackList.h"
 #include "../components/shared/CoverImageWidget.h"
 #include "../components/shared/PlaybackBar.h"
+#include "../components/shared/TrackList.h"
 #include "../model/Playlist.h"
 #include "../repository/PlaylistRepository.h"
 #include "../repository/TrackRepository.h"

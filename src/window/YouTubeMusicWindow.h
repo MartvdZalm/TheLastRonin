@@ -1,9 +1,9 @@
 #ifndef YOUTUBEMUSICWINDOW_H
 #define YOUTUBEMUSICWINDOW_H
 
-#include "../components/playlist/TrackList.h"
 #include "../components/shared/NavigationBar.h"
 #include "../components/shared/PlaybackBar.h"
+#include "../components/shared/TrackList.h"
 #include "../database/Container.h"
 #include "../events/AppEvents.h"
 #include "../model/Track.h"
@@ -11,6 +11,7 @@
 #include "../styles/ComboBoxStyle.h"
 #include "../styles/InputStyle.h"
 #include "BaseWindow.h"
+#include <QCloseEvent>
 #include <QComboBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -42,22 +43,16 @@ class YouTubeMusicWindow : public BaseWindow
 
   private slots:
     void onSearchClicked();
-    void onSearchTextChanged(const QString& text);
     void onTrackClicked(QListWidgetItem* item);
     void onPlayTrackClicked();
     void onAddToPlaylistClicked();
     void onDownloadTrackClicked();
-    void onSearchFinished(QNetworkReply* reply);
 
   private:
-    void searchYouTubeMusic(const QString& query);
     void performSearch(const QString& query);
-    void handleSearchFinished(QProcess* process, int exitCode);
-    void parseSearchResults(const QJsonDocument& json);
     void updateTrackList(const QList<Track>& tracks);
     QWidget* createTrackItemWidget(const Track& track, int index);
     QString formatDuration(int seconds) const;
-    void showError(const QString& message);
     void processJsonLine(const QString& line);
 
     QLineEdit* searchInput;
@@ -68,8 +63,6 @@ class YouTubeMusicWindow : public BaseWindow
     TrackList* trackList;
     QLabel* statusLabel;
     PlaybackBar* playbackBarWidget;
-
-    QNetworkAccessManager* networkManager;
 
     QList<Track> searchResults;
     QString currentSearchText;

@@ -315,6 +315,8 @@ void PlaybackBar::updateRepeatButton()
 
 void PlaybackBar::toggleMiniPlayer()
 {
+    qDebug() << playlist.serialize();
+
     if (!isMiniPlayerActive)
     {
         miniPlayer = new MiniPlayer(nullptr);
@@ -391,16 +393,19 @@ void PlaybackBar::onMiniPlayerClosed()
 
 void PlaybackBar::syncMiniPlayerControls()
 {
-    if (miniPlayer && isMiniPlayerActive)
-    {
-        if (currentTrackIndex >= 0 && currentTrackIndex < playlist.getTracks().size())
-        {
-            miniPlayer->updateTrackInfo(playlist.getTracks()[currentTrackIndex]);
-        }
+    if (!miniPlayer || !isMiniPlayerActive)
+        return;
 
-        miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
-        miniPlayer->updateProgress(player->position(), player->duration());
+    static int lastTrackIndex = -1;
+    if (currentTrackIndex != lastTrackIndex && currentTrackIndex >= 0 &&
+        currentTrackIndex < playlist.getTracks().size())
+    {
+        miniPlayer->updateTrackInfo(playlist.getTracks()[currentTrackIndex]);
+        lastTrackIndex = currentTrackIndex;
     }
+
+    miniPlayer->updatePlayPauseButton(player->playbackState() == QMediaPlayer::PlayingState);
+    miniPlayer->updateProgress(player->position(), player->duration());
 }
 
 void PlaybackBar::updateTimeLabel(qint64 position, qint64 duration, QLabel* label)
@@ -445,25 +450,24 @@ void PlaybackBar::updatePlaylist(const Playlist& playlist)
 
 void PlaybackBar::playTrackAtIndex(int index)
 {
-    if (index >= 0 && index < playlist.getTracks().size())
-    {
-        currentTrackIndex = index;
-        this->currentTrack = playlist.getTracks()[index];
+    if (index < 0 || index >= playlist.getTracks().size())
+        return;
 
-        songLabel->setText(currentTrack.getTitle());
+    currentTrackIndex = index;
+    currentTrack = playlist.getTracks()[index];
 
-        player->setSource(QUrl::fromLocalFile(currentTrack.getFilePath()));
-        player->play();
+    songLabel->setText(currentTrack.getTitle());
+    player->setSource(QUrl::fromLocalFile(currentTrack.getFilePath()));
+    player->play();
 
-        QTimer::singleShot(100, this,
-                           [=]()
-                           {
-                               player->setSource(QUrl::fromLocalFile(currentTrack.getFilePath()));
-                               player->play();
-                           });
-    }
+    QTimer::singleShot(100, this,
+                       [=]()
+                       {
+                           player->setSource(QUrl::fromLocalFile(currentTrack.getFilePath()));
+                           player->play();
+                       });
 
-    this->syncMiniPlayerControls();
+    syncMiniPlayerControls();
 }
 
 void PlaybackBar::onNextClicked()

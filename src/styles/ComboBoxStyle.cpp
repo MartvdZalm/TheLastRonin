@@ -1,10 +1,12 @@
 #include "ComboBoxStyle.h"
 
+#include "../constants/Colors.h"
+
 QString ComboBoxStyle::primary()
 {
-    return R"(
+    return QString(R"(
         QComboBox {
-            background-color: #2e2e2e;
+            background-color: %1;
             color: white;
             border: 1px solid #444;
             border-radius: 5px;
@@ -25,10 +27,12 @@ QString ComboBoxStyle::primary()
             height: 12px;
         }
         QComboBox QAbstractItemView {
-            background-color: #1e1e1e;
+            background-color: %2;
             color: white;
             border: 1px solid #444;
             selection-background-color: #3e3e3e;
         }
-    )";
+    )")
+        .arg(Colors::DarkGray)
+        .arg(Colors::DarkerGray);
 }

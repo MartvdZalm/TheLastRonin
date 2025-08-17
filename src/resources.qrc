@@ -22,5 +22,6 @@
         <file alias="MusicNote">assets/images/music-note.png</file>
         <file alias="Repeat">assets/images/repeat.png</file>
         <file alias="RepeatOne">assets/images/repeat-one.png</file>
+        <file alias="MenuDots">assets/images/menu-dots.png</file>
     </qresource>
 </RCC>

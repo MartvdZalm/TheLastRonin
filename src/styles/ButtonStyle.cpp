@@ -1,10 +1,12 @@
 #include "ButtonStyle.h"
 
+#include "../constants/Colors.h"
+
 QString ButtonStyle::primary()
 {
-    return R"(
+    return QString(R"(
         QPushButton {
-            background-color: #4a90e2;
+            background-color: %1;
             color: white;
             border: none;
             border-radius: 4px;
@@ -14,20 +16,23 @@ QString ButtonStyle::primary()
         }
 
         QPushButton:hover {
-            background-color: #005a8e;
+            background-color: %2;
         }
 
         QPushButton:pressed {
-            background-color: #003f69;
+            background-color: %3;
         }
-    )";
+    )")
+        .arg(Colors::LightBlue)
+        .arg(Colors::MediumBlue)
+        .arg(Colors::DarkBlue);
 }
 
 QString ButtonStyle::remove()
 {
-    return R"(
+    return QString(R"(
         QPushButton {
-            background-color: #ff090e;
+            background-color: %1;
             color: white;
             border: none;
             border-radius: 4px;
@@ -37,11 +42,14 @@ QString ButtonStyle::remove()
         }
 
         QPushButton:hover {
-            background-color: #cc0000;
+            background-color: %2;
         }
 
         QPushButton:pressed {
-            background-color: #990000;
+            background-color: %3;
         }
-    )";
+    )")
+        .arg(Colors::LightRed)
+        .arg(Colors::MediumRed)
+        .arg(Colors::DarkRed);
 }

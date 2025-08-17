@@ -1,9 +1,9 @@
 #ifndef LIBRARYWINDOW_H
 #define LIBRARYWINDOW_H
 
-#include "../components/playlist/TrackList.h"
 #include "../components/shared/NavigationBar.h"
 #include "../components/shared/PlaybackBar.h"
+#include "../components/shared/TrackList.h"
 #include "../database/Container.h"
 #include "../events/AppEvents.h"
 #include "../model/Track.h"

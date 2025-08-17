@@ -13,16 +13,14 @@ class SettingRepository : public ISettingRepository
     QList<Setting> findAll() override;
     std::optional<Setting> save(const Setting& setting) override;
     bool deleteById(int id) override;
-
     std::optional<Setting> findByKey(const QString& key) override;
     QString getValue(const QString& key, const QString& defaultValue = "") override;
     std::optional<Setting> setValue(const QString& key, const QString& value) override;
     bool deleteByKey(const QString& key) override;
+    Setting mapFromRecord(const QSqlQuery& query) override;
 
   private:
     QSqlDatabase& database;
-
-    Setting mapFromRecord(const QSqlQuery& query);
     std::optional<Setting> insert(const Setting& setting);
     std::optional<Setting> update(const Setting& setting);
 };
